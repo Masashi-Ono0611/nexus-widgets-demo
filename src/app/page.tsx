@@ -28,65 +28,50 @@ export default function Home() {
   };
 
   return (
-    <main style={{ maxWidth: 720, margin: "40px auto", padding: 24 }}>
-      <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16 }}>
+    <main className="container">
+      <h1 className="header">
         Use Avail Nexus
       </h1>
 
       <button
         onClick={handleViewBalances}
         disabled={!isSdkInitialized || loadingBalances}
-        style={{
-          padding: "10px 16px",
-          background: "#ff8a65",
-          color: "#fff",
-          borderRadius: 8,
-          border: "none",
-          cursor: "pointer",
-          marginBottom: 16,
-        }}
+        className="btn btn-accent"
       >
         {loadingBalances ? "Loading…" : "View Unified Balance"}
       </button>
 
       {balances && (
-        <pre
-          style={{
-            background: "#f5f5f5",
-            padding: 12,
-            borderRadius: 8,
-            whiteSpace: "pre-wrap",
-          }}
-        >
+        <pre className="pre">
           {JSON.stringify(balances, null, 2)}
         </pre>
       )}
 
-      <section style={{ display: "grid", gap: 12, marginTop: 24 }}>
-        <div style={{ border: "1px solid #e0e0e0", borderRadius: 12, padding: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>Bridge Tokens</h3>
+      <section className="grid">
+        <div className="card">
+          <h3>Bridge Tokens</h3>
           <BridgeButton>
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} style={{ padding: "8px 12px" }}>
+              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
                 {isLoading ? "Bridging…" : "Open Bridge"}
               </button>
             )}
           </BridgeButton>
         </div>
 
-        <div style={{ border: "1px solid #e0e0e0", borderRadius: 12, padding: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>Transfer Tokens</h3>
+        <div className="card">
+          <h3>Transfer Tokens</h3>
           <TransferButton>
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} style={{ padding: "8px 12px" }}>
+              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
                 {isLoading ? "Opening…" : "Open Transfer"}
               </button>
             )}
           </TransferButton>
         </div>
 
-        <div style={{ border: "1px solid #e0e0e0", borderRadius: 12, padding: 16 }}>
-          <h3 style={{ marginBottom: 8 }}>{`Bridge & Supply on AAVE`}</h3>
+        <div className="card">
+          <h3>{`Bridge & Supply on AAVE`}</h3>
           <BridgeAndExecuteButton
             contractAddress={"0x794a61358D6845594F94dc1DB02A252b5b4814aD"}
             contractAbi={[
@@ -112,7 +97,7 @@ export default function Home() {
             }}
           >
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} style={{ padding: "8px 12px" }}>
+              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
                 {isLoading ? "Processing…" : "Bridge & Stake"}
               </button>
             )}
