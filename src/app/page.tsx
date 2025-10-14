@@ -35,13 +35,18 @@ export default function Home() {
         Use Avail Nexus
       </h1>
 
-      <button
-        onClick={handleViewBalances}
-        disabled={loadingBalances}
-        className="btn btn-accent"
-      >
-        {loadingBalances ? "Loading…" : "View Unified Balance"}
-      </button>
+      <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+        <button
+          onClick={handleViewBalances}
+          disabled={loadingBalances}
+          className="btn btn-accent"
+        >
+          {loadingBalances ? "Loading…" : "View Unified Balance"}
+        </button>
+        <a href="/userpage" className="btn btn-primary">
+          Generate Receive URL
+        </a>
+      </div>
 
       {balances && (
         <pre className="pre">

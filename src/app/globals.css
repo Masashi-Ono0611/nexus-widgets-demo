@@ -129,3 +129,152 @@ a {
     border-color: #374151; /* slate-700 */
   }
 }
+
+/* User Page */
+.userpage-layout {
+  display: grid;
+  gap: 24px;
+  margin-top: 24px;
+}
+
+@media (min-width: 768px) {
+  .userpage-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Form */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.form-input,
+.form-select {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  background: var(--background);
+  color: var(--foreground);
+  transition: border-color 0.2s ease;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #111827;
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 14px;
+  padding: 8px 12px;
+  background: #fee2e2;
+  border-radius: 6px;
+  border: 1px solid #fca5a5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .form-input,
+  .form-select {
+    border-color: #374151;
+  }
+
+  .form-input:focus,
+  .form-select:focus {
+    border-color: #fff;
+  }
+
+  .form-error {
+    background: #7f1d1d;
+    border-color: #991b1b;
+    color: #fca5a5;
+  }
+}
+
+/* QR Code Display */
+.qr-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding: 24px;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.6);
+  backdrop-filter: saturate(1.2) blur(2px);
+}
+
+.qr-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.qr-code-wrapper {
+  padding: 16px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+}
+
+.url-display {
+  width: 100%;
+  padding: 12px;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+.url-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: 12px;
+  word-break: break-all;
+  color: #111827;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  width: 100%;
+}
+
+.button-group .btn {
+  flex: 1;
+}
+
+@media (prefers-color-scheme: dark) {
+  .qr-container {
+    border-color: #374151;
+    background: rgba(0,0,0,0.3);
+  }
+
+  .qr-code-wrapper {
+    background: white;
+    border-color: #374151;
+  }
+
+  .url-display {
+    background: #111827;
+    border-color: #374151;
+  }
+
+  .url-text {
+    color: #e5e7eb;
+  }
+}
