@@ -111,8 +111,21 @@ a {
 
 /* Code block */
 .pre {
-  background: #f5f5f5;
+  background: #f3f4f6; /* light gray */
+  color: #111827; /* near-black for readability */
   padding: 12px;
   border-radius: 8px;
+  border: 1px solid #e5e7eb;
   white-space: pre-wrap;
+  overflow: auto;
+  line-height: 1.5;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pre {
+    background: #111827; /* slate-900 */
+    color: #e5e7eb; /* slate-200 */
+    border-color: #374151; /* slate-700 */
+  }
 }

@@ -11,13 +11,20 @@ import { parseUnits } from "viem";
 import { useNexus } from "@avail-project/nexus-widgets";
 
 export default function Home() {
-  const { sdk, isSdkInitialized } = useNexus();
+  const { sdk, isSdkInitialized, initializeSdk } = useNexus();
   const [balances, setBalances] = React.useState<any | null>(null);
   const [loadingBalances, setLoadingBalances] = React.useState(false);
 
   const handleViewBalances = async () => {
     try {
       setLoadingBalances(true);
+      if (!isSdkInitialized) {
+        const provider = (window as any)?.ethereum;
+        if (!provider) {
+          throw new Error("Wallet provider not found. Please install or enable your wallet.");
+        }
+        await initializeSdk(provider);
+      }
       const res = await sdk.getUnifiedBalances();
       setBalances(res);
     } catch (e) {
@@ -35,7 +42,7 @@ export default function Home() {
 
       <button
         onClick={handleViewBalances}
-        disabled={!isSdkInitialized || loadingBalances}
+        disabled={loadingBalances}
         className="btn btn-accent"
       >
         {loadingBalances ? "Loading…" : "View Unified Balance"}
@@ -52,7 +59,20 @@ export default function Home() {
           <h3>Bridge Tokens</h3>
           <BridgeButton>
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
+              <button
+                onClick={async () => {
+                  if (!isSdkInitialized) {
+                    const provider = (window as any)?.ethereum;
+                    if (!provider) {
+                      throw new Error("Wallet provider not found. Please install or enable your wallet.");
+                    }
+                    await initializeSdk(provider);
+                  }
+                  await onClick();
+                }}
+                disabled={isLoading}
+                className="btn btn-primary"
+              >
                 {isLoading ? "Bridging…" : "Open Bridge"}
               </button>
             )}
@@ -63,7 +83,20 @@ export default function Home() {
           <h3>Transfer Tokens</h3>
           <TransferButton>
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
+              <button
+                onClick={async () => {
+                  if (!isSdkInitialized) {
+                    const provider = (window as any)?.ethereum;
+                    if (!provider) {
+                      throw new Error("Wallet provider not found. Please install or enable your wallet.");
+                    }
+                    await initializeSdk(provider);
+                  }
+                  await onClick();
+                }}
+                disabled={isLoading}
+                className="btn btn-primary"
+              >
                 {isLoading ? "Opening…" : "Open Transfer"}
               </button>
             )}
@@ -97,7 +130,20 @@ export default function Home() {
             }}
           >
             {({ onClick, isLoading }) => (
-              <button onClick={onClick} disabled={isLoading} className="btn btn-primary">
+              <button
+                onClick={async () => {
+                  if (!isSdkInitialized) {
+                    const provider = (window as any)?.ethereum;
+                    if (!provider) {
+                      throw new Error("Wallet provider not found. Please install or enable your wallet.");
+                    }
+                    await initializeSdk(provider);
+                  }
+                  await onClick();
+                }}
+                disabled={isLoading}
+                className="btn btn-primary"
+              >
                 {isLoading ? "Processing…" : "Bridge & Stake"}
               </button>
             )}
