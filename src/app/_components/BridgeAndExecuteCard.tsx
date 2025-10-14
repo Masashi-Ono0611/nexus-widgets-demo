@@ -6,11 +6,8 @@ import {
   TOKEN_METADATA,
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
-import { useNexus } from "@avail-project/nexus-widgets";
 
 export function BridgeAndExecuteCard() {
-  const { isSdkInitialized, initializeSdk } = useNexus();
-
   return (
     <div className="card">
       <h3>{`Bridge & Supply on AAVE`}</h3>
@@ -41,13 +38,6 @@ export function BridgeAndExecuteCard() {
         {({ onClick, isLoading }) => (
           <button
             onClick={async () => {
-              if (!isSdkInitialized) {
-                const provider = (window as any)?.ethereum;
-                if (!provider) {
-                  throw new Error("Wallet provider not found. Please install or enable your wallet.");
-                }
-                await initializeSdk(provider);
-              }
               await onClick();
             }}
             disabled={isLoading}
