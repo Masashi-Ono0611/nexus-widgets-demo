@@ -10,6 +10,32 @@
   }
 }
 
+/* Shared helpers */
+.action-bar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 480px) {
+  .action-bar {
+    flex-direction: column;
+  }
+}
+
+.subheader {
+  font-size: 16px;
+  color: #4b5563;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .subheader {
+    color: #d1d5db;
+  }
+}
+
 html,
 body {
   max-width: 100vw;

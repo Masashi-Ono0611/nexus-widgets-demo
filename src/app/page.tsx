@@ -35,7 +35,7 @@ export default function Home() {
         Use Avail Nexus
       </h1>
 
-      <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+      <div className="action-bar">
         <button
           onClick={handleViewBalances}
           disabled={loadingBalances}
@@ -43,7 +43,7 @@ export default function Home() {
         >
           {loadingBalances ? "Loading…" : "View Unified Balance"}
         </button>
-        <a href="/userpage" className="btn btn-primary">
+        <a href="/receive-qr" className="btn btn-primary">
           Generate Receive URL
         </a>
       </div>
