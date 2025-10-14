@@ -14,6 +14,24 @@ export default function Home() {
   const { sdk, isSdkInitialized, initializeSdk } = useNexus();
   const [balances, setBalances] = React.useState<any | null>(null);
   const [loadingBalances, setLoadingBalances] = React.useState(false);
+  const [transferPrefill, setTransferPrefill] = React.useState<any>(undefined);
+
+  React.useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const toAddress = params.get("to");
+      const chainId = params.get("chainId");
+      const token = params.get("token");
+
+      if (toAddress && chainId && token) {
+        setTransferPrefill({
+          recipient: toAddress as `0x${string}`,
+          chainId: parseInt(chainId, 10) as any,
+          token: token as any,
+        });
+      }
+    }
+  }, []);
 
   const handleViewBalances = async () => {
     try {
@@ -81,7 +99,7 @@ export default function Home() {
 
         <div className="card">
           <h3>Transfer Tokens</h3>
-          <TransferButton>
+          <TransferButton prefill={transferPrefill}>
             {({ onClick, isLoading }) => (
               <button
                 onClick={async () => {
