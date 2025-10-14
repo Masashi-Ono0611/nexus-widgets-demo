@@ -1,71 +1,14 @@
 "use client";
 import React from "react";
-import {
-  BridgeButton,
-  TransferButton,
-  BridgeAndExecuteButton,
-  TOKEN_CONTRACT_ADDRESSES,
-  TOKEN_METADATA,
-  type TransferParams,
-} from "@avail-project/nexus-widgets";
-import { parseUnits } from "viem";
 import { useNexus } from "@avail-project/nexus-widgets";
+import { BridgeCard } from "./_components/BridgeCard";
+import { TransferCard } from "./_components/TransferCard";
+import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
 
 export default function Home() {
   const { sdk, isSdkInitialized, initializeSdk } = useNexus();
   const [balances, setBalances] = React.useState<any | null>(null);
   const [loadingBalances, setLoadingBalances] = React.useState(false);
-  const [transferPrefill, setTransferPrefill] = React.useState<Partial<TransferParams> | undefined>(
-    undefined,
-  );
-  const [showTransferOnly, setShowTransferOnly] = React.useState(false);
-
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      const params = new URLSearchParams(window.location.search);
-      const toAddress = params.get("to");
-      const chainId = params.get("chainId");
-      const token = params.get("token");
-
-      if (toAddress && chainId && token) {
-        setTransferPrefill({
-          recipient: toAddress as `0x${string}`,
-          chainId: parseInt(chainId, 10) as any,
-          token: token as any,
-        });
-        setShowTransferOnly(true);
-        return;
-      }
-      setTransferPrefill(undefined);
-      setShowTransferOnly(false);
-    }
-  }, []);
-
-  const transferCard = (
-    <div className="card">
-      <h3>Transfer Tokens</h3>
-      <TransferButton prefill={transferPrefill}>
-        {({ onClick, isLoading }) => (
-          <button
-            onClick={async () => {
-              if (!isSdkInitialized) {
-                const provider = (window as any)?.ethereum;
-                if (!provider) {
-                  throw new Error("Wallet provider not found. Please install or enable your wallet.");
-                }
-                await initializeSdk(provider);
-              }
-              await onClick();
-            }}
-            disabled={isLoading}
-            className="btn btn-primary"
-          >
-            {isLoading ? "Opening…" : "Open Transfer"}
-          </button>
-        )}
-      </TransferButton>
-    </div>
-  );
 
   const handleViewBalances = async () => {
     try {
@@ -92,103 +35,24 @@ export default function Home() {
         Use Avail Nexus
       </h1>
 
-      {!showTransferOnly && (
-        <>
-          <button
-            onClick={handleViewBalances}
-            disabled={loadingBalances}
-            className="btn btn-accent"
-          >
-            {loadingBalances ? "Loading…" : "View Unified Balance"}
-          </button>
+      <button
+        onClick={handleViewBalances}
+        disabled={loadingBalances}
+        className="btn btn-accent"
+      >
+        {loadingBalances ? "Loading…" : "View Unified Balance"}
+      </button>
 
-          {balances && (
-            <pre className="pre">
-              {JSON.stringify(balances, null, 2)}
-            </pre>
-          )}
-        </>
+      {balances && (
+        <pre className="pre">
+          {JSON.stringify(balances, null, 2)}
+        </pre>
       )}
 
       <section className="grid">
-        {showTransferOnly ? (
-          transferCard
-        ) : (
-          <>
-            <div className="card">
-              <h3>Bridge Tokens</h3>
-              <BridgeButton>
-                {({ onClick, isLoading }) => (
-                  <button
-                    onClick={async () => {
-                      if (!isSdkInitialized) {
-                        const provider = (window as any)?.ethereum;
-                        if (!provider) {
-                          throw new Error("Wallet provider not found. Please install or enable your wallet.");
-                        }
-                        await initializeSdk(provider);
-                      }
-                      await onClick();
-                    }}
-                    disabled={isLoading}
-                    className="btn btn-primary"
-                  >
-                    {isLoading ? "Bridging…" : "Open Bridge"}
-                  </button>
-                )}
-              </BridgeButton>
-            </div>
-
-            {transferCard}
-
-            <div className="card">
-              <h3>{`Bridge & Supply on AAVE`}</h3>
-              <BridgeAndExecuteButton
-                contractAddress={"0x794a61358D6845594F94dc1DB02A252b5b4814aD"}
-                contractAbi={[
-                  {
-                    name: "supply",
-                    type: "function",
-                    stateMutability: "nonpayable",
-                    inputs: [
-                      { name: "asset", type: "address" },
-                      { name: "amount", type: "uint256" },
-                      { name: "onBehalfOf", type: "address" },
-                      { name: "referralCode", type: "uint16" },
-                    ],
-                    outputs: [],
-                  },
-                ] as const}
-                functionName="supply"
-                buildFunctionParams={(tk, amt, chainId, user) => {
-                  const decimals = TOKEN_METADATA[tk].decimals;
-                  const amountWei = parseUnits(amt, decimals);
-                  const tokenAddr = TOKEN_CONTRACT_ADDRESSES[tk][chainId];
-                  return { functionParams: [tokenAddr, amountWei, user, 0] };
-                }}
-              >
-                {({ onClick, isLoading }) => (
-                  <button
-                    onClick={async () => {
-                      if (!isSdkInitialized) {
-                        const provider = (window as any)?.ethereum;
-                        if (!provider) {
-                          throw new Error("Wallet provider not found. Please install or enable your wallet.");
-                        }
-                        await initializeSdk(provider);
-                      }
-                      await onClick();
-                    }}
-                    disabled={isLoading}
-                    className="btn btn-primary"
-                  >
-                    {isLoading ? "Processing…" : "Bridge & Stake"}
-                  </button>
-                )}
-              </BridgeAndExecuteButton>
-            </div>
-          </>
-        )}
+        <BridgeCard />
+        <TransferCard />
+        <BridgeAndExecuteCard />
       </section>
     </main>
   );
