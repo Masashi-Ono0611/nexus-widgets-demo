@@ -23,5 +23,14 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules",
+    "hardhat.config.ts",
+    "hardhat.config.js",
+    "scripts",
+    "test",
+    "contracts",
+    "artifacts",
+    "cache"
+  ]
 }

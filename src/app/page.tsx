@@ -4,6 +4,7 @@ import { useNexus } from "@avail-project/nexus-widgets";
 import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
 import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
+import { BridgeAndSplitCard } from "./_components/BridgeAndSplitCard";
 
 export default function Home() {
   const { sdk, isSdkInitialized, initializeSdk } = useNexus();
@@ -58,6 +59,7 @@ export default function Home() {
         <BridgeCard />
         <TransferCard />
         <BridgeAndExecuteCard />
+        <BridgeAndSplitCard />
       </section>
     </main>
   );
