@@ -4,7 +4,8 @@ import { useNexus } from "@avail-project/nexus-widgets";
 import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
 import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
-import { BridgeAndExecuteCardNew } from "./_components/BridgeAndExecuteCardNew";
+import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
+import { BridgeAndExecuteCardOptimism } from "./_components/BridgeAndExecuteCardOptimism";
 import { BridgeAndSplitCard } from "./_components/BridgeAndSplitCard";
 
 export default function Home() {
@@ -60,7 +61,8 @@ export default function Home() {
         <BridgeCard />
         <TransferCard />
         <BridgeAndExecuteCard />
-        <BridgeAndExecuteCardNew />
+        <BridgeAndExecuteCardBase />
+        <BridgeAndExecuteCardOptimism />
         <BridgeAndSplitCard />
       </section>
     </main>
