@@ -20,6 +20,11 @@
 # production
 /build
 
+# hardhat
+/artifacts/
+/cache/
+/typechain-types/
+
 # misc
 .DS_Store
 *.pem
@@ -39,3 +44,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# next.js build cache
+/.turbo/
+
+# pnpm
+pnpm-lock.yaml

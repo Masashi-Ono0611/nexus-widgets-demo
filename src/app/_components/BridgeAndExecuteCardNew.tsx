@@ -7,12 +7,12 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCard() {
+export function BridgeAndExecuteCardNew() {
   return (
     <div className="card">
       <h3>{`Bridge & Supply on Mock AAVE`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0x7e4A956aE318D6b1fc86Dd212237D5238836eFCc"} //base sepolia
+        contractAddress={"0x00E3B1c858686A0e64Dfdb9F861CC659B96580b0"}
         contractAbi={[
           {
             name: "supply",
@@ -43,7 +43,7 @@ export function BridgeAndExecuteCard() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Supply"}
+            {isLoading ? "Processing…" : "Bridge & Supply (Mock)"}
           </button>
         )}
       </BridgeAndExecuteButton>

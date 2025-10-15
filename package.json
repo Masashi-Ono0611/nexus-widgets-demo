@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "test:contracts": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
-    "deploy:splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployPaymentSplitter.ts --network baseSepolia"
+    "deploy:splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployPaymentSplitter.ts --network baseSepolia",
+    "deploy:mock-aave": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployMockAAVE.ts --network baseSepolia"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",
