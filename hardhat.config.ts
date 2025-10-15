@@ -8,6 +8,10 @@ const BASE_SEPOLIA_RPC_URL = process.env.BASE_SEPOLIA_RPC_URL ?? "";
 const BASE_SEPOLIA_DEPLOYER_PRIVATE_KEY =
   process.env.BASE_SEPOLIA_DEPLOYER_PRIVATE_KEY ?? "";
 const BASESCAN_API_KEY = process.env.BASESCAN_API_KEY ?? "";
+const OPTIMISM_SEPOLIA_RPC_URL = process.env.OPTIMISM_SEPOLIA_RPC_URL ?? "";
+const OPTIMISM_SEPOLIA_DEPLOYER_PRIVATE_KEY =
+  process.env.OPTIMISM_SEPOLIA_DEPLOYER_PRIVATE_KEY ?? "";
+const OPTIMISM_ETHERSCAN_API_KEY = process.env.OPTIMISM_ETHERSCAN_API_KEY ?? "";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -28,10 +32,17 @@ const config: HardhatUserConfig = {
         ? [BASE_SEPOLIA_DEPLOYER_PRIVATE_KEY]
         : undefined,
     },
+    optimismSepolia: {
+      url: OPTIMISM_SEPOLIA_RPC_URL || undefined,
+      accounts: OPTIMISM_SEPOLIA_DEPLOYER_PRIVATE_KEY
+        ? [OPTIMISM_SEPOLIA_DEPLOYER_PRIVATE_KEY]
+        : undefined,
+    },
   },
   etherscan: {
     apiKey: {
       baseSepolia: BASESCAN_API_KEY,
+      optimismSepolia: OPTIMISM_ETHERSCAN_API_KEY,
     },
   },
 };

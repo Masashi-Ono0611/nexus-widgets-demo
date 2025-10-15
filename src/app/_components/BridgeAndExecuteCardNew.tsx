@@ -12,7 +12,8 @@ export function BridgeAndExecuteCardNew() {
     <div className="card">
       <h3>{`Bridge & Supply on Mock AAVE`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0x00E3B1c858686A0e64Dfdb9F861CC659B96580b0"}
+        contractAddress={"0x2097916929F880D4A0a377f2B30B5965b926f515"} // Optimism Sepolia
+        // contractAddress={"0x00E3B1c858686A0e64Dfdb9F861CC659B96580b0"} // Base Sepolia
         contractAbi={[
           {
             name: "supply",
