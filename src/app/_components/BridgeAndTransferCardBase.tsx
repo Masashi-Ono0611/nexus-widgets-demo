@@ -7,15 +7,15 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndForwardCardBase() {
+export function BridgeAndTransferCardBase() {
   return (
     <div className="card">
-      <h3>{`Bridge & Forward on Base Sepolia`}</h3>
+      <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0x6Cd07A2951Bae7321d6150E24B08C772ECEd0C2c"}
+        contractAddress={"0xaa2574965ADA9D48Afd1832f7f6137aFe882922e"}
         contractAbi={[
           {
-            name: "forward",
+            name: "burn",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
@@ -27,7 +27,7 @@ export function BridgeAndForwardCardBase() {
             outputs: [],
           },
         ] as const}
-        functionName="forward"
+        functionName="burn"
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);
@@ -45,7 +45,7 @@ export function BridgeAndForwardCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Forward"}
+            {isLoading ? "Processing…" : "Bridge & Transfer"}
           </button>
         )}
       </BridgeAndExecuteButton>
