@@ -7,6 +7,8 @@ import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
 import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
 import { BridgeAndExecuteCardOptimism } from "./_components/BridgeAndExecuteCardOptimism";
 import { BridgeAndStakeCardBase } from "./_components/BridgeAndStakeCardBase";
+import { BridgeAndForwardCardBase } from "./_components/BridgeAndForwardCardBase";
+import { BridgeAndBurnCardBase } from "./_components/BridgeAndBurnCardBase";
 import { BridgeAndSplitCard } from "./_components/BridgeAndSplitCard";
 
 export default function Home() {
@@ -65,6 +67,8 @@ export default function Home() {
         <BridgeAndExecuteCardBase />
         <BridgeAndExecuteCardOptimism />
         <BridgeAndStakeCardBase />
+        <BridgeAndForwardCardBase />
+        <BridgeAndBurnCardBase />
         <BridgeAndSplitCard />
       </section>
     </main>
