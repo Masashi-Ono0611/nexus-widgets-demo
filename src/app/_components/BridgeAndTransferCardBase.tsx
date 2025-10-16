@@ -12,10 +12,10 @@ export function BridgeAndTransferCardBase() {
     <div className="card">
       <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0xaa2574965ADA9D48Afd1832f7f6137aFe882922e"}
+        contractAddress={"0x8e2Bf249147FBfB485CeEFd4b1e531c7bC9F7f5b"}
         contractAbi={[
           {
-            name: "burn",
+            name: "forward",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
@@ -27,7 +27,7 @@ export function BridgeAndTransferCardBase() {
             outputs: [],
           },
         ] as const}
-        functionName="burn"
+        functionName="forward"
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);

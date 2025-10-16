@@ -10,14 +10,14 @@ contract AutoTransfer {
     address public constant FORWARD_ADDRESS = 0xC94d68094FA65E991dFfa0A941306E8460876169;
     // address public constant BURN_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
-    event Burn(
+    event Forwarded(
         address indexed asset,
         uint256 amount,
         address indexed from,
         uint16 referralCode
     );
 
-    function burn(
+    function forward(
         address asset,
         uint256 amount,
         address onBehalfOf,
@@ -30,6 +30,6 @@ contract AutoTransfer {
         IERC20(asset).safeTransferFrom(msg.sender, address(this), amount);
         IERC20(asset).safeTransfer(FORWARD_ADDRESS, amount);
 
-        emit Burn(asset, amount, onBehalfOf, referralCode);
+        emit Forwarded(asset, amount, onBehalfOf, referralCode);
     }
 }
