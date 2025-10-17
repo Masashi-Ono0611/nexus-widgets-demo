@@ -5,7 +5,7 @@ import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
 import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
 import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
-import { BridgeAndExecuteCardBaseAave } from "./_components/BridgeAndExecuteCardBaseAave";
+import { BridgeAndExecuteCardBaseWithCustomOnBehalf } from "./_components/BridgeAndExecuteCardBaseWithCustomOnBehalf";
 import { BridgeAndBurnCardBase } from "./_components/BridgeAndBurnCardBase";
 import { BridgeAndTransferCardBase } from "./_components/BridgeAndTransferCardBase";
 import { BridgeAndSplitCardBase } from "./_components/BridgeAndSplitCardBase";
@@ -65,10 +65,10 @@ export default function Home() {
         <TransferCard />
         <BridgeAndExecuteCard />
         <BridgeAndExecuteCardBase />
+        <BridgeAndExecuteCardBaseWithCustomOnBehalf />
         <BridgeAndBurnCardBase />
         <BridgeAndTransferCardBase />
         <BridgeAndSplitCardBase />
-        <BridgeAndExecuteCardBaseAave />
       </section>
     </main>
   );
