@@ -1,9 +1,11 @@
-import { ethers } from "hardhat";
+import hardhat from "hardhat";
+
+const hre = hardhat as unknown as any;
 
 async function main() {
   console.log("Deploying AutoSplitter...");
 
-  const factory = await ethers.getContractFactory("AutoSplitter");
+  const factory = await hre.ethers.getContractFactory("AutoSplitter");
   const contract = await factory.deploy();
   await contract.waitForDeployment();
 
