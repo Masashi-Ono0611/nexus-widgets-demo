@@ -5,11 +5,11 @@ import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
 import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
 import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
-import { BridgeAndExecuteCardOptimism } from "./_components/BridgeAndExecuteCardOptimism";
-import { BridgeAndStakeCardBase } from "./_components/BridgeAndStakeCardBase";
+import { BridgeAndExecuteCardBaseAave } from "./_components/BridgeAndExecuteCardBaseAave";
 import { BridgeAndBurnCardBase } from "./_components/BridgeAndBurnCardBase";
 import { BridgeAndTransferCardBase } from "./_components/BridgeAndTransferCardBase";
 import { BridgeAndSplitCardBase } from "./_components/BridgeAndSplitCardBase";
+
 
 export default function Home() {
   const { sdk, isSdkInitialized, initializeSdk } = useNexus();
@@ -65,11 +65,10 @@ export default function Home() {
         <TransferCard />
         <BridgeAndExecuteCard />
         <BridgeAndExecuteCardBase />
-        <BridgeAndExecuteCardOptimism />
-        <BridgeAndStakeCardBase />
         <BridgeAndBurnCardBase />
         <BridgeAndTransferCardBase />
         <BridgeAndSplitCardBase />
+        <BridgeAndExecuteCardBaseAave />
       </section>
     </main>
   );

@@ -7,27 +7,27 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndStakeCardBase() {
+export function BridgeAndExecuteCardBaseAave() {
   return (
     <div className="card">
-      <h3>{`Bridge & Stake on Mock AAVE (Base Sepolia)`}</h3>
+      <h3>{`Bridge & Supply on AAVE Base Sepolia`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0xa75177675388849a4B0fb973a3951444429f4a22"}
+        contractAddress={"0x8bAB6d1b75f19e9eD9fCe8b9BD338844fF79aE27"}
         contractAbi={[
           {
-            name: "stake",
+            name: "supply",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
               { name: "asset", type: "address" },
               { name: "amount", type: "uint256" },
-              { name: "staker", type: "address" },
+              { name: "onBehalfOf", type: "address" },
               { name: "referralCode", type: "uint16" },
             ],
             outputs: [],
           },
         ] as const}
-        functionName="stake"
+        functionName="supply"
         buildFunctionParams={(tk, amt, chainId, user) => {
           const decimals = TOKEN_METADATA[tk].decimals;
           const amountWei = parseUnits(amt, decimals);
@@ -43,7 +43,7 @@ export function BridgeAndStakeCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Stake (Base)"}
+            {isLoading ? "Processing…" : "Bridge & Supply (AAVE Base)"}
           </button>
         )}
       </BridgeAndExecuteButton>
