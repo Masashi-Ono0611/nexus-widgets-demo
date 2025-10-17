@@ -12,7 +12,7 @@ export function BridgeAndTransferCardBase() {
     <div className="card">
       <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0x8e2Bf249147FBfB485CeEFd4b1e531c7bC9F7f5b"}
+        contractAddress={"0x112f5d69E79032102A6e313da3cd379522EF4D8A"}
         contractAbi={[
           {
             name: "forward",

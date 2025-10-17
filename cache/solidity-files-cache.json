@@ -415,9 +415,48 @@
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoSplitter.sol": {
-      "lastModificationDate": 1760689142338,
-      "contentHash": "7662b2a7a5365ad32bbec273d8478f85",
+      "lastModificationDate": 1760690451007,
+      "contentHash": "e0a3e4785d8a96df514696b2a08cfb43",
       "sourceName": "contracts/AutoSplitter.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "AutoSplitter"
+      ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoSupplySplitter.sol": {
+      "lastModificationDate": 1760690435450,
+      "contentHash": "7662b2a7a5365ad32bbec273d8478f85",
+      "sourceName": "contracts/AutoSupplySplitter.sol",
       "solcConfig": {
         "version": "0.8.25",
         "settings": {

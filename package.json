@@ -8,9 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test:contracts": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
-    "deploy:splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployPaymentSplitter.ts --network baseSepolia",
-    "deploy:mock-aave": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployMockAAVE.ts --network baseSepolia",
-    "deploy:mock-aave:optimism": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat run scripts/deployMockAAVEOptimism.ts --network optimismSepolia"
+    "deploy:auto-burner": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoBurner hardhat run --network baseSepolia scripts/deployContract.ts",
+    "deploy:auto-splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run --network baseSepolia scripts/deployContract.ts",
+    "deploy:auto-transfer": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoTransfer hardhat run --network baseSepolia scripts/deployContract.ts",
+    "deploy:auto-supply-splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run --network baseSepolia scripts/deployContract.ts",
+    "deploy:mock-aave": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=MockAavePool hardhat run --network baseSepolia scripts/deployContract.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",
