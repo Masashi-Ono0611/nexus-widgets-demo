@@ -6,6 +6,7 @@ import { TransferCard } from "./_components/TransferCard";
 import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
 import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
 import { BridgeAndExecuteCardBaseSplitSupply } from "./_components/BridgeAndExecuteCardBaseSplitSupply";
+import { BridgeAndExecuteCardBaseMorphoVault } from "./_components/BridgeAndExecuteCardBaseMorphoVault";
 import { BridgeAndTransferCardBase } from "./_components/BridgeAndTransferCardBase";
 import { BridgeAndSplitCardBase } from "./_components/BridgeAndSplitCardBase";
 
@@ -65,6 +66,7 @@ export default function Home() {
         <BridgeAndExecuteCard />
         <BridgeAndExecuteCardBase />
         <BridgeAndExecuteCardBaseSplitSupply />
+        <BridgeAndExecuteCardBaseMorphoVault />
         <BridgeAndTransferCardBase />
         <BridgeAndSplitCardBase />
       </section>
