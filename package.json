@@ -35,6 +35,7 @@
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
     "@openzeppelin/contracts": "^5.1.0",
+    "ethers": "^6.13.2",
     "ts-node": "^10.9.2",
     "dotenv": "^16.4.5",
     "typescript": "^5"
