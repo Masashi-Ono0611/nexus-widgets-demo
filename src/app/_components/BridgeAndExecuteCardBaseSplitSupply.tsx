@@ -7,32 +7,36 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndStakeCardBase() {
+const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0xe8cE9fA1670c3Fd34f2e465FaB95990CB6567909";
+
+export function BridgeAndExecuteCardBaseSplitSupply() {
   return (
     <div className="card">
-      <h3>{`Bridge & Stake on Mock AAVE (Base Sepolia)`}</h3>
+      <h3>{`Bridge & Split Supply to Mock AAVE`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0xa75177675388849a4B0fb973a3951444429f4a22"}
+        contractAddress={AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS}
         contractAbi={[
           {
-            name: "stake",
+            name: "splitSupply",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
               { name: "asset", type: "address" },
               { name: "amount", type: "uint256" },
-              { name: "staker", type: "address" },
+              { name: "onBehalfOf", type: "address" },
               { name: "referralCode", type: "uint16" },
             ],
             outputs: [],
           },
         ] as const}
-        functionName="stake"
-        buildFunctionParams={(tk, amt, chainId, user) => {
-          const decimals = TOKEN_METADATA[tk].decimals;
-          const amountWei = parseUnits(amt, decimals);
-          const tokenAddr = TOKEN_CONTRACT_ADDRESSES[tk][chainId];
-          return { functionParams: [tokenAddr, amountWei, user, 0] };
+        functionName="splitSupply"
+        buildFunctionParams={(token, amount, chainId, userAddress) => {
+          const decimals = TOKEN_METADATA[token].decimals;
+          const amountWei = parseUnits(amount, decimals);
+          const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
+          return {
+            functionParams: [tokenAddress, amountWei, userAddress, 0],
+          };
         }}
       >
         {({ onClick, isLoading }) => (
@@ -43,7 +47,7 @@ export function BridgeAndStakeCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Stake (Base)"}
+            {isLoading ? "Processing…" : "Bridge & Split Supply"}
           </button>
         )}
       </BridgeAndExecuteButton>

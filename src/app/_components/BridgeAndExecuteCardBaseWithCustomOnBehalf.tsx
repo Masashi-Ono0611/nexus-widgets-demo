@@ -7,15 +7,27 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndTransferCardBase() {
+export function BridgeAndExecuteCardBaseWithCustomOnBehalf() {
+  const [targetAddress, setTargetAddress] = React.useState("");
+
   return (
     <div className="card">
-      <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
+      <h3>{`Bridge & Supply on Mock AAVE (Base Sepolia) with custom onBehalfOf`}</h3>
+      <label className="field">
+        <span>Custom onBehalfOf address</span>
+        <input
+          type="text"
+          placeholder="0x..."
+          value={targetAddress}
+          onChange={(e) => setTargetAddress(e.target.value)}
+          className="input"
+        />
+      </label>
       <BridgeAndExecuteButton
-        contractAddress={"0x112f5d69E79032102A6e313da3cd379522EF4D8A"}
+        contractAddress={"0x00E3B1c858686A0e64Dfdb9F861CC659B96580b0"}
         contractAbi={[
           {
-            name: "forward",
+            name: "supply",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
@@ -27,14 +39,13 @@ export function BridgeAndTransferCardBase() {
             outputs: [],
           },
         ] as const}
-        functionName="forward"
+        functionName="supply"
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);
           const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
-          return {
-            functionParams: [tokenAddress, amountWei, userAddress, 0],
-          };
+          const finalAddress = targetAddress || userAddress;
+          return { functionParams: [tokenAddress, amountWei, finalAddress, 0] };
         }}
       >
         {({ onClick, isLoading }) => (
@@ -45,7 +56,7 @@ export function BridgeAndTransferCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Transfer"}
+            {isLoading ? "Processing…" : "Bridge & Supply (Base, custom onBehalfOf)"}
           </button>
         )}
       </BridgeAndExecuteButton>
