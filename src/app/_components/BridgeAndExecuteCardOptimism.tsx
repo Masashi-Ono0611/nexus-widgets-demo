@@ -7,12 +7,21 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCardBase() {
+export function BridgeAndExecuteCardOptimism() {
   return (
     <div className="card">
-      <h3>{`Bridge & Supply on Mock AAVE (Base Sepolia)`}</h3>
+      <h3>{`Bridge & Supply on AAVE (Optimism Sepolia)`}</h3>
+      <p className="text-sm">
+        <a
+          href="https://app.aave.com/reserve-overview/?underlyingAsset=0x5fd84259d66cd46123540766be93dfe6d43130d7&marketName=proto_optimism_sepolia_v3"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Optimism Sepolia Market
+        </a>
+      </p>
       <BridgeAndExecuteButton
-        contractAddress={"0x00E3B1c858686A0e64Dfdb9F861CC659B96580b0"}
+        contractAddress={"0xb50201558B00496A145fE76f7424749556E326D8"} // Optimism Sepolia固定
         contractAbi={[
           {
             name: "supply",
@@ -28,6 +37,7 @@ export function BridgeAndExecuteCardBase() {
           },
         ] as const}
         functionName="supply"
+        prefill={{ toChainId: 11155420, token: "USDC" }}
         buildFunctionParams={(tk, amt, chainId, user) => {
           const decimals = TOKEN_METADATA[tk].decimals;
           const amountWei = parseUnits(amt, decimals);
@@ -43,7 +53,7 @@ export function BridgeAndExecuteCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Supply (Base)"}
+            {isLoading ? "Processing…" : "Bridge & Stake"}
           </button>
         )}
       </BridgeAndExecuteButton>
