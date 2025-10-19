@@ -297,45 +297,6 @@
         "Context"
       ]
     },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/MockAAVE.sol": {
-      "lastModificationDate": 1760555488950,
-      "contentHash": "b645e1ffb4c19a735c280e8afaf92c73",
-      "sourceName": "contracts/MockAAVE.sol",
-      "solcConfig": {
-        "version": "0.8.25",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.25"
-      ],
-      "artifacts": [
-        "MockAavePool"
-      ]
-    },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoTransfer.sol": {
       "lastModificationDate": 1760607718117,
       "contentHash": "b496177a1efbe5c18db6a6c4a72c81cb",
@@ -415,8 +376,8 @@
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoSupplySplitter.sol": {
-      "lastModificationDate": 1760861452185,
-      "contentHash": "8a6f952a0d819aad93c747020d26882b",
+      "lastModificationDate": 1760890800875,
+      "contentHash": "e21c17a0eb67523f7533cfd024f852cf",
       "sourceName": "contracts/AutoSupplySplitter.sol",
       "solcConfig": {
         "version": "0.8.25",
@@ -451,7 +412,7 @@
       ],
       "artifacts": [
         "AutoSupplySplitter",
-        "IMockAavePool"
+        "IAavePool"
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/MorphoDepositSplitter.sol": {
