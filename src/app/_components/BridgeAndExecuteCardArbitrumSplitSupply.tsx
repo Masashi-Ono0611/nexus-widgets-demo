@@ -7,9 +7,9 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0x930AEee919a4166B448718c983f18f68b2d1E8F5";
+const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0x095e3b6cB84BDf0C65C0fCC7190d5Cd3388b9E36";
 
-export function BridgeAndExecuteCardBaseSplitSupply() {
+export function BridgeAndExecuteCardArbitrumSplitSupply() {
   const [sharePercent, setSharePercent] = React.useState("50");
 
   const clampShare = (value: string) => {
@@ -22,7 +22,16 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
 
   return (
     <div className="card">
-      <h3>{`Bridge & Split Supply to Mock AAVE`}</h3>
+      <h3>{`Bridge & Split Supply to AAVE (Arbitrum Sepolia)`}</h3>
+      <p className="text-sm">
+        <a
+          href="https://app.aave.com/reserve-overview/?underlyingAsset=0x75faf114eafb1bdbe2f0316df893fd58ce46aa4d&marketName=proto_arbitrum_sepolia_v3"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Arbitrum Sepolia Market
+        </a>
+      </p>
       <label className="field">
         <span>Split share for address 1 (0-100%)</span>
         <input
@@ -55,6 +64,7 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
           },
         ] as const}
         functionName="splitSupply"
+        prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);
