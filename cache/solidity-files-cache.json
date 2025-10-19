@@ -454,8 +454,8 @@
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoSupplySplitter.sol": {
-      "lastModificationDate": 1760690435450,
-      "contentHash": "7662b2a7a5365ad32bbec273d8478f85",
+      "lastModificationDate": 1760861452185,
+      "contentHash": "8a6f952a0d819aad93c747020d26882b",
       "sourceName": "contracts/AutoSupplySplitter.sol",
       "solcConfig": {
         "version": "0.8.25",
@@ -489,7 +489,7 @@
         "^0.8.25"
       ],
       "artifacts": [
-        "AutoSplitter",
+        "AutoSupplySplitter",
         "IMockAavePool"
       ]
     }
