@@ -7,14 +7,14 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-const AUTO_SPLITTER_CONTRACT_ADDRESS = "0xe8cE9fA1670c3Fd34f2e465FaB95990CB6567909";
+const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0xe8cE9fA1670c3Fd34f2e465FaB95990CB6567909";
 
 export function BridgeAndExecuteCardBaseSplitSupply() {
   return (
     <div className="card">
       <h3>{`Bridge & Split Supply to Mock AAVE`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={AUTO_SPLITTER_CONTRACT_ADDRESS}
+        contractAddress={AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS}
         contractAbi={[
           {
             name: "splitSupply",
