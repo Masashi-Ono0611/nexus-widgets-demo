@@ -7,9 +7,9 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0x930AEee919a4166B448718c983f18f68b2d1E8F5";
+const MORPHO_DEPOSIT_SPLITTER_CONTRACT_ADDRESS = "0x104A5ED0a02e95b23D0C29543Ab8Bed5Dd4010eD";
 
-export function BridgeAndExecuteCardBaseSplitSupply() {
+export function BridgeAndExecuteCardMorphoSplitDeposit() {
   const [sharePercent, setSharePercent] = React.useState("50");
 
   const clampShare = (value: string) => {
@@ -22,7 +22,7 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
 
   return (
     <div className="card">
-      <h3>{`Bridge & Split Supply to Mock AAVE`}</h3>
+      <h3>{`Bridge & Split Deposit to Morpho Vault`}</h3>
       <label className="field">
         <span>Split share for address 1 (0-100%)</span>
         <input
@@ -38,23 +38,22 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
         />
       </label>
       <BridgeAndExecuteButton
-        contractAddress={AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS}
+        contractAddress={MORPHO_DEPOSIT_SPLITTER_CONTRACT_ADDRESS}
         contractAbi={[
           {
-            name: "splitSupply",
+            name: "splitDeposit",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
               { name: "asset", type: "address" },
               { name: "amount", type: "uint256" },
               { name: "onBehalfOf", type: "address" },
-              { name: "referralCode", type: "uint16" },
               { name: "shareBasisPoints", type: "uint16" },
             ],
-            outputs: [],
+            outputs: [{ name: "totalShares", type: "uint256" }],
           },
         ] as const}
-        functionName="splitSupply"
+        functionName="splitDeposit"
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);
@@ -65,7 +64,7 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
             : Math.max(0, Math.min(100, shareValue));
           const shareBasisPoints = Math.round(boundedShare * 100);
           return {
-            functionParams: [tokenAddress, amountWei, userAddress, 0, shareBasisPoints],
+            functionParams: [tokenAddress, amountWei, userAddress, shareBasisPoints],
           };
         }}
       >
@@ -77,7 +76,7 @@ export function BridgeAndExecuteCardBaseSplitSupply() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Split Supply"}
+            {isLoading ? "Processing…" : "Bridge & Split Deposit"}
           </button>
         )}
       </BridgeAndExecuteButton>

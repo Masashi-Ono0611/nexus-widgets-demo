@@ -15,7 +15,7 @@ import {
   DEFAULT_ASSET,
   RPC_URL,
   erc20Abi,
-  poolAbi,
+  vaultAbi,
   publicClient,
 } from "./config";
 
@@ -25,14 +25,15 @@ function formatError(error: unknown): string {
   return "Unexpected error";
 }
 
-export function useMockAave() {
+export function useMorphoVault() {
   const [account, setAccount] = React.useState<Address | null>(null);
   const [walletClient, setWalletClient] = React.useState<WalletClient | null>(null);
   const [assetAddress, setAssetAddress] = React.useState<string>(DEFAULT_ASSET);
-  const [supplyAmount, setSupplyAmount] = React.useState<string>("0.0");
+  const [depositAmount, setDepositAmount] = React.useState<string>("0.0");
   const [withdrawAmount, setWithdrawAmount] = React.useState<string>("0.0");
-  const [supplyBalance, setSupplyBalance] = React.useState<string>("-");
-  const [totalSupplied, setTotalSupplied] = React.useState<string>("-");
+  const [vaultShares, setVaultShares] = React.useState<string>("-");
+  const [vaultSharesValue, setVaultSharesValue] = React.useState<string>("-");
+  const [totalAssets, setTotalAssets] = React.useState<string>("-");
   const [tokenBalance, setTokenBalance] = React.useState<string>("-");
   const [allowance, setAllowance] = React.useState<string>("-");
   const [status, setStatus] = React.useState<string>("");
@@ -86,36 +87,49 @@ export function useMockAave() {
     [account, assetAddress, fetchDecimals],
   );
 
-  const syncSupplyInfo = React.useCallback(
+  const syncVaultInfo = React.useCallback(
     async (overrideAccount?: Address) => {
       const activeAccount = overrideAccount ?? account;
       if (!activeAccount) {
-        setSupplyBalance("-");
-        setTotalSupplied("-");
+        setVaultShares("-");
+        setVaultSharesValue("-");
+        setTotalAssets("-");
         return;
       }
       try {
-        setStatus("Fetching supply info...");
+        setStatus("Fetching vault info...");
         setError("");
         const token = assetAddress as Address;
         const decimals = await fetchDecimals(token);
-        const [userSupply, total] = await Promise.all([
+        const [shares, total] = await Promise.all([
           publicClient.readContract({
             address: CONTRACT_ADDRESS,
-            abi: poolAbi,
-            functionName: "getSupplyBalance",
-            args: [activeAccount, token],
+            abi: vaultAbi,
+            functionName: "balanceOf",
+            args: [activeAccount],
           }),
           publicClient.readContract({
             address: CONTRACT_ADDRESS,
-            abi: poolAbi,
-            functionName: "getTotalSupplied",
-            args: [token],
+            abi: vaultAbi,
+            functionName: "totalAssets",
+            args: [],
           }),
         ]);
-        setSupplyBalance(formatUnits(userSupply, decimals));
-        setTotalSupplied(formatUnits(total, decimals));
-        setStatus("Supply info updated");
+        
+        let assetsValue = BigInt(0);
+        if (shares > BigInt(0)) {
+          assetsValue = await publicClient.readContract({
+            address: CONTRACT_ADDRESS,
+            abi: vaultAbi,
+            functionName: "convertToAssets",
+            args: [shares],
+          });
+        }
+        
+        setVaultShares(formatUnits(shares, decimals));
+        setVaultSharesValue(formatUnits(assetsValue, decimals));
+        setTotalAssets(formatUnits(total, decimals));
+        setStatus("Vault info updated");
       } catch (err) {
         setError(formatError(err));
         setStatus("");
@@ -191,11 +205,11 @@ export function useMockAave() {
   const handleConnect = React.useCallback(async () => {
     try {
       const { account: connectedAccount } = await ensureWallet();
-      await Promise.all([syncTokenInfo(connectedAccount), syncSupplyInfo(connectedAccount)]);
+      await Promise.all([syncTokenInfo(connectedAccount), syncVaultInfo(connectedAccount)]);
     } catch (err) {
       setError(formatError(err));
     }
-  }, [ensureWallet, syncTokenInfo, syncSupplyInfo]);
+  }, [ensureWallet, syncTokenInfo, syncVaultInfo]);
 
   const handleApprove = React.useCallback(async () => {
     try {
@@ -205,7 +219,7 @@ export function useMockAave() {
       }
       const token = assetAddress as Address;
       const decimals = await fetchDecimals(token);
-      const parsedAmount = parseUnits(supplyAmount, decimals);
+      const parsedAmount = parseUnits(depositAmount, decimals);
       const hash = await client.writeContract({
         account: userAccount,
         chain: baseSepolia,
@@ -223,9 +237,9 @@ export function useMockAave() {
       setError(formatError(err));
       setStatus("");
     }
-  }, [assetAddress, fetchDecimals, getWallet, supplyAmount, syncTokenInfo]);
+  }, [assetAddress, fetchDecimals, getWallet, depositAmount, syncTokenInfo]);
 
-  const handleSupply = React.useCallback(async () => {
+  const handleDeposit = React.useCallback(async () => {
     try {
       const { client, account: userAccount } = await getWallet();
       if (!userAccount) {
@@ -233,25 +247,25 @@ export function useMockAave() {
       }
       const token = assetAddress as Address;
       const decimals = await fetchDecimals(token);
-      const parsedAmount = parseUnits(supplyAmount, decimals);
+      const parsedAmount = parseUnits(depositAmount, decimals);
       const txHash = await client.writeContract({
         account: userAccount,
         chain: baseSepolia,
         address: CONTRACT_ADDRESS,
-        abi: poolAbi,
-        functionName: "supply",
-        args: [token, parsedAmount, userAccount, 0],
+        abi: vaultAbi,
+        functionName: "deposit",
+        args: [parsedAmount, userAccount],
       });
-      setStatus(`Supply tx sent: ${txHash}`);
+      setStatus(`Deposit tx sent: ${txHash}`);
       setError("");
       await publicClient.waitForTransactionReceipt({ hash: txHash });
-      setStatus("Supply confirmed");
-      await Promise.all([syncTokenInfo(userAccount), syncSupplyInfo(userAccount)]);
+      setStatus("Deposit confirmed");
+      await Promise.all([syncTokenInfo(userAccount), syncVaultInfo(userAccount)]);
     } catch (err) {
       setError(formatError(err));
       setStatus("");
     }
-  }, [assetAddress, fetchDecimals, getWallet, supplyAmount, syncTokenInfo, syncSupplyInfo]);
+  }, [assetAddress, fetchDecimals, getWallet, depositAmount, syncTokenInfo, syncVaultInfo]);
 
   const handleWithdraw = React.useCallback(async () => {
     try {
@@ -266,55 +280,56 @@ export function useMockAave() {
         account: userAccount,
         chain: baseSepolia,
         address: CONTRACT_ADDRESS,
-        abi: poolAbi,
+        abi: vaultAbi,
         functionName: "withdraw",
-        args: [token, parsedAmount, userAccount],
+        args: [parsedAmount, userAccount, userAccount],
       });
       setStatus(`Withdraw tx sent: ${txHash}`);
       setError("");
       await publicClient.waitForTransactionReceipt({ hash: txHash });
       setStatus("Withdraw confirmed");
-      await Promise.all([syncTokenInfo(userAccount), syncSupplyInfo(userAccount)]);
+      await Promise.all([syncTokenInfo(userAccount), syncVaultInfo(userAccount)]);
     } catch (err) {
       setError(formatError(err));
       setStatus("");
     }
-  }, [assetAddress, fetchDecimals, getWallet, syncSupplyInfo, syncTokenInfo, withdrawAmount]);
+  }, [assetAddress, fetchDecimals, getWallet, syncVaultInfo, syncTokenInfo, withdrawAmount]);
 
   const refreshTokenInfo = React.useCallback(async () => {
     await syncTokenInfo(account ?? undefined);
   }, [account, syncTokenInfo]);
 
-  const refreshSupplyInfo = React.useCallback(async () => {
-    await syncSupplyInfo(account ?? undefined);
-  }, [account, syncSupplyInfo]);
+  const refreshVaultInfo = React.useCallback(async () => {
+    await syncVaultInfo(account ?? undefined);
+  }, [account, syncVaultInfo]);
 
   React.useEffect(() => {
     if (!account) return;
     void syncTokenInfo(account);
-    void syncSupplyInfo(account);
-  }, [account, syncTokenInfo, syncSupplyInfo]);
+    void syncVaultInfo(account);
+  }, [account, syncTokenInfo, syncVaultInfo]);
 
   return {
     account,
     assetAddress,
-    supplyAmount,
+    depositAmount,
     withdrawAmount,
-    supplyBalance,
-    totalSupplied,
+    vaultShares,
+    vaultSharesValue,
+    totalAssets,
     tokenBalance,
     allowance,
     status,
     error,
     setAssetAddress,
-    setSupplyAmount,
+    setDepositAmount,
     setWithdrawAmount,
     handleConnect,
     handleApprove,
-    handleSupply,
+    handleDeposit,
     handleWithdraw,
     refreshTokenInfo,
-    refreshSupplyInfo,
+    refreshVaultInfo,
   };
 }
 

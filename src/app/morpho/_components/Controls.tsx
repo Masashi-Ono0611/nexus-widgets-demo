@@ -5,33 +5,33 @@ import React from "react";
 interface ControlsProps {
   account: string | null;
   assetAddress: string;
-  supplyAmount: string;
+  depositAmount: string;
   withdrawAmount: string;
   onChangeAsset(asset: string): void;
-  onChangeSupply(amount: string): void;
+  onChangeDeposit(amount: string): void;
   onChangeWithdraw(amount: string): void;
   onConnect(): void | Promise<void>;
   onApprove(): void | Promise<void>;
-  onSupply(): void | Promise<void>;
+  onDeposit(): void | Promise<void>;
   onWithdraw(): void | Promise<void>;
   onRefreshToken(): void | Promise<void>;
-  onRefreshSupply(): void | Promise<void>;
+  onRefreshVault(): void | Promise<void>;
 }
 
-export function MockAaveControls({
+export function MorphoVaultControls({
   account,
   assetAddress,
-  supplyAmount,
+  depositAmount,
   withdrawAmount,
   onChangeAsset,
-  onChangeSupply,
+  onChangeDeposit,
   onChangeWithdraw,
   onConnect,
   onApprove,
-  onSupply,
+  onDeposit,
   onWithdraw,
   onRefreshToken,
-  onRefreshSupply,
+  onRefreshVault,
 }: ControlsProps) {
   const disabled = !account;
 
@@ -57,19 +57,19 @@ export function MockAaveControls({
         </div>
 
         <div className="form-group">
-          <label className="form-label">Supply amount</label>
+          <label className="form-label">Deposit amount</label>
           <input
             className="form-input"
-            value={supplyAmount}
-            onChange={(event) => onChangeSupply(event.target.value)}
+            value={depositAmount}
+            onChange={(event) => onChangeDeposit(event.target.value)}
             placeholder="Token amount (e.g. 1.5)"
           />
           <div className="button-group">
             <button className="btn btn-accent" onClick={onApprove} disabled={disabled}>
               Approve
             </button>
-            <button className="btn btn-primary" onClick={onSupply} disabled={disabled}>
-              Supply
+            <button className="btn btn-primary" onClick={onDeposit} disabled={disabled}>
+              Deposit
             </button>
           </div>
         </div>
@@ -93,8 +93,8 @@ export function MockAaveControls({
             <button className="btn btn-primary" onClick={onRefreshToken} disabled={disabled}>
               Token Balance &amp; Allowance
             </button>
-            <button className="btn btn-primary" onClick={onRefreshSupply} disabled={disabled}>
-              Supply Balances
+            <button className="btn btn-primary" onClick={onRefreshVault} disabled={disabled}>
+              Vault Balances
             </button>
           </div>
         </div>

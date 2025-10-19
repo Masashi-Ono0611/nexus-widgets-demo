@@ -3,9 +3,12 @@ import React from "react";
 import { useNexus } from "@avail-project/nexus-widgets";
 import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
-import { BridgeAndExecuteCard } from "./_components/BridgeAndExecuteCard";
-import { BridgeAndExecuteCardBase } from "./_components/BridgeAndExecuteCardBase";
-import { BridgeAndExecuteCardBaseSplitSupply } from "./_components/BridgeAndExecuteCardBaseSplitSupply";
+import { BridgeAndExecuteCardOptimism } from "./_components/BridgeAndExecuteCardOptimism";
+import { BridgeAndExecuteCardArbitrum } from "./_components/BridgeAndExecuteCardArbitrum";
+import { BridgeAndExecuteCardArbitrumSplitSupply } from "./_components/BridgeAndExecuteCardArbitrumSplitSupply";
+import { BridgeAndExecuteCardOptimismSplitSupply } from "./_components/BridgeAndExecuteCardOptimismSplitSupply";
+import { BridgeAndExecuteCardBaseMorphoVault } from "./_components/BridgeAndExecuteCardBaseMorphoVault";
+import { BridgeAndExecuteCardMorphoSplitDeposit } from "./_components/BridgeAndExecuteCardMorphoSplitDeposit";
 import { BridgeAndTransferCardBase } from "./_components/BridgeAndTransferCardBase";
 import { BridgeAndSplitCardBase } from "./_components/BridgeAndSplitCardBase";
 
@@ -62,9 +65,12 @@ export default function Home() {
       <section className="grid">
         <BridgeCard />
         <TransferCard />
-        <BridgeAndExecuteCard />
-        <BridgeAndExecuteCardBase />
-        <BridgeAndExecuteCardBaseSplitSupply />
+        <BridgeAndExecuteCardOptimism />
+        <BridgeAndExecuteCardArbitrum />
+        <BridgeAndExecuteCardArbitrumSplitSupply />
+        <BridgeAndExecuteCardOptimismSplitSupply />
+        <BridgeAndExecuteCardBaseMorphoVault />
+        <BridgeAndExecuteCardMorphoSplitDeposit />
         <BridgeAndTransferCardBase />
         <BridgeAndSplitCardBase />
       </section>
