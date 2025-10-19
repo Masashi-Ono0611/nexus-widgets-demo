@@ -30,23 +30,27 @@ contract AutoSupplySplitter {
         address asset,
         uint256 amount,
         address onBehalfOf,
-        uint16 referralCode
+        uint16 referralCode,
+        uint16 shareBasisPoints
     ) external {
         require(asset != address(0), "Invalid asset");
         require(amount > 0, "Amount must be greater than 0");
         require(onBehalfOf != address(0), "Invalid onBehalfOf");
+        require(shareBasisPoints <= 10_000, "Invalid share");
 
         IERC20 token = IERC20(asset);
         token.safeTransferFrom(msg.sender, address(this), amount);
 
-        uint256 half = amount / 2;
-        uint256 remainder = amount - half;
+        uint256 amountForForward1 = (amount * shareBasisPoints) / 10_000;
+        uint256 amountForForward2 = amount - amountForForward1;
 
         token.safeIncreaseAllowance(MOCK_AAVE_POOL, amount);
 
-        IMockAavePool(MOCK_AAVE_POOL).supply(asset, half, FORWARD_ADDRESS_1, referralCode);
-        if (remainder > 0) {
-            IMockAavePool(MOCK_AAVE_POOL).supply(asset, remainder, FORWARD_ADDRESS_2, referralCode);
+        if (amountForForward1 > 0) {
+            IMockAavePool(MOCK_AAVE_POOL).supply(asset, amountForForward1, FORWARD_ADDRESS_1, referralCode);
+        }
+        if (amountForForward2 > 0) {
+            IMockAavePool(MOCK_AAVE_POOL).supply(asset, amountForForward2, FORWARD_ADDRESS_2, referralCode);
         }
 
         token.forceApprove(MOCK_AAVE_POOL, 0);
