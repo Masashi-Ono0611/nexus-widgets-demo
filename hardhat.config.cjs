@@ -38,10 +38,32 @@ module.exports = {
     },
   },
   etherscan: {
-    apiKey: {
-      baseSepolia: BASESCAN_API_KEY,
-      optimismSepolia: OPTIMISM_ETHERSCAN_API_KEY,
-      arbitrumSepolia: ARBISCAN_API_KEY,
-    },
+    apiKey: process.env.ETHERSCAN_API_KEY ?? "",
+    customChains: [
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: {
+          apiURL: "https://api-sepolia.basescan.org/api",
+          browserURL: "https://sepolia.basescan.org",
+        },
+      },
+      {
+        network: "optimismSepolia",
+        chainId: 11155420,
+        urls: {
+          apiURL: "https://api-sepolia-optimistic.etherscan.io/api",
+          browserURL: "https://sepolia-optimism.etherscan.io",
+        },
+      },
+      {
+        network: "arbitrumSepolia",
+        chainId: 421614,
+        urls: {
+          apiURL: "https://api-sepolia.arbiscan.io/api",
+          browserURL: "https://sepolia.arbiscan.io",
+        },
+      },
+    ],
   },
 };

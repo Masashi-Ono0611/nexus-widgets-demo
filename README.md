@@ -5,6 +5,12 @@
 - **Leverage Existing Widget** Extend `src/app/_components/BridgeAndExecuteCard.tsx` to call a deployed `PaymentSplitter` contract via the `BridgeAndExecuteButton`.
 - **Avoid Bridge Skips** Ensure the splitter contract keeps a zero balance after each execution so that the SDK performs the bridge step when Wallet A lacks sufficient funds on the destination chain.
 
+## Versions
+- Node.js `v20.18.0`
+- pnpm `v10.15.0`
+- Hardhat `^2.22.10` (`package.json`)
+- tsx `^4.20.6`
+
 ## Technical Requirements
 - **Contract** Deploy a `PaymentSplitter` contract that receives bridged USDC and forwards the full amount to the predefined wallets in a single call (e.g., `distribute()`).
 - **Widget Wiring**
