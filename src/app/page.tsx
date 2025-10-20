@@ -3,14 +3,14 @@ import React from "react";
 import { useNexus } from "@avail-project/nexus-widgets";
 import { BridgeCard } from "./_components/BridgeCard";
 import { TransferCard } from "./_components/TransferCard";
-import { BridgeAndExecuteCardOptimism } from "./_components/BridgeAndExecuteCardOptimism";
-import { BridgeAndExecuteCardArbitrum } from "./_components/BridgeAndExecuteCardArbitrum";
-import { BridgeAndExecuteCardArbitrumSplitSupply } from "./_components/BridgeAndExecuteCardArbitrumSplitSupply";
-import { BridgeAndExecuteCardOptimismSplitSupply } from "./_components/BridgeAndExecuteCardOptimismSplitSupply";
-import { BridgeAndExecuteCardBaseMorphoVault } from "./_components/BridgeAndExecuteCardBaseMorphoVault";
-import { BridgeAndExecuteCardMorphoSplitDeposit } from "./_components/BridgeAndExecuteCardMorphoSplitDeposit";
-import { BridgeAndTransferCardBase } from "./_components/BridgeAndTransferCardBase";
-import { BridgeAndSplitCardBase } from "./_components/BridgeAndSplitCardBase";
+import { SupplyOptimismCard } from "./_components/SupplyOptimismCard";
+import { SupplyArbitrumCard } from "./_components/SupplyArbitrumCard";
+import { SplitSupplyArbitrumCard } from "./_components/SplitSupplyArbitrumCard";
+import { SplitSupplyOptimismCard } from "./_components/SplitSupplyOptimismCard";
+import { MorphoSupplyBaseCard } from "./_components/MorphoSupplyBaseCard";
+import { MorphoSplitDepositBaseCard } from "./_components/MorphoSplitDepositBaseCard";
+import { TransferBaseCard } from "./_components/TransferBaseCard";
+import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
 
 
 export default function Home() {
@@ -65,14 +65,14 @@ export default function Home() {
       <section className="grid">
         <BridgeCard />
         <TransferCard />
-        <BridgeAndExecuteCardOptimism />
-        <BridgeAndExecuteCardArbitrum />
-        <BridgeAndExecuteCardArbitrumSplitSupply />
-        <BridgeAndExecuteCardOptimismSplitSupply />
-        <BridgeAndExecuteCardBaseMorphoVault />
-        <BridgeAndExecuteCardMorphoSplitDeposit />
-        <BridgeAndTransferCardBase />
-        <BridgeAndSplitCardBase />
+        <TransferBaseCard />
+        <TransferSplitBaseCard />
+        <SupplyOptimismCard />
+        <SupplyArbitrumCard />
+        <SplitSupplyArbitrumCard />
+        <SplitSupplyOptimismCard />
+        <MorphoSupplyBaseCard />
+        <MorphoSplitDepositBaseCard />
       </section>
     </main>
   );

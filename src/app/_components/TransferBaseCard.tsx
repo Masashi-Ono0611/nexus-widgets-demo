@@ -7,24 +7,15 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCardArbitrum() {
+export function TransferBaseCard() {
   return (
     <div className="card">
-      <h3>{`Bridge & Supply on AAVE (Arbitrum Sepolia)`}</h3>
-      <p className="text-sm">
-        <a
-          href="https://app.aave.com/reserve-overview/?underlyingAsset=0x75faf114eafb1bdbe2f0316df893fd58ce46aa4d&marketName=proto_arbitrum_sepolia_v3"
-          target="_blank"
-          rel="noreferrer"
-        >
-          Arbitrum Sepolia Market
-        </a>
-      </p>
+      <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff"} // Arbitrum Sepolia固定
+        contractAddress={"0x112f5d69E79032102A6e313da3cd379522EF4D8A"}
         contractAbi={[
           {
-            name: "supply",
+            name: "forward",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
@@ -36,13 +27,14 @@ export function BridgeAndExecuteCardArbitrum() {
             outputs: [],
           },
         ] as const}
-        functionName="supply"
-        prefill={{ toChainId: 421614, token: "USDC" }}
-        buildFunctionParams={(tk, amt, chainId, user) => {
-          const decimals = TOKEN_METADATA[tk].decimals;
-          const amountWei = parseUnits(amt, decimals);
-          const tokenAddr = TOKEN_CONTRACT_ADDRESSES[tk][chainId];
-          return { functionParams: [tokenAddr, amountWei, user, 0] };
+        functionName="forward"
+        buildFunctionParams={(token, amount, chainId, userAddress) => {
+          const decimals = TOKEN_METADATA[token].decimals;
+          const amountWei = parseUnits(amount, decimals);
+          const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
+          return {
+            functionParams: [tokenAddress, amountWei, userAddress, 0],
+          };
         }}
       >
         {({ onClick, isLoading }) => (
@@ -53,7 +45,7 @@ export function BridgeAndExecuteCardArbitrum() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Stake"}
+            {isLoading ? "Processing…" : "Bridge & Transfer"}
           </button>
         )}
       </BridgeAndExecuteButton>

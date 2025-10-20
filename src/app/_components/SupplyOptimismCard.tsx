@@ -7,15 +7,24 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndTransferCardBase() {
+export function SupplyOptimismCard() {
   return (
     <div className="card">
-      <h3>{`Bridge & Transfer on Base Sepolia`}</h3>
+      <h3>{`Bridge & Supply on AAVE (Optimism Sepolia)`}</h3>
+      <p className="text-sm">
+        <a
+          href="https://app.aave.com/reserve-overview/?underlyingAsset=0x5fd84259d66cd46123540766be93dfe6d43130d7&marketName=proto_optimism_sepolia_v3"
+          target="_blank"
+          rel="noreferrer"
+        >
+          Optimism Sepolia Market
+        </a>
+      </p>
       <BridgeAndExecuteButton
-        contractAddress={"0x112f5d69E79032102A6e313da3cd379522EF4D8A"}
+        contractAddress={"0xb50201558B00496A145fE76f7424749556E326D8"} // Optimism Sepolia固定
         contractAbi={[
           {
-            name: "forward",
+            name: "supply",
             type: "function",
             stateMutability: "nonpayable",
             inputs: [
@@ -27,14 +36,13 @@ export function BridgeAndTransferCardBase() {
             outputs: [],
           },
         ] as const}
-        functionName="forward"
-        buildFunctionParams={(token, amount, chainId, userAddress) => {
-          const decimals = TOKEN_METADATA[token].decimals;
-          const amountWei = parseUnits(amount, decimals);
-          const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
-          return {
-            functionParams: [tokenAddress, amountWei, userAddress, 0],
-          };
+        functionName="supply"
+        prefill={{ toChainId: 11155420, token: "USDC" }}
+        buildFunctionParams={(tk, amt, chainId, user) => {
+          const decimals = TOKEN_METADATA[tk].decimals;
+          const amountWei = parseUnits(amt, decimals);
+          const tokenAddr = TOKEN_CONTRACT_ADDRESSES[tk][chainId];
+          return { functionParams: [tokenAddr, amountWei, user, 0] };
         }}
       >
         {({ onClick, isLoading }) => (
@@ -45,7 +53,7 @@ export function BridgeAndTransferCardBase() {
             disabled={isLoading}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Transfer"}
+            {isLoading ? "Processing…" : "Bridge & Stake"}
           </button>
         )}
       </BridgeAndExecuteButton>

@@ -7,7 +7,7 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndSplitCardBase() {
+export function TransferSplitBaseCard() {
   return (
     <div className="card">
       <h3>{`Bridge & Split on Base Sepolia`}</h3>

@@ -7,7 +7,7 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCardBaseMorphoVault() {
+export function MorphoSupplyBaseCard() {
   return (
     <div className="card">
       <h3>{`Bridge & Deposit to Morpho Vault v2 (Base Sepolia)`}</h3>

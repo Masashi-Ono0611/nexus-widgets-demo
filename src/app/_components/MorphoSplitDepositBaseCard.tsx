@@ -9,7 +9,7 @@ import { parseUnits } from "viem";
 
 const MORPHO_DEPOSIT_SPLITTER_CONTRACT_ADDRESS = "0x104A5ED0a02e95b23D0C29543Ab8Bed5Dd4010eD";
 
-export function BridgeAndExecuteCardMorphoSplitDeposit() {
+export function MorphoSplitDepositBaseCard() {
   const [sharePercent, setSharePercent] = React.useState("50");
 
   const clampShare = (value: string) => {
@@ -22,7 +22,7 @@ export function BridgeAndExecuteCardMorphoSplitDeposit() {
 
   return (
     <div className="card">
-      <h3>{`Bridge & Split Deposit to Morpho Vault`}</h3>
+      <h3>{`Bridge & Split Deposit to Morpho Vault (Base Sepolia)`}</h3>
       <label className="field">
         <span>Split share for address 1 (0-100%)</span>
         <input

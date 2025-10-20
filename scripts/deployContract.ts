@@ -70,4 +70,4 @@ if (executedDirectly) {
   runFromCli();
 }
 
-// CONTRACT_NAME=MockAavePool pnpm hardhat run --network baseSepolia scripts/deployContract.ts
+// CONTRACT_NAME=AaveSupplySplitter pnpm hardhat run --network baseSepolia scripts/deployContract.ts

@@ -13,7 +13,7 @@ interface IAavePool {
     ) external;
 }
 
-contract AutoSupplySplitter {
+contract AaveSupplySplitter {
     using SafeERC20 for IERC20;
 
     address public constant FORWARD_ADDRESS_1 = 0xC94d68094FA65E991dFfa0A941306E8460876169;
