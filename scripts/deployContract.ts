@@ -42,7 +42,7 @@ export async function deployContract() {
   const address = await contract.getAddress();
 
   console.log(`${contractName} deployed to: ${address}`);
-  console.log("\nTo verify on Basescan:");
+  console.log("\nTo verify on blockscan:");
   console.log(`npx hardhat verify --network ${network} ${address}`);
   console.log(`contractAddress="${address}"`);
 }
@@ -70,4 +70,5 @@ if (executedDirectly) {
   runFromCli();
 }
 
-// CONTRACT_NAME=MockAavePool pnpm hardhat run --network baseSepolia scripts/deployContract.ts
+// Sample commands
+// HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter

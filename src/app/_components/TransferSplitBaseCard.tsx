@@ -7,7 +7,7 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndSplitCardBase() {
+export function TransferSplitBaseCard() {
   return (
     <div className="card">
       <h3>{`Bridge & Split on Base Sepolia`}</h3>
@@ -28,6 +28,7 @@ export function BridgeAndSplitCardBase() {
           },
         ] as const}
         functionName="forward"
+        prefill={{ toChainId: 84532, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);

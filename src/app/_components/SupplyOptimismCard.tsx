@@ -7,7 +7,7 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCardOptimism() {
+export function SupplyOptimismCard() {
   return (
     <div className="card">
       <h3>{`Bridge & Supply on AAVE (Optimism Sepolia)`}</h3>

@@ -7,9 +7,9 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-const AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS = "0x475B8Fd1Ad7de46FB354405a9330364d7a17558f";
+const AAVE_SUPPLY_SPLITTER_OPTIMISM_ADDRESS = "0x475B8Fd1Ad7de46FB354405a9330364d7a17558f";
 
-export function BridgeAndExecuteCardOptimismSplitSupply() {
+export function SplitSupplyOptimismCard() {
   const [sharePercent, setSharePercent] = React.useState("50");
 
   const clampShare = (value: string) => {
@@ -47,7 +47,7 @@ export function BridgeAndExecuteCardOptimismSplitSupply() {
         />
       </label>
       <BridgeAndExecuteButton
-        contractAddress={AUTO_SUPPLY_SPLITTER_CONTRACT_ADDRESS}
+        contractAddress={AAVE_SUPPLY_SPLITTER_OPTIMISM_ADDRESS}
         contractAbi={[
           {
             name: "splitSupply",

@@ -7,7 +7,7 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-export function BridgeAndExecuteCardBaseMorphoVault() {
+export function MorphoSupplyBaseCard() {
   return (
     <div className="card">
       <h3>{`Bridge & Deposit to Morpho Vault v2 (Base Sepolia)`}</h3>
@@ -26,6 +26,7 @@ export function BridgeAndExecuteCardBaseMorphoVault() {
           },
         ] as const}
         functionName="deposit"
+        prefill={{ toChainId: 84532, token: "USDC" }}
         buildFunctionParams={(tk, amt, chainId, user) => {
           const decimals = TOKEN_METADATA[tk].decimals;
           const amountWei = parseUnits(amt, decimals);
