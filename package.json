@@ -12,7 +12,9 @@
     "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:aave-supply-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AaveSupplySplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
-    "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=MorphoDepositSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts"
+    "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=MorphoDepositSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "test:uniswap-v4-swap": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testUniswapV4Swap.ts",
+    "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",
