@@ -8,8 +8,8 @@
 ## Versions
 - Node.js `v20.18.0`
 - pnpm `v10.15.0`
-- Hardhat `^2.22.10` (`package.json`)
-- tsx `^4.20.6`
+- Hardhat `2.26.3`
+- tsx `4.20.6`
 
 ## Technical Requirements
 - **Contract** Deploy a `PaymentSplitter` contract that receives bridged USDC and forwards the full amount to the predefined wallets in a single call (e.g., `distribute()`).
