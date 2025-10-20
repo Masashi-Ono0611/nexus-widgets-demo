@@ -11,6 +11,7 @@ import { MorphoSupplyBaseCard } from "./_components/MorphoSupplyBaseCard";
 import { MorphoSplitDepositBaseCard } from "./_components/MorphoSplitDepositBaseCard";
 import { TransferBaseCard } from "./_components/TransferBaseCard";
 import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
+import { UniswapV4SwapCard } from "./_components/UniswapV4SwapCard";
 
 
 export default function Home() {
@@ -73,6 +74,7 @@ export default function Home() {
         <SplitSupplyOptimismCard />
         <MorphoSupplyBaseCard />
         <MorphoSplitDepositBaseCard />
+        <UniswapV4SwapCard />
       </section>
     </main>
   );
