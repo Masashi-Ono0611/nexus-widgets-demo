@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test:contracts": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
+    "test:contracts": "hardhat test",
     "deploy:auto-burner": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoBurner tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
