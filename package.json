@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test:contracts": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
-    "deploy:auto-burner": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoBurner hardhat run scripts/deployContract.ts",
-    "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run scripts/deployContract.ts",
-    "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoTransfer hardhat run scripts/deployContract.ts",
-    "deploy:aave-supply-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AaveSupplySplitter hardhat run scripts/deployContract.ts",
-    "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=MorphoDepositSplitter hardhat run scripts/deployContract.ts"
+    "deploy:auto-burner": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoBurner tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "deploy:aave-supply-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AaveSupplySplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=MorphoDepositSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",
@@ -26,18 +26,20 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@openzeppelin/contracts": "^5.1.0",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "chai": "^4.5.0",
+    "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "14.2.14",
-    "hardhat": "^2.22.10",
-    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
-    "@openzeppelin/contracts": "^5.1.0",
     "ethers": "^6.13.2",
+    "hardhat": "^2.22.10",
     "ts-node": "^10.9.2",
-    "dotenv": "^16.4.5",
+    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }
