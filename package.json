@@ -21,7 +21,7 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-qr-code": "^2.0.18",
-    "viem": "2.29.4",
+    "viem": "2.38.1",
     "wagmi": "2.15.4"
   },
   "devDependencies": {
@@ -36,7 +36,7 @@
     "dotenv": "^16.4.5",
     "eslint": "^9",
     "eslint-config-next": "14.2.14",
-    "ethers": "^6.13.2",
+    "ethers": "^6.15.0",
     "hardhat": "^2.22.10",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",
