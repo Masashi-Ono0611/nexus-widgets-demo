@@ -8,11 +8,11 @@
     "start": "next start",
     "lint": "eslint",
     "test:contracts": "TS_NODE_PROJECT=tsconfig.hardhat.json hardhat test",
-    "deploy:auto-burner": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoBurner hardhat run --network baseSepolia scripts/deployContract.ts",
-    "deploy:auto-splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run --network baseSepolia scripts/deployContract.ts",
-    "deploy:auto-transfer": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoTransfer hardhat run --network baseSepolia scripts/deployContract.ts",
-    "deploy:auto-supply-splitter": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run --network baseSepolia scripts/deployContract.ts",
-    "deploy:mock-aave": "TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=MockAavePool hardhat run --network baseSepolia scripts/deployContract.ts"
+    "deploy:auto-burner": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoBurner hardhat run scripts/deployContract.ts",
+    "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoSplitter hardhat run scripts/deployContract.ts",
+    "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AutoTransfer hardhat run scripts/deployContract.ts",
+    "deploy:aave-supply-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=AaveSupplySplitter hardhat run scripts/deployContract.ts",
+    "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} TS_NODE_PROJECT=tsconfig.hardhat.json CONTRACT_NAME=MorphoDepositSplitter hardhat run scripts/deployContract.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",
