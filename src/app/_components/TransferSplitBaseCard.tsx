@@ -28,6 +28,7 @@ export function TransferSplitBaseCard() {
           },
         ] as const}
         functionName="forward"
+        prefill={{ toChainId: 84532, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);

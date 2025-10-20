@@ -54,6 +54,7 @@ export function MorphoSplitDepositBaseCard() {
           },
         ] as const}
         functionName="splitDeposit"
+        prefill={{ toChainId: 84532, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);

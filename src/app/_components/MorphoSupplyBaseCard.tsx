@@ -26,6 +26,7 @@ export function MorphoSupplyBaseCard() {
           },
         ] as const}
         functionName="deposit"
+        prefill={{ toChainId: 84532, token: "USDC" }}
         buildFunctionParams={(tk, amt, chainId, user) => {
           const decimals = TOKEN_METADATA[tk].decimals;
           const amountWei = parseUnits(amt, decimals);
