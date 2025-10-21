@@ -55,9 +55,14 @@ pnpm run deploy:delayed-transfer
 
 # Deploy to a specific network
 HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter
+
+# Deploy FlexiblePayrollSplitter (requires constructor args)
+pnpm run deploy:flexible-payroll
 ```
 
 See `package.json` scripts section for all available deployment commands.
+
+**Note for FlexiblePayrollSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployContract.ts` or use environment variables before deployment.
 
 ### After Deployment
 
@@ -184,6 +189,24 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Customizable recipient address
   - Flexible delay time in minutes
   - Manual execution available
+
+### 13. Flexible Payroll Splitter (Base) 🆕
+- **UI**: `FlexiblePayrollCard.tsx`
+- **Contract**: `FlexiblePayrollSplitter.sol` (`0xF9a078A740203Fd51544CD348f8a063a8b63Da86`)
+- **Description**: Distribute payroll to multiple recipients (up to 20) with different DeFi strategies on Base Sepolia.
+- **Features**:
+  - Dynamic recipient configuration (add/remove recipients)
+  - Individual share percentage for each recipient (0-100%)
+  - Three DeFi strategies per recipient:
+    - **Direct Transfer**: Send tokens directly to recipient wallet
+    - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
+    - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
+  - Real-time validation (total must equal 100%)
+  - Preview distribution before execution
+- **Use Cases**:
+  - Freelancer payroll with automatic savings/investment
+  - DAO member compensation with varied strategies
+  - Family remittance with auto-staking options
 
 ## Issues Found
 

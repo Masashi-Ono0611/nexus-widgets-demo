@@ -648,6 +648,48 @@
       "artifacts": [
         "AutoSplitter"
       ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexiblePayrollSplitter.sol": {
+      "lastModificationDate": 1761052888358,
+      "contentHash": "0b107274bc847ca7e6c7a1ce67bfbe20",
+      "sourceName": "contracts/FlexiblePayrollSplitter.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "FlexiblePayrollSplitter",
+        "IAavePool",
+        "IMorphoVault"
+      ]
     }
   }
 }
