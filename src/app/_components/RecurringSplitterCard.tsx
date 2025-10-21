@@ -288,8 +288,13 @@ export function RecurringSplitterCard() {
         prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
-          const amountWei = parseUnits(amount, decimals);
+          const totalAmountWei = parseUnits(amount, decimals);
           const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
+
+          // Calculate amount per execution
+          // Nexus Widget amount = amountPerExecution × maxExecutions
+          const maxExec = parseInt(maxExecutions);
+          const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
 
           // Convert recipients to contract format
           const contractRecipients = recipients.map((r) => ({
@@ -299,12 +304,11 @@ export function RecurringSplitterCard() {
           }));
 
           const intervalSeconds = parseInt(intervalMinutes) * 60;
-          const maxExec = parseInt(maxExecutions);
 
           return {
             functionParams: [
               tokenAddress,
-              amountWei,
+              amountPerExecution,
               contractRecipients,
               intervalSeconds,
               maxExec,
@@ -356,8 +360,13 @@ export function RecurringSplitterCard() {
             <strong>Max Executions:</strong> Set limit or run unlimited (0)
           </li>
         </ul>
+        <div style={{ marginTop: "0.5rem", color: "#0066cc", background: "#e6f2ff", padding: "0.5rem", borderRadius: "4px" }}>
+          💡 <strong>Amount Calculation:</strong> The total amount you enter will be divided by max executions.
+          <br />
+          Example: 3 USDC with 3 executions = 1 USDC per execution
+        </div>
         <div style={{ marginTop: "0.5rem", color: "#ff6600" }}>
-          ⚠️ <strong>Important:</strong> Make sure to approve enough tokens for all executions (amount × max executions)
+          ⚠️ <strong>Important:</strong> The widget will automatically approve the total amount (amount per execution × max executions)
         </div>
       </div>
     </div>
