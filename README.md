@@ -46,3 +46,4 @@
 ### Optimism Sepolia: Available
 - **Market Contract**: `0xb50201558B00496A145fE76f7424749556E326D8`
 - **USDC Address**: `0x5fd84259d66Cd46123540766Be93DFE6D43130D7` (Nexus-supported and Circle faucet compatible)
+- 
