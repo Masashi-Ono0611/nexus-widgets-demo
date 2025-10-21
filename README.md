@@ -207,32 +207,38 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 
 ### 13. Flexible Token Splitter (Arbitrum) 🆕
 - **UI**: `FlexibleSplitterCard.tsx`
-- **Contract**: `FlexibleSplitter.sol` (`0xF0D2995090a680F188100b364d1f499A5Ab130fF`)
+- **Contract**: `FlexibleSplitter.sol` (`0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454`)
 - **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Arbitrum Sepolia.
 - **Features**:
   - Dynamic recipient configuration (add/remove recipients)
   - Individual share percentage for each recipient (0-100%)
-  - Three DeFi strategies per recipient:
+  - Four DeFi strategies per recipient:
     - **Direct Transfer**: Send tokens directly to recipient wallet
     - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
     - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
+    - **Uniswap V2 Swap**: Swap USDC to WETH via Uniswap V2 and send to recipient 🆕
   - Real-time validation (total must equal 100%)
   - Preview distribution before execution
 - **Use Cases**:
   - Token distribution with automatic DeFi integration
   - Multi-recipient payments with varied strategies
   - Flexible fund allocation (savings, investment, spending)
+  - Automatic token swaps for recipients
 
 ### 14. Recurring Token Splitter (Arbitrum) 🔄🆕
 - **UI**: `RecurringSplitterCard.tsx`
-- **Contract**: `RecurringSplitter.sol` (`0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9`)
+- **Contract**: `RecurringSplitter.sol` (`0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E`)
 - **Description**: Create recurring token distributions with Gelato automation on Arbitrum Sepolia.
 - **Features**:
   - Scheduled recurring distributions (1 min to 365 days interval)
   - Gelato Automate integration for automatic execution
   - Multiple recipients (up to 20) with individual DeFi strategies
   - Configurable max executions (or unlimited with 0)
-  - Each recipient can choose: Direct Transfer, AAVE Supply, or Morpho Deposit
+  - Four DeFi strategies per recipient:
+    - **Direct Transfer**: Send tokens directly to recipient wallet
+    - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
+    - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
+    - **Uniswap V2 Swap**: Swap USDC to WETH via Uniswap V2 and send to recipient 🆕
   - Schedule management (create, execute, cancel)
   - Real-time validation and status checking
 - **Use Cases**:
@@ -241,11 +247,14 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Subscription-like token distributions
   - Automated DCA (Dollar Cost Averaging) strategies
   - Periodic fund allocation to different DeFi protocols
+  - Recurring token swaps for portfolio rebalancing
 - **Management Commands**:
   - `pnpm run test:recurring-splitter` - Create a new schedule
   - `pnpm run check:recurring-schedule [id]` - Check schedule status
   - `pnpm run execute:recurring-schedule [id]` - Manually execute
+  - `pnpm run cancel:recurring-schedule [id]` - Cancel a schedule
 - **Important**: Contract needs ETH for Gelato fees. Send ~0.01 ETH to contract address.
+
 
 ## Issues Found
 

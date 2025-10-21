@@ -31,8 +31,15 @@ const OPTIMISM_SEPOLIA_ADDRESSES = {
 };
 
 async function main() {
-  const network = process.env.HARDHAT_NETWORK || "baseSepolia";
+  const network = process.env.HARDHAT_NETWORK || "arbitrumSepolia";
   console.log(`\n🚀 Deploying FlexibleSplitter to ${network}...`);
+
+  // Warn if not Arbitrum Sepolia (only network with Uniswap V2)
+  if (network !== "arbitrumSepolia") {
+    console.log("\n⚠️  WARNING: UNISWAP_V2_SWAP strategy is only available on Arbitrum Sepolia");
+    console.log("   Recommended network: arbitrumSepolia");
+    console.log("   Set HARDHAT_NETWORK=arbitrumSepolia to deploy there\n");
+  }
 
   // Select addresses based on network
   let addresses;

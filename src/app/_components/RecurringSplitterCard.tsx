@@ -8,13 +8,14 @@ import {
 import { parseUnits } from "viem";
 
 // Contract address (deployed on Arbitrum Sepolia)
-const RECURRING_SPLITTER_ADDRESS = "0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9";
+const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
   DIRECT_TRANSFER = 0,
   AAVE_SUPPLY = 1,
   MORPHO_DEPOSIT = 2,
+  UNISWAP_V2_SWAP = 3,
 }
 
 interface Recipient {
@@ -27,6 +28,7 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.DIRECT_TRANSFER]: "Direct Transfer",
   [DeFiStrategy.AAVE_SUPPLY]: "AAVE Supply",
   [DeFiStrategy.MORPHO_DEPOSIT]: "Morpho Deposit",
+  [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
 
 export function RecurringSplitterCard() {
