@@ -17,6 +17,8 @@
     "deploy:delayed-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=DelayedTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:flexible-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/deployFlexibleSplitter.ts",
     "test:flexible-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testFlexibleSplitter.ts",
+    "deploy:recurring-splitter": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/deployRecurringSplitter.ts",
+    "test:recurring-splitter": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/testRecurringSplitter.ts",
     "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts"
   },
   "dependencies": {
