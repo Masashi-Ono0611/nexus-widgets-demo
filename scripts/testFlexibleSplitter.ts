@@ -56,17 +56,17 @@ async function main() {
   const recipients = [
     {
       wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
-      sharePercent: 3333, // 33.33% in basis points
+      sharePercent: 5000, // 50% in basis points
       strategy: DeFiStrategy.MORPHO_DEPOSIT,
     },
     {
       wallet: "0x08D811A358850892029251CcC8a565a32fd2dCB8",
-      sharePercent: 3333, // 33.33%
+      sharePercent: 3000, // 30%
       strategy: DeFiStrategy.AAVE_SUPPLY,
     },
     {
       wallet: signer.address,
-      sharePercent: 3334, // 33.34%
+      sharePercent: 2000, // 20%
       strategy: DeFiStrategy.DIRECT_TRANSFER,
     },
   ];
