@@ -8,7 +8,7 @@ import {
 import { parseUnits } from "viem";
 
 // Contract address (deployed on Base Sepolia)
-const FLEXIBLE_PAYROLL_SPLITTER_ADDRESS = "0xF9a078A740203Fd51544CD348f8a063a8b63Da86";
+const FLEXIBLE_SPLITTER_ADDRESS = "0x81436a64A677f9074f512BA86094beDb29E5E5e9";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
@@ -29,7 +29,7 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.MORPHO_DEPOSIT]: "Morpho Deposit",
 };
 
-export function FlexiblePayrollCard() {
+export function FlexibleSplitterCard() {
   const [recipients, setRecipients] = useState<Recipient[]>([
     {
       wallet: "",
@@ -97,9 +97,9 @@ export function FlexiblePayrollCard() {
 
   return (
     <div className="card">
-      <h3>Flexible Payroll Splitter (Base Sepolia)</h3>
+      <h3>Flexible Token Splitter (Base Sepolia)</h3>
       <p className="text-sm" style={{ marginBottom: "1rem" }}>
-        Distribute payroll to multiple recipients with different DeFi strategies
+        Distribute tokens to multiple recipients with different DeFi strategies
       </p>
 
       {/* Recipients Configuration */}
@@ -225,11 +225,11 @@ export function FlexiblePayrollCard() {
 
       {/* Bridge and Execute Button */}
       <BridgeAndExecuteButton
-        contractAddress={FLEXIBLE_PAYROLL_SPLITTER_ADDRESS}
+        contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
         contractAbi={
           [
             {
-              name: "distributePayroll",
+              name: "distributeTokens",
               type: "function",
               stateMutability: "nonpayable",
               inputs: [
@@ -282,7 +282,7 @@ export function FlexiblePayrollCard() {
             disabled={isLoading || !isValidConfiguration()}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Bridge & Distribute Payroll"}
+            {isLoading ? "Processing…" : "Bridge & Distribute Tokens"}
           </button>
         )}
       </BridgeAndExecuteButton>

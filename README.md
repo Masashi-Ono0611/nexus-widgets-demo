@@ -56,13 +56,13 @@ pnpm run deploy:delayed-transfer
 # Deploy to a specific network
 HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter
 
-# Deploy FlexiblePayrollSplitter (requires constructor args)
-pnpm run deploy:flexible-payroll
+# Deploy FlexibleSplitter (requires constructor args)
+pnpm run deploy:flexible-splitter
 ```
 
 See `package.json` scripts section for all available deployment commands.
 
-**Note for FlexiblePayrollSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployContract.ts` or use environment variables before deployment.
+**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
 
 ### After Deployment
 
@@ -190,10 +190,10 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Flexible delay time in minutes
   - Manual execution available
 
-### 13. Flexible Payroll Splitter (Base) 🆕
-- **UI**: `FlexiblePayrollCard.tsx`
-- **Contract**: `FlexiblePayrollSplitter.sol` (`0xF9a078A740203Fd51544CD348f8a063a8b63Da86`)
-- **Description**: Distribute payroll to multiple recipients (up to 20) with different DeFi strategies on Base Sepolia.
+### 13. Flexible Token Splitter (Base) 🆕
+- **UI**: `FlexibleSplitterCard.tsx`
+- **Contract**: `FlexibleSplitter.sol` (`0x81436a64A677f9074f512BA86094beDb29E5E5e9`)
+- **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Base Sepolia.
 - **Features**:
   - Dynamic recipient configuration (add/remove recipients)
   - Individual share percentage for each recipient (0-100%)
@@ -204,9 +204,9 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Real-time validation (total must equal 100%)
   - Preview distribution before execution
 - **Use Cases**:
-  - Freelancer payroll with automatic savings/investment
-  - DAO member compensation with varied strategies
-  - Family remittance with auto-staking options
+  - Token distribution with automatic DeFi integration
+  - Multi-recipient payments with varied strategies
+  - Flexible fund allocation (savings, investment, spending)
 
 ## Issues Found
 
@@ -221,7 +221,7 @@ Some AAVE markets use different USDC addresses than Nexus Widgets and Circle fau
 
 #### Arbitrum Sepolia ✅
 - Market: `0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff`
-- USDC: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`
+- USDC: `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d`
 - ✅ **Compatible** with Nexus and Circle faucet
 
 #### Base Sepolia

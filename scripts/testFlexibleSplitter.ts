@@ -7,7 +7,7 @@ const hre = hardhat as unknown as any;
 const ethers = hre.ethers;
 
 // Contract address (deployed on Base Sepolia)
-const FLEXIBLE_PAYROLL_ADDRESS = "0xF9a078A740203Fd51544CD348f8a063a8b63Da86";
+const FLEXIBLE_SPLITTER_ADDRESS = "0x81436a64A677f9074f512BA86094beDb29E5E5e9";
 
 // Base Sepolia addresses
 const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
@@ -27,12 +27,12 @@ async function main() {
 
   // Get contract instance
   const contract = await ethers.getContractAt(
-    "FlexiblePayrollSplitter",
-    FLEXIBLE_PAYROLL_ADDRESS
+    "FlexibleSplitter",
+    FLEXIBLE_SPLITTER_ADDRESS
   );
 
   console.log("\n📋 Contract Information");
-  console.log("Contract Address:", FLEXIBLE_PAYROLL_ADDRESS);
+  console.log("Contract Address:", FLEXIBLE_SPLITTER_ADDRESS);
   console.log("AAVE Pool:", await contract.aavePool());
   console.log("Morpho Vault:", await contract.morphoVault());
 
@@ -97,19 +97,19 @@ async function main() {
   });
 
   // Check allowance
-  const allowance = await usdc.allowance(signer.address, FLEXIBLE_PAYROLL_ADDRESS);
+  const allowance = await usdc.allowance(signer.address, FLEXIBLE_SPLITTER_ADDRESS);
   console.log("\n🔐 Current Allowance:", ethers.formatUnits(allowance, 6), "USDC");
 
   if (allowance < amount) {
     console.log("\n⏳ Approving USDC...");
-    const approveTx = await usdc.approve(FLEXIBLE_PAYROLL_ADDRESS, amount);
+    const approveTx = await usdc.approve(FLEXIBLE_SPLITTER_ADDRESS, amount);
     await approveTx.wait();
     console.log("✅ Approved");
   }
 
   // Execute distribution
-  console.log("\n⏳ Distributing payroll...");
-  const tx = await contract.distributePayroll(USDC_ADDRESS, amount, recipients);
+  console.log("\n⏳ Distributing tokens...");
+  const tx = await contract.distributeTokens(USDC_ADDRESS, amount, recipients);
   console.log("Transaction hash:", tx.hash);
 
   const receipt = await tx.wait();

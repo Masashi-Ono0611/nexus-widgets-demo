@@ -30,11 +30,11 @@ interface IMorphoVault {
 }
 
 /**
- * @title FlexiblePayrollSplitter
- * @notice Flexible payroll distribution with multiple recipients and DeFi strategies
+ * @title FlexibleSplitter
+ * @notice Flexible token distribution with multiple recipients and DeFi strategies
  * @dev Supports dynamic recipient configuration with AAVE, Morpho, or direct transfer
  */
-contract FlexiblePayrollSplitter is ReentrancyGuard {
+contract FlexibleSplitter is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     /**
@@ -64,8 +64,8 @@ contract FlexiblePayrollSplitter is ReentrancyGuard {
     /**
      * @notice Events
      */
-    event PayrollDistributed(
-        address indexed payer,
+    event TokensDistributed(
+        address indexed sender,
         address indexed asset,
         uint256 totalAmount,
         uint256 recipientCount
@@ -89,12 +89,12 @@ contract FlexiblePayrollSplitter is ReentrancyGuard {
     }
 
     /**
-     * @notice Distribute payroll to multiple recipients with different strategies
+     * @notice Distribute tokens to multiple recipients with different strategies
      * @param asset Token address to distribute
      * @param amount Total amount to distribute
      * @param recipients Array of recipient configurations
      */
-    function distributePayroll(
+    function distributeTokens(
         address asset,
         uint256 amount,
         Recipient[] memory recipients
@@ -136,7 +136,7 @@ contract FlexiblePayrollSplitter is ReentrancyGuard {
             );
         }
 
-        emit PayrollDistributed(
+        emit TokensDistributed(
             msg.sender,
             asset,
             amount,

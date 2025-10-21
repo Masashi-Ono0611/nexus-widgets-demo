@@ -26,7 +26,7 @@ const OPTIMISM_SEPOLIA_ADDRESSES = {
 
 async function main() {
   const network = process.env.HARDHAT_NETWORK || "baseSepolia";
-  console.log(`\n🚀 Deploying FlexiblePayrollSplitter to ${network}...`);
+  console.log(`\n🚀 Deploying FlexibleSplitter to ${network}...`);
 
   // Select addresses based on network
   let addresses;
@@ -70,10 +70,10 @@ async function main() {
 
   // Deploy contract
   console.log("\n⏳ Deploying contract...");
-  const FlexiblePayrollSplitter = await ethers.getContractFactory(
-    "FlexiblePayrollSplitter"
+  const FlexibleSplitter = await ethers.getContractFactory(
+    "FlexibleSplitter"
   );
-  const contract = await FlexiblePayrollSplitter.deploy(
+  const contract = await FlexibleSplitter.deploy(
     addresses.aavePool,
     addresses.morphoVault
   );
@@ -81,7 +81,7 @@ async function main() {
   await contract.waitForDeployment();
   const contractAddress = await contract.getAddress();
 
-  console.log("\n✅ FlexiblePayrollSplitter deployed!");
+  console.log("\n✅ FlexibleSplitter deployed!");
   console.log("   Address:", contractAddress);
 
   // Verify constructor args
@@ -93,12 +93,12 @@ async function main() {
 
   // Next steps
   console.log("\n📝 Next Steps:");
-  console.log("1. Update FlexiblePayrollCard.tsx:");
-  console.log(`   const FLEXIBLE_PAYROLL_SPLITTER_ADDRESS = "${contractAddress}";`);
+  console.log("1. Update FlexibleSplitterCard.tsx:");
+  console.log(`   const FLEXIBLE_SPLITTER_ADDRESS = "${contractAddress}";`);
   console.log("\n2. Update .env file:");
-  console.log(`   FLEXIBLE_PAYROLL_ADDRESS=${contractAddress}`);
+  console.log(`   FLEXIBLE_SPLITTER_ADDRESS=${contractAddress}`);
   console.log("\n3. Test the contract:");
-  console.log(`   pnpm run test:flexible-payroll`);
+  console.log(`   pnpm run test:flexible-splitter`);
   console.log("\n4. Verify on block explorer:");
   console.log(
     `   npx hardhat verify --network ${network} ${contractAddress} "${addresses.aavePool}" "${addresses.morphoVault}"`

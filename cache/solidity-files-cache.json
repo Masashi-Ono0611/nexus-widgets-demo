@@ -649,10 +649,10 @@
         "AutoSplitter"
       ]
     },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexiblePayrollSplitter.sol": {
-      "lastModificationDate": 1761052888358,
-      "contentHash": "0b107274bc847ca7e6c7a1ce67bfbe20",
-      "sourceName": "contracts/FlexiblePayrollSplitter.sol",
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexibleSplitter.sol": {
+      "lastModificationDate": 1761054097572,
+      "contentHash": "9a746015015e6750133d0f7b7d485174",
+      "sourceName": "contracts/FlexibleSplitter.sol",
       "solcConfig": {
         "version": "0.8.25",
         "settings": {
@@ -686,7 +686,7 @@
         "^0.8.25"
       ],
       "artifacts": [
-        "FlexiblePayrollSplitter",
+        "FlexibleSplitter",
         "IAavePool",
         "IMorphoVault"
       ]
