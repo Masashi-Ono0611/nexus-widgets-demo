@@ -96,6 +96,21 @@ pnpm run test:delayed-transfer 1
 pnpm run test:delayed-transfer 3 0
 ```
 
+### Wrap ETH to WETH
+
+```bash
+# Base Sepolia (default network)
+pnpm run wrap-eth
+
+# Specify network via npm config flag
+pnpm run wrap-eth --network arbitrumSepolia
+
+# Or via environment variable
+HARDHAT_NETWORK=arbitrumSepolia pnpm run wrap-eth
+```
+
+`scripts/wrapETH.ts` automatically chooses the correct WETH address based on the resolved Hardhat network name.
+
 ## Adding a New Contract
 
 ### 1. Create Contract File

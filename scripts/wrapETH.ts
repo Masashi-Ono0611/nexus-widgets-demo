@@ -8,7 +8,18 @@ const ethers = hre.ethers;
 
 // Base Sepolia WETH address
 // WETH9 is typically deployed at the same address across chains
-const WETH_ADDRESS = "0x4200000000000000000000000000000000000006"; // Base Sepolia WETH
+const BASE_SEPOLIA_WETH_ADDRESS = "0x4200000000000000000000000000000000000006"; // Base Sepolia WETH
+const ARBITRUM_SEPOLIA_WETH_ADDRESS = "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73";
+
+const NETWORK_WETH_ADDRESSES: Record<string, string> = {
+  baseSepolia: BASE_SEPOLIA_WETH_ADDRESS,
+  arbitrumSepolia: ARBITRUM_SEPOLIA_WETH_ADDRESS,
+};
+
+const NETWORK_EXPLORER_TX_URLS: Record<string, string> = {
+  baseSepolia: "https://sepolia.basescan.org/tx/",
+  arbitrumSepolia: "https://sepolia.arbiscan.io/tx/",
+};
 
 // WETH ABI (minimal - deposit and withdraw functions)
 const WETH_ABI = [
@@ -21,7 +32,15 @@ const WETH_ABI = [
 ];
 
 async function main() {
-  console.log("🔄 Wrapping ETH to WETH on Base Sepolia");
+  const networkName: string = hre.network.name;
+  const wethAddress = NETWORK_WETH_ADDRESSES[networkName];
+  if (!wethAddress) {
+    throw new Error(`Unsupported network: ${networkName}`);
+  }
+
+  const txExplorerPrefix = NETWORK_EXPLORER_TX_URLS[networkName] ?? "";
+
+  console.log(`🔄 Wrapping ETH to WETH on ${networkName}`);
   console.log("========================================\n");
 
   // Get signer
@@ -30,14 +49,14 @@ async function main() {
   console.log("Signer address:", signerAddress);
 
   // Connect to WETH contract
-  const weth = new ethers.Contract(WETH_ADDRESS, WETH_ABI, signer);
+  const weth = new ethers.Contract(wethAddress, WETH_ABI, signer);
 
   // Verify WETH contract
   try {
     const name = await weth.name();
     const symbol = await weth.symbol();
     console.log(`WETH Contract: ${name} (${symbol})`);
-    console.log(`WETH Address: ${WETH_ADDRESS}\n`);
+    console.log(`WETH Address: ${wethAddress}\n`);
   } catch (error) {
     console.error("❌ Failed to verify WETH contract. Address might be incorrect.");
     throw error;
@@ -63,7 +82,9 @@ async function main() {
   console.log("🔄 Wrapping ETH to WETH...");
   const depositTx = await weth.deposit({ value: wrapAmount });
   console.log("Transaction hash:", depositTx.hash);
-  console.log(`View on BaseScan: https://sepolia.basescan.org/tx/${depositTx.hash}`);
+  if (txExplorerPrefix) {
+    console.log(`View on explorer: ${txExplorerPrefix}${depositTx.hash}`);
+  }
   
   const receipt = await depositTx.wait();
   console.log("✅ Wrap confirmed in block:", receipt.blockNumber);
@@ -86,7 +107,7 @@ async function main() {
   console.log(`WETH: ${ethers.formatEther(wethBalanceAfter)} WETH (change: +${ethers.formatEther(wethChange)})\n`);
 
   console.log("✅ ETH wrapped successfully!");
-  console.log(`\n💡 You can now use WETH at: ${WETH_ADDRESS}`);
+  console.log(`\n💡 You can now use WETH at: ${wethAddress}`);
 }
 
 main()
