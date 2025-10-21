@@ -55,9 +55,14 @@ pnpm run deploy:delayed-transfer
 
 # Deploy to a specific network
 HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter
+
+# Deploy FlexibleSplitter (requires constructor args)
+pnpm run deploy:flexible-splitter
 ```
 
 See `package.json` scripts section for all available deployment commands.
+
+**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
 
 ### After Deployment
 
@@ -185,6 +190,24 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Flexible delay time in minutes
   - Manual execution available
 
+### 13. Flexible Token Splitter (Arbitrum) 🆕
+- **UI**: `FlexibleSplitterCard.tsx`
+- **Contract**: `FlexibleSplitter.sol` (`0xF0D2995090a680F188100b364d1f499A5Ab130fF`)
+- **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Arbitrum Sepolia.
+- **Features**:
+  - Dynamic recipient configuration (add/remove recipients)
+  - Individual share percentage for each recipient (0-100%)
+  - Three DeFi strategies per recipient:
+    - **Direct Transfer**: Send tokens directly to recipient wallet
+    - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
+    - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
+  - Real-time validation (total must equal 100%)
+  - Preview distribution before execution
+- **Use Cases**:
+  - Token distribution with automatic DeFi integration
+  - Multi-recipient payments with varied strategies
+  - Flexible fund allocation (savings, investment, spending)
+
 ## Issues Found
 
 ### 1. AAVE Markets USDC Compatibility
@@ -198,7 +221,7 @@ Some AAVE markets use different USDC addresses than Nexus Widgets and Circle fau
 
 #### Arbitrum Sepolia ✅
 - Market: `0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff`
-- USDC: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`
+- USDC: `0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d`
 - ✅ **Compatible** with Nexus and Circle faucet
 
 #### Base Sepolia
