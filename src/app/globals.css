@@ -27,6 +27,27 @@
   }
 }
 
+/* Dark mode class override */
+html.dark-mode {
+  color-scheme: dark;
+}
+
+html.dark-mode {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --border: #334155;
+  --border-light: #1e293b;
+  --text-secondary: #cbd5e1;
+}
+
+html:not(.dark-mode) {
+  --background: #f8f9fa;
+  --foreground: #0f172a;
+  --border: #e2e8f0;
+  --border-light: #f1f5f9;
+  --text-secondary: #64748b;
+}
+
 /* Shared helpers */
 .action-bar {
   display: flex;
