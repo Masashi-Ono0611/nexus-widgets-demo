@@ -19,6 +19,8 @@
     "test:flexible-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testFlexibleSplitter.ts",
     "deploy:recurring-splitter": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/deployRecurringSplitter.ts",
     "test:recurring-splitter": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/testRecurringSplitter.ts",
+    "check:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/checkRecurringSchedule.ts",
+    "execute:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/executeRecurringSchedule.ts",
     "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts"
   },
   "dependencies": {
