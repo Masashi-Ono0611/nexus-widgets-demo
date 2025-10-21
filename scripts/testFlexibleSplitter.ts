@@ -52,26 +52,26 @@ async function main() {
     return;
   }
 
-  // Example recipients configuration
+  // Example recipients configuration - Testing all 3 strategies
   const recipients = [
     {
       wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
-      sharePercent: 5000, // 50% in basis points
-      strategy: DeFiStrategy.DIRECT_TRANSFER,
-    },
-    {
-      wallet: "0x08D811A358850892029251CcC8a565a32fd2dCB8",
-      sharePercent: 3000, // 30%
+      sharePercent: 3333, // 33.33% in basis points
       strategy: DeFiStrategy.MORPHO_DEPOSIT,
     },
     {
+      wallet: "0x08D811A358850892029251CcC8a565a32fd2dCB8",
+      sharePercent: 3333, // 33.33%
+      strategy: DeFiStrategy.AAVE_SUPPLY,
+    },
+    {
       wallet: signer.address,
-      sharePercent: 2000, // 20%
+      sharePercent: 3334, // 33.34%
       strategy: DeFiStrategy.DIRECT_TRANSFER,
     },
   ];
 
-  const amount = ethers.parseUnits("10", 6); // 10 USDC
+  const amount = ethers.parseUnits("1", 6); // 1 USDC
 
   console.log("\n📊 Distribution Preview");
   console.log("Total Amount:", ethers.formatUnits(amount, 6), "USDC");
@@ -127,12 +127,16 @@ async function main() {
 
         if (parsed?.name === "RecipientPaid") {
           const [recipient, asset, paidAmount, strategy] = parsed.args;
-          const strategyName =
-            strategy === 0
-              ? "Direct Transfer"
-              : strategy === 1
-                ? "AAVE Supply"
-                : "Morpho Deposit";
+          let strategyName;
+          if (strategy === 0) {
+            strategyName = "Direct Transfer";
+          } else if (strategy === 1) {
+            strategyName = "AAVE Supply";
+          } else if (strategy === 2) {
+            strategyName = "Morpho Deposit";
+          } else {
+            strategyName = "Unknown";
+          }
           console.log(
             `  💸 Paid ${ethers.formatUnits(paidAmount, 6)} USDC to ${recipient.slice(0, 6)}...${recipient.slice(-4)} via ${strategyName}`
           );
