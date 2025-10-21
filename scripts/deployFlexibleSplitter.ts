@@ -10,18 +10,24 @@ const ethers = hre.ethers;
 const BASE_SEPOLIA_ADDRESSES = {
   aavePool: "0x0000000000000000000000000000000000000000", // Not available on Base Sepolia
   morphoVault: "0x66DB50A789a15f4A368A1b3dCb05615Be651fc05",
+  uniswapV2Pair: "0x0000000000000000000000000000000000000000", // Not available
+  weth: "0x0000000000000000000000000000000000000000",
 };
 
 // Arbitrum Sepolia addresses
 const ARBITRUM_SEPOLIA_ADDRESSES = {
   aavePool: "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff",
   morphoVault: "0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6",
+  uniswapV2Pair: "0x4F7392b66ADB7D09EdAe3C877714c5992Aeb4671", // USDC/WETH pair
+  weth: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
 };
 
 // Optimism Sepolia addresses
 const OPTIMISM_SEPOLIA_ADDRESSES = {
   aavePool: "0xb50201558B00496A145fE76f7424749556E326D8",
   morphoVault: "0x0000000000000000000000000000000000000000", // Not available
+  uniswapV2Pair: "0x0000000000000000000000000000000000000000", // Not available
+  weth: "0x0000000000000000000000000000000000000000",
 };
 
 async function main() {
@@ -60,6 +66,8 @@ async function main() {
   console.log("\n📋 Constructor Arguments:");
   console.log("  AAVE Pool:", addresses.aavePool);
   console.log("  Morpho Vault:", addresses.morphoVault);
+  console.log("  Uniswap V2 Pair:", addresses.uniswapV2Pair);
+  console.log("  WETH:", addresses.weth);
 
   // Get deployer
   const [deployer] = await ethers.getSigners();
@@ -75,7 +83,9 @@ async function main() {
   );
   const contract = await FlexibleSplitter.deploy(
     addresses.aavePool,
-    addresses.morphoVault
+    addresses.morphoVault,
+    addresses.uniswapV2Pair,
+    addresses.weth
   );
 
   await contract.waitForDeployment();
@@ -88,8 +98,12 @@ async function main() {
   console.log("\n🔍 Verifying constructor arguments...");
   const aavePool = await contract.aavePool();
   const morphoVault = await contract.morphoVault();
+  const uniswapV2Pair = await contract.uniswapV2Pair();
+  const weth = await contract.weth();
   console.log("   AAVE Pool:", aavePool);
   console.log("   Morpho Vault:", morphoVault);
+  console.log("   Uniswap V2 Pair:", uniswapV2Pair);
+  console.log("   WETH:", weth);
 
   // Next steps
   console.log("\n📝 Next Steps:");
@@ -101,7 +115,7 @@ async function main() {
   console.log(`   pnpm run test:flexible-splitter`);
   console.log("\n4. Verify on block explorer:");
   console.log(
-    `   npx hardhat verify --network ${network} ${contractAddress} "${addresses.aavePool}" "${addresses.morphoVault}"`
+    `   npx hardhat verify --network ${network} ${contractAddress} "${addresses.aavePool}" "${addresses.morphoVault}" "${addresses.uniswapV2Pair}" "${addresses.weth}"`
   );
 }
 

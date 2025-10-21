@@ -7,7 +7,7 @@ const hre = hardhat as unknown as any;
 const ethers = hre.ethers;
 
 // Contract address (deployed on Arbitrum Sepolia)
-const RECURRING_SPLITTER_ADDRESS = "0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9";
+const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
 
 // Arbitrum Sepolia addresses
 const USDC_ADDRESS = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
@@ -17,6 +17,7 @@ enum DeFiStrategy {
   DIRECT_TRANSFER = 0,
   AAVE_SUPPLY = 1,
   MORPHO_DEPOSIT = 2,
+  UNISWAP_V2_SWAP = 3,
 }
 
 async function main() {
@@ -52,11 +53,11 @@ async function main() {
     return;
   }
 
-  // Example recipients configuration - Testing all 3 strategies
+  // Example recipients configuration - Testing all 4 strategies
   const recipients = [
     {
       wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
-      sharePercent: 5000, // 50% in basis points
+      sharePercent: 4000, // 40% in basis points
       strategy: DeFiStrategy.MORPHO_DEPOSIT,
     },
     {
@@ -68,6 +69,11 @@ async function main() {
       wallet: signer.address,
       sharePercent: 2000, // 20%
       strategy: DeFiStrategy.DIRECT_TRANSFER,
+    },
+    {
+      wallet: signer.address,
+      sharePercent: 1000, // 10%
+      strategy: DeFiStrategy.UNISWAP_V2_SWAP,
     },
   ];
 
@@ -87,7 +93,9 @@ async function main() {
         ? "Direct Transfer"
         : r.strategy === DeFiStrategy.AAVE_SUPPLY
           ? "AAVE Supply"
-          : "Morpho Deposit";
+          : r.strategy === DeFiStrategy.MORPHO_DEPOSIT
+            ? "Morpho Deposit"
+            : "Uniswap V2 Swap";
     console.log(
       `  ${i + 1}. ${r.wallet.slice(0, 6)}...${r.wallet.slice(-4)}: ${ethers.formatUnits(recipientAmount, 6)} USDC (${r.sharePercent / 100}%) - ${strategyName}`
     );

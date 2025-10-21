@@ -59,6 +59,17 @@ interface IMorphoVault {
 }
 
 /**
+ * @title IUniswapV2Pair
+ * @notice Interface for Uniswap V2 Pair
+ */
+interface IUniswapV2Pair {
+    function swap(uint amount0Out, uint amount1Out, address to, bytes calldata data) external;
+    function getReserves() external view returns (uint112 reserve0, uint112 reserve1, uint32 blockTimestampLast);
+    function token0() external view returns (address);
+    function token1() external view returns (address);
+}
+
+/**
  * @title RecurringSplitter
  * @notice Recurring token distribution with multiple recipients and DeFi strategies
  * @dev Integrates Gelato Automate for scheduled recurring distributions
@@ -72,7 +83,8 @@ contract RecurringSplitter is ReentrancyGuard {
     enum DeFiStrategy {
         DIRECT_TRANSFER,  // Send tokens directly to recipient
         AAVE_SUPPLY,      // Supply to AAVE on behalf of recipient
-        MORPHO_DEPOSIT    // Deposit to Morpho Vault on behalf of recipient
+        MORPHO_DEPOSIT,   // Deposit to Morpho Vault on behalf of recipient
+        UNISWAP_V2_SWAP   // Swap to WETH via Uniswap V2 and send to recipient
     }
 
     /**
@@ -104,6 +116,8 @@ contract RecurringSplitter is ReentrancyGuard {
      */
     address public immutable aavePool;
     address public immutable morphoVault;
+    address public immutable uniswapV2Pair;
+    address public immutable weth;
     address public constant GELATO_AUTOMATE = 0x2A6C106ae13B558BB9E2Ec64Bd2f1f7BEFF3A5E0; // Arbitrum Sepolia
 
     /**
@@ -160,10 +174,14 @@ contract RecurringSplitter is ReentrancyGuard {
      * @notice Constructor
      * @param _aavePool AAVE Pool address (can be zero if not used)
      * @param _morphoVault Morpho Vault address (can be zero if not used)
+     * @param _uniswapV2Pair Uniswap V2 Pair address (can be zero if not used)
+     * @param _weth WETH address (can be zero if not used)
      */
-    constructor(address _aavePool, address _morphoVault) {
+    constructor(address _aavePool, address _morphoVault, address _uniswapV2Pair, address _weth) {
         aavePool = _aavePool;
         morphoVault = _morphoVault;
+        uniswapV2Pair = _uniswapV2Pair;
+        weth = _weth;
     }
 
     /**
@@ -338,6 +356,40 @@ contract RecurringSplitter is ReentrancyGuard {
             token.safeIncreaseAllowance(morphoVault, amount);
             IMorphoVault(morphoVault).deposit(amount, recipient.wallet);
             token.forceApprove(morphoVault, 0);
+        }
+        else if (recipient.strategy == DeFiStrategy.UNISWAP_V2_SWAP) {
+            // Swap to WETH via Uniswap V2 and send to recipient
+            require(uniswapV2Pair != address(0), "Uniswap V2 Pair not configured");
+            require(weth != address(0), "WETH not configured");
+            
+            IUniswapV2Pair pair = IUniswapV2Pair(uniswapV2Pair);
+            address token0 = pair.token0();
+            
+            require(
+                (asset == token0 && weth == pair.token1()) || 
+                (asset == pair.token1() && weth == token0),
+                "Invalid token pair"
+            );
+            
+            // Get reserves and calculate output
+            (uint112 reserve0, uint112 reserve1,) = pair.getReserves();
+            bool isToken0 = asset == token0;
+            
+            uint256 reserveIn = isToken0 ? uint256(reserve0) : uint256(reserve1);
+            uint256 reserveOut = isToken0 ? uint256(reserve1) : uint256(reserve0);
+            
+            uint256 amountOut = (amount * 997 * reserveOut) / ((reserveIn * 1000) + (amount * 997));
+            require(amountOut > 0, "Insufficient output");
+            
+            // Transfer tokens to pair and execute swap
+            token.safeTransfer(uniswapV2Pair, amount);
+            
+            pair.swap(
+                isToken0 ? 0 : amountOut,
+                isToken0 ? amountOut : 0,
+                recipient.wallet,
+                new bytes(0)
+            );
         }
     }
 
