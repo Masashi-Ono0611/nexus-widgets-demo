@@ -648,6 +648,48 @@
       "artifacts": [
         "AutoSplitter"
       ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexibleSplitter.sol": {
+      "lastModificationDate": 1761054097572,
+      "contentHash": "9a746015015e6750133d0f7b7d485174",
+      "sourceName": "contracts/FlexibleSplitter.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "FlexibleSplitter",
+        "IAavePool",
+        "IMorphoVault"
+      ]
     }
   }
 }
