@@ -8,12 +8,13 @@
     "start": "next start",
     "lint": "eslint",
     "test:contracts": "hardhat test",
-    "deploy:auto-burner": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoBurner tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "test:delayed-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testDelayedTransfer.ts",
+    "test:uniswap-v4-swap": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testUniswapV4Swap.ts",
     "deploy:auto-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:auto-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AutoTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:aave-supply-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=AaveSupplySplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "deploy:morpho-deposit-splitter": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=MorphoDepositSplitter tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
-    "test:uniswap-v4-swap": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testUniswapV4Swap.ts",
+    "deploy:delayed-transfer": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} CONTRACT_NAME=DelayedTransfer tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
     "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@gelatonetwork/automate-sdk": "^3.1.0",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.10",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@openzeppelin/contracts": "^5.1.0",
