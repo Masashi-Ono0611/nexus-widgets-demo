@@ -12,6 +12,7 @@ import { MorphoSplitDepositBaseCard } from "./_components/MorphoSplitDepositBase
 import { TransferBaseCard } from "./_components/TransferBaseCard";
 import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
 import { UniswapV4SwapCard } from "./_components/UniswapV4SwapCard";
+import { DelayedTransferCard } from "./_components/DelayedTransferCard";
 
 
 export default function Home() {
@@ -75,6 +76,7 @@ export default function Home() {
         <MorphoSupplyBaseCard />
         <MorphoSplitDepositBaseCard />
         <UniswapV4SwapCard />
+        <DelayedTransferCard />
       </section>
     </main>
   );
