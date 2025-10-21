@@ -6,18 +6,28 @@ import {
   TOKEN_METADATA,
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
+import styles from "../components.module.css";
 
 export function SupplyOptimismCard() {
   return (
     <div className="card">
-      <h3>{`Bridge & Supply on AAVE (Optimism Sepolia)`}</h3>
-      <p className="text-sm">
+      <div className={styles.cardHeader}>
+        <div className={styles.cardIcon}>📈</div>
+        <div>
+          <h3 className={styles.cardTitle}>Supply on AAVE</h3>
+          <span className={`${styles.cardBadge} ${styles.badgeSuccess}`}>Optimism</span>
+        </div>
+      </div>
+      <p className={styles.cardDescription}>
+        Bridge USDC and earn yield by supplying to AAVE on Optimism Sepolia.
+      </p>
+      <p>
         <a
           href="https://app.aave.com/reserve-overview/?underlyingAsset=0x5fd84259d66cd46123540766be93dfe6d43130d7&marketName=proto_optimism_sepolia_v3"
           target="_blank"
           rel="noreferrer"
         >
-          Optimism Sepolia Market
+          View Market →
         </a>
       </p>
       <BridgeAndExecuteButton
