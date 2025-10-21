@@ -208,6 +208,30 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Multi-recipient payments with varied strategies
   - Flexible fund allocation (savings, investment, spending)
 
+### 14. Recurring Token Splitter (Arbitrum) 🔄🆕
+- **UI**: `RecurringSplitterCard.tsx`
+- **Contract**: `RecurringSplitter.sol` (`0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9`)
+- **Description**: Create recurring token distributions with Gelato automation on Arbitrum Sepolia.
+- **Features**:
+  - Scheduled recurring distributions (1 min to 365 days interval)
+  - Gelato Automate integration for automatic execution
+  - Multiple recipients (up to 20) with individual DeFi strategies
+  - Configurable max executions (or unlimited with 0)
+  - Each recipient can choose: Direct Transfer, AAVE Supply, or Morpho Deposit
+  - Schedule management (create, execute, cancel)
+  - Real-time validation and status checking
+- **Use Cases**:
+  - Monthly salary distribution with auto-savings/investment
+  - Recurring DAO payments to contributors
+  - Subscription-like token distributions
+  - Automated DCA (Dollar Cost Averaging) strategies
+  - Periodic fund allocation to different DeFi protocols
+- **Management Commands**:
+  - `pnpm run test:recurring-splitter` - Create a new schedule
+  - `pnpm run check:recurring-schedule [id]` - Check schedule status
+  - `pnpm run execute:recurring-schedule [id]` - Manually execute
+- **Important**: Contract needs ETH for Gelato fees. Send ~0.01 ETH to contract address.
+
 ## Issues Found
 
 ### 1. AAVE Markets USDC Compatibility
