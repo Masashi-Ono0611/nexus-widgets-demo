@@ -37,6 +37,12 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+### 4. Get Testnet USDC
+
+Get free testnet USDC from Circle's faucet:
+- **Circle USDC Faucet**: [https://faucet.circle.com/](https://faucet.circle.com/)
+- Supports: Sepolia, Base Sepolia, Arbitrum Sepolia, Optimism Sepolia
+
 ## Contract Deployment
 
 ### Deploy a Contract
@@ -221,5 +227,31 @@ Some AAVE markets use different USDC addresses than Nexus Widgets and Circle fau
 **Workaround:**
 - Manually approve a higher token allowance in a separate transaction before using BridgeAndExecute
 - You can use [revoke.cash](https://revoke.cash/) to set the approval amount
+
+### 3. Sepolia USDC Address Inconsistency in Nexus SDK
+
+**Issue:**
+The Nexus SDK contains two different USDC addresses for Ethereum Sepolia (Chain ID: 11155111):
+
+1. **`TOKEN_CONTRACT_ADDRESSES.USDC[SEPOLIA]`**: `0xf08A50178dfcDe18524640EA6618a1f965821715`
+   - Used in widget components for building function parameters
+
+2. **`knownTokens` (actual bridged token)**: `0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238`
+   - This is the **Circle USDC** that Nexus Widget actually bridges
+   - Compatible with Circle faucet
+
+**Impact:**
+- When using `TOKEN_CONTRACT_ADDRESSES[token][chainId]` in `buildFunctionParams`, contracts receive the wrong USDC address
+- Approval transactions may target the wrong token address
+
+**Recommended Solution:**
+- **Avoid using Ethereum Sepolia** for USDC BridgeAndExecute operations
+- Use alternative testnets instead:
+  - **Base Sepolia** (recommended)
+  - **Arbitrum Sepolia**
+  - **Optimism Sepolia**
+- These chains have consistent USDC addresses between `TOKEN_CONTRACT_ADDRESSES` and actual bridged tokens
+
+**Note:** Hardcoding the Circle USDC address in `buildFunctionParams` does not resolve this issue completely due to SDK internal behavior.
 
 <!-- Add more discovered issues here -->
