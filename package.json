@@ -22,7 +22,9 @@
     "check:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/checkRecurringSchedule.ts",
     "execute:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/executeRecurringSchedule.ts",
     "cancel:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/cancelRecurringSchedule.ts",
-    "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts"
+    "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/wrapETH.ts",
+    "deploy:swap-executor": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} CONTRACT_NAME=SwapExecutor tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts",
+    "test:swap-contract": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/test-swap-contract.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",

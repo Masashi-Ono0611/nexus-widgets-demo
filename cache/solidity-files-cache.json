@@ -733,6 +733,46 @@
         "IMorphoVault",
         "RecurringSplitter"
       ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/SwapExecutor.sol": {
+      "lastModificationDate": 1761062794432,
+      "contentHash": "a0853ba505a86aa0c8b5d8a95014ae91",
+      "sourceName": "contracts/SwapExecutor.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "IUniswapV2Pair",
+        "SwapExecutor"
+      ]
     }
   }
 }
