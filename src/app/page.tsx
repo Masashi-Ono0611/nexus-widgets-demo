@@ -42,9 +42,9 @@ export default function Home() {
   return (
     <main className="container">
       <div>
-        <h1 className="header">
+        {/* <h1 className="header">
           Avail Nexus
-        </h1>
+        </h1> */}
         <p className="subheader-main">
           Explore cross-chain DeFi operations with seamless token bridging, lending, and yield farming across multiple networks.
         </p>
