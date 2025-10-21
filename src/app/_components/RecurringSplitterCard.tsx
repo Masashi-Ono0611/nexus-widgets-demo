@@ -343,6 +343,7 @@ export function RecurringSplitterCard() {
           background: "#f5f5f5",
           borderRadius: "4px",
           fontSize: "0.85rem",
+          color: "#333",
         }}
       >
         <strong>How it works:</strong>
