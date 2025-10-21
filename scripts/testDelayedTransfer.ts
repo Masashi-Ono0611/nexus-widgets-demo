@@ -3,13 +3,13 @@ import * as dotenv from "dotenv";
 
 dotenv.config();
 
-const DELAYED_TRANSFER_V2_ADDRESS = "0x529B72c62d0eF4C00E6B346e2D15C23f630389d1";
+const DELAYED_TRANSFER_ADDRESS = "0x9B31E6D589657d37fFf3d8D8f3699C8d28c4B8F9";
 const BASE_SEPOLIA_RPC = process.env.BASE_SEPOLIA_RPC_URL || "https://sepolia.base.org";
 
 // Base Sepolia USDC (Circle)
 const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
 
-const DELAYED_TRANSFER_V2_ABI = [
+const DELAYED_TRANSFER_ABI = [
   "function scheduleTransfer(address asset, uint256 amount, address recipient, uint256 delaySeconds) external returns (uint256 transferId)",
   "function executeTransfer(uint256 transferId) external",
   "function checker() external view returns (bool canExec, bytes memory execPayload)",
@@ -31,8 +31,8 @@ const ERC20_ABI = [
 ];
 
 async function main() {
-  console.log("🧪 Testing DelayedTransferV2 Contract\n");
-  console.log("Contract Address:", DELAYED_TRANSFER_V2_ADDRESS);
+  console.log("🧪 Testing DelayedTransfer Contract\n");
+  console.log("Contract Address:", DELAYED_TRANSFER_ADDRESS);
   console.log("Network: Base Sepolia\n");
 
   // Setup provider and wallet
@@ -52,8 +52,8 @@ async function main() {
 
   // Connect to contracts
   const delayedTransfer = new ethers.Contract(
-    DELAYED_TRANSFER_V2_ADDRESS,
-    DELAYED_TRANSFER_V2_ABI,
+    DELAYED_TRANSFER_ADDRESS,
+    DELAYED_TRANSFER_ABI,
     wallet
   );
   
@@ -159,7 +159,7 @@ async function main() {
     let allowance = 0n;
     
     try {
-      allowance = await usdc.allowance(wallet.address, DELAYED_TRANSFER_V2_ADDRESS);
+      allowance = await usdc.allowance(wallet.address, DELAYED_TRANSFER_ADDRESS);
       console.log("Current allowance:", ethers.formatUnits(allowance, decimals), "USDC");
     } catch (error: any) {
       console.log("⚠️  Could not check allowance (RPC issue), will attempt approval anyway");
@@ -167,7 +167,7 @@ async function main() {
     
     if (allowance < amount) {
       console.log("\n✍️  Approving USDC...");
-      const approveTx = await usdc.approve(DELAYED_TRANSFER_V2_ADDRESS, ethers.MaxUint256);
+      const approveTx = await usdc.approve(DELAYED_TRANSFER_ADDRESS, ethers.MaxUint256);
       console.log("Approval TX:", approveTx.hash);
       console.log("⏳ Waiting for approval confirmation...");
       await approveTx.wait();
@@ -253,17 +253,17 @@ main()
  * Usage Examples:
  * 
  * # Check contract state
- * pnpm run test:delayed-transfer-v2
+ * pnpm run test:delayed-transfer
  * 
  * # Schedule a transfer (1 minute delay)
- * pnpm run test:delayed-transfer-v2 1
+ * pnpm run test:delayed-transfer 1
  * 
  * # Schedule a transfer (24 hours delay)
- * pnpm run test:delayed-transfer-v2 2
+ * pnpm run test:delayed-transfer 2
  * 
  * # Manually execute Transfer ID 1
- * pnpm run test:delayed-transfer-v2 3 1
+ * pnpm run test:delayed-transfer 3 1
  * 
  * # Schedule a transfer (3 minutes delay)
- * pnpm run test:delayed-transfer-v2 4
+ * pnpm run test:delayed-transfer 4
  */

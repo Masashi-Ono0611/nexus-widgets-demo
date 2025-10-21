@@ -35,11 +35,11 @@ enum Module {
 }
 
 /**
- * @title DelayedTransferV2
+ * @title DelayedTransfer
  * @notice Delayed transfer contract fully integrated with Gelato Automate
  * @dev Gelato task is automatically created on first scheduleTransfer() call
  */
-contract DelayedTransferV2 is ReentrancyGuard {
+contract DelayedTransfer is ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     struct Transfer {
