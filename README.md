@@ -190,10 +190,10 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Flexible delay time in minutes
   - Manual execution available
 
-### 13. Flexible Token Splitter (Base) 🆕
+### 13. Flexible Token Splitter (Arbitrum) 🆕
 - **UI**: `FlexibleSplitterCard.tsx`
-- **Contract**: `FlexibleSplitter.sol` (`0x81436a64A677f9074f512BA86094beDb29E5E5e9`)
-- **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Base Sepolia.
+- **Contract**: `FlexibleSplitter.sol` (`0xF0D2995090a680F188100b364d1f499A5Ab130fF`)
+- **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Arbitrum Sepolia.
 - **Features**:
   - Dynamic recipient configuration (add/remove recipients)
   - Individual share percentage for each recipient (0-100%)

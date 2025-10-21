@@ -15,7 +15,7 @@ const BASE_SEPOLIA_ADDRESSES = {
 // Arbitrum Sepolia addresses
 const ARBITRUM_SEPOLIA_ADDRESSES = {
   aavePool: "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff",
-  morphoVault: "0x0000000000000000000000000000000000000000", // Not available
+  morphoVault: "0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6",
 };
 
 // Optimism Sepolia addresses

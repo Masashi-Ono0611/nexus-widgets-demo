@@ -7,8 +7,8 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-// Contract address (deployed on Base Sepolia)
-const FLEXIBLE_SPLITTER_ADDRESS = "0x81436a64A677f9074f512BA86094beDb29E5E5e9";
+// Contract address (deployed on Arbitrum Sepolia)
+const FLEXIBLE_SPLITTER_ADDRESS = "0xF0D2995090a680F188100b364d1f499A5Ab130fF";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
@@ -97,7 +97,7 @@ export function FlexibleSplitterCard() {
 
   return (
     <div className="card">
-      <h3>Flexible Token Splitter (Base Sepolia)</h3>
+      <h3>Flexible Token Splitter (Arbitrum Sepolia)</h3>
       <p className="text-sm" style={{ marginBottom: "1rem" }}>
         Distribute tokens to multiple recipients with different DeFi strategies
       </p>
@@ -249,8 +249,8 @@ export function FlexibleSplitterCard() {
             },
           ] as const
         }
-        functionName="distributePayroll"
-        prefill={{ toChainId: 84532, token: "USDC" }}
+        functionName="distributeTokens"
+        prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);

@@ -6,13 +6,13 @@ dotenv.config();
 const hre = hardhat as unknown as any;
 const ethers = hre.ethers;
 
-// Contract address (deployed on Base Sepolia)
-const FLEXIBLE_SPLITTER_ADDRESS = "0x81436a64A677f9074f512BA86094beDb29E5E5e9";
+// Contract address (deployed on Arbitrum Sepolia)
+const FLEXIBLE_SPLITTER_ADDRESS = "0xF0D2995090a680F188100b364d1f499A5Ab130fF";
 
-// Base Sepolia addresses
-const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
-const AAVE_POOL_ADDRESS = "0x0000000000000000000000000000000000000000"; // Not available on Base Sepolia
-const MORPHO_VAULT_ADDRESS = "0x66DB50A789a15f4A368A1b3dCb05615Be651fc05";
+// Arbitrum Sepolia addresses
+const USDC_ADDRESS = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d";
+const AAVE_POOL_ADDRESS = "0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff";
+const MORPHO_VAULT_ADDRESS = "0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6";
 
 // DeFi Strategy enum
 enum DeFiStrategy {
