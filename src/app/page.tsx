@@ -14,6 +14,7 @@ import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
 import { UniswapV4SwapCard } from "./_components/UniswapV4SwapCard";
 import { DelayedTransferCard } from "./_components/DelayedTransferCard";
 import { FlexibleSplitterCard } from "./_components/FlexibleSplitterCard";
+import { RecurringSplitterCard } from "./_components/RecurringSplitterCard";
 
 
 export default function Home() {
@@ -84,6 +85,7 @@ export default function Home() {
         <UniswapV4SwapCard />
         <DelayedTransferCard />
         <FlexibleSplitterCard />
+        <RecurringSplitterCard />
       </section>
     </main>
   );
