@@ -342,6 +342,42 @@
         "ERC20"
       ]
     },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/utils/Context.sol": {
+      "lastModificationDate": 1760528011520,
+      "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
+      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "Context"
+      ]
+    },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/interfaces/draft-IERC6093.sol": {
       "lastModificationDate": 1760528011522,
       "contentHash": "5041977bbe908de2e6ed0270447f79ad",
@@ -378,42 +414,6 @@
         "IERC1155Errors",
         "IERC20Errors",
         "IERC721Errors"
-      ]
-    },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/utils/Context.sol": {
-      "lastModificationDate": 1760528011520,
-      "contentHash": "67bfbc07588eb8683b3fd8f6f909563e",
-      "sourceName": "@openzeppelin/contracts/utils/Context.sol",
-      "solcConfig": {
-        "version": "0.8.25",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [],
-      "versionPragmas": [
-        "^0.8.20"
-      ],
-      "artifacts": [
-        "Context"
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/mocks/MockERC20.sol": {
@@ -454,10 +454,10 @@
         "MockERC20"
       ]
     },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/MorphoDepositSplitter.sol": {
-      "lastModificationDate": 1760970824486,
-      "contentHash": "a41ce14db87c02a1cf3b5c9d4e1f9549",
-      "sourceName": "contracts/MorphoDepositSplitter.sol",
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/SwapExecutor.sol": {
+      "lastModificationDate": 1761062794432,
+      "contentHash": "a0853ba505a86aa0c8b5d8a95014ae91",
+      "sourceName": "contracts/SwapExecutor.sol",
       "solcConfig": {
         "version": "0.8.25",
         "settings": {
@@ -490,12 +490,135 @@
         "^0.8.25"
       ],
       "artifacts": [
+        "IUniswapV2Pair",
+        "SwapExecutor"
+      ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/RecurringSplitter.sol": {
+      "lastModificationDate": 1761063048329,
+      "contentHash": "7ad01de4782dab973e035eb7f53d8f5f",
+      "sourceName": "contracts/RecurringSplitter.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "IAavePool",
+        "IAutomate",
         "IMorphoVault",
-        "MorphoDepositSplitter"
+        "IUniswapV2Pair",
+        "RecurringSplitter"
+      ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
+      "lastModificationDate": 1760528011548,
+      "contentHash": "190613e556d509d9e9a0ea43dc5d891d",
+      "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.20"
+      ],
+      "artifacts": [
+        "ReentrancyGuard"
+      ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexibleSplitter.sol": {
+      "lastModificationDate": 1761063011374,
+      "contentHash": "060270586e2ece3f65186d32963cd34f",
+      "sourceName": "contracts/FlexibleSplitter.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
+        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "FlexibleSplitter",
+        "IAavePool",
+        "IMorphoVault",
+        "IUniswapV2Pair"
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/DelayedTransfer.sol": {
-      "lastModificationDate": 1761030473962,
+      "lastModificationDate": 1761038009488,
       "contentHash": "5fd670899a74598341912a3648b29f1f",
       "sourceName": "contracts/DelayedTransfer.sol",
       "solcConfig": {
@@ -535,10 +658,10 @@
         "IAutomate"
       ]
     },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/node_modules/.pnpm/@openzeppelin+contracts@5.4.0/node_modules/@openzeppelin/contracts/utils/ReentrancyGuard.sol": {
-      "lastModificationDate": 1760528011548,
-      "contentHash": "190613e556d509d9e9a0ea43dc5d891d",
-      "sourceName": "@openzeppelin/contracts/utils/ReentrancyGuard.sol",
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/MorphoDepositSplitter.sol": {
+      "lastModificationDate": 1760970824486,
+      "contentHash": "a41ce14db87c02a1cf3b5c9d4e1f9549",
+      "sourceName": "contracts/MorphoDepositSplitter.sol",
       "solcConfig": {
         "version": "0.8.25",
         "settings": {
@@ -563,12 +686,16 @@
           }
         }
       },
-      "imports": [],
+      "imports": [
+        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
+        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol"
+      ],
       "versionPragmas": [
-        "^0.8.20"
+        "^0.8.25"
       ],
       "artifacts": [
-        "ReentrancyGuard"
+        "IMorphoVault",
+        "MorphoDepositSplitter"
       ]
     },
     "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/AutoTransfer.sol": {
@@ -647,91 +774,6 @@
       ],
       "artifacts": [
         "AutoSplitter"
-      ]
-    },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/FlexibleSplitter.sol": {
-      "lastModificationDate": 1761054097572,
-      "contentHash": "9a746015015e6750133d0f7b7d485174",
-      "sourceName": "contracts/FlexibleSplitter.sol",
-      "solcConfig": {
-        "version": "0.8.25",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.25"
-      ],
-      "artifacts": [
-        "FlexibleSplitter",
-        "IAavePool",
-        "IMorphoVault"
-      ]
-    },
-    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/RecurringSplitter.sol": {
-      "lastModificationDate": 1761055597749,
-      "contentHash": "bc51f888f32f7c6c26208485265a63d2",
-      "sourceName": "contracts/RecurringSplitter.sol",
-      "solcConfig": {
-        "version": "0.8.25",
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "evmVersion": "paris",
-          "outputSelection": {
-            "*": {
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers",
-                "metadata"
-              ],
-              "": [
-                "ast"
-              ]
-            }
-          }
-        }
-      },
-      "imports": [
-        "@openzeppelin/contracts/token/ERC20/IERC20.sol",
-        "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol",
-        "@openzeppelin/contracts/utils/ReentrancyGuard.sol"
-      ],
-      "versionPragmas": [
-        "^0.8.25"
-      ],
-      "artifacts": [
-        "IAavePool",
-        "IAutomate",
-        "IMorphoVault",
-        "RecurringSplitter"
       ]
     }
   }

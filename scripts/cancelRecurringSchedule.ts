@@ -7,7 +7,7 @@ const hre = hardhat as unknown as any;
 const ethers = hre.ethers;
 
 // Contract address (deployed on Arbitrum Sepolia)
-const RECURRING_SPLITTER_ADDRESS = "0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9";
+const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
 
 async function main() {
   const scheduleId = process.argv[2];
