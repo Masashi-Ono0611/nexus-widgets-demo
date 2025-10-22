@@ -146,6 +146,7 @@ export function ConfigManager({
   scheduleEnabled,
   onLoadConfig,
 }: ConfigManagerProps) {
+  const [mounted, setMounted] = useState(false);
   const { address } = useAccount();
   const publicClient = usePublicClient();
   const { data: walletClient } = useWalletClient();
@@ -163,6 +164,10 @@ export function ConfigManager({
   const [showPublicConfigs, setShowPublicConfigs] = useState(false);
 
   const isRegistryConfigured = !!PAYROLL_CONFIG_REGISTRY_ADDRESS;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (showLoadModal && isRegistryConfigured) {
@@ -375,6 +380,10 @@ export function ConfigManager({
       alert("Failed to delete configuration: " + (error.message || error));
     }
   };
+
+  if (!mounted) {
+    return null;
+  }
 
   if (!isRegistryConfigured) {
     return (
