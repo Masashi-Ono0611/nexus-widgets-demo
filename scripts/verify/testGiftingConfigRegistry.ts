@@ -1,93 +1,142 @@
-import hre from "hardhat";
+import hardhat from "hardhat";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+
+const hre = hardhat as unknown as any;
+const ethers = hre.ethers;
 
 const REGISTRY_ADDRESS = "0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F";
 
 async function main() {
-  console.log("Testing GiftingConfigRegistry...");
+  const network = process.env.HARDHAT_NETWORK || "arbitrumSepolia";
+  console.log(`\n🧪 Testing GiftingConfigRegistry on ${network}...`);
+  console.log(`📍 Contract Address: ${REGISTRY_ADDRESS}`);
 
-  const [signer] = await hre.ethers.getSigners();
-  console.log(`Using account: ${signer.address}`);
+  const [signer] = await ethers.getSigners();
+  console.log(`👤 Signer: ${signer.address}`);
 
-  const GiftingConfigRegistry = await hre.ethers.getContractFactory("GiftingConfigRegistry");
-  const registry = GiftingConfigRegistry.attach(REGISTRY_ADDRESS);
+  const registry = await ethers.getContractAt("GiftingConfigRegistry", REGISTRY_ADDRESS);
 
-  // Test 1: Save a new config
-  console.log("\n1. Saving a new config...");
-  const recipients = [
+  console.log("\n📊 Initial State:");
+  const nextConfigId = await registry.nextConfigId();
+  console.log(`   Next Config ID: ${nextConfigId}`);
+
+  const userConfigCount = await registry.getUserConfigCount(signer.address);
+  console.log(`   User Config Count: ${userConfigCount}`);
+
+  const publicConfigCount = await registry.getPublicConfigCount();
+  console.log(`   Public Config Count: ${publicConfigCount}`);
+
+  console.log("\n💾 Test 1: Save a new configuration");
+  const testRecipients = [
     {
       wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
-      sharePercent: 5000, // 50%
-      strategy: 0, // DIRECT_TRANSFER
+      sharePercent: 5000,
+      strategy: 0,
     },
     {
       wallet: "0x08D811A358850892029251CcC8a565a32fd2dCB8",
-      sharePercent: 3000, // 30%
-      strategy: 1, // AAVE_SUPPLY
+      sharePercent: 3000,
+      strategy: 1,
     },
     {
       wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
-      sharePercent: 2000, // 20%
-      strategy: 2, // MORPHO_DEPOSIT
+      sharePercent: 2000,
+      strategy: 2,
     },
   ];
 
+  console.log("   Saving config...");
   const tx = await registry.saveConfig(
     "Test Gifting Config",
     "Test configuration with 3 recipients",
-    recipients,
-    true // isPublic
+    testRecipients,
+    true
   );
   const receipt = await tx.wait();
-  console.log(`Config saved! Gas used: ${receipt?.gasUsed.toString()}`);
+  console.log(`   ✅ Config saved! Tx: ${receipt.hash}`);
 
-  // Get config ID from event
-  const event = receipt?.logs.find((log: any) => {
-    try {
-      const parsed = registry.interface.parseLog(log);
-      return parsed?.name === "ConfigSaved";
-    } catch {
-      return false;
-    }
-  });
+  const event = receipt.logs
+    .map((log: any) => {
+      try {
+        return registry.interface.parseLog(log);
+      } catch {
+        return null;
+      }
+    })
+    .find((parsed: any) => parsed && parsed.name === "ConfigSaved");
 
-  let configId = 0;
-  if (event) {
-    const parsed = registry.interface.parseLog(event);
-    configId = parsed?.args[0];
-    console.log(`Config ID: ${configId}`);
-  }
+  const configId = event?.args?.configId ?? event?.args?.[0];
+  console.log(`   📝 Config ID: ${configId}`);
 
-  // Test 2: Get config
-  console.log("\n2. Getting config...");
+  console.log("\n📖 Test 2: Load the configuration");
   const config = await registry.getConfig(configId);
-  console.log(`Config name: ${config.name}`);
-  console.log(`Config description: ${config.description}`);
-  console.log(`Recipient count: ${config.recipientCount}`);
-  console.log(`Is public: ${config.isPublic}`);
+  console.log(`   ID: ${config.id}`);
+  console.log(`   Owner: ${config.owner}`);
+  console.log(`   Name: ${config.name}`);
+  console.log(`   Description: ${config.description}`);
+  console.log(`   Recipient Count: ${config.recipientCount}`);
+  console.log(`   Is Public: ${config.isPublic}`);
 
-  // Test 3: Get recipients
-  console.log("\n3. Getting recipients...");
+  console.log("\n🎁 Test 3: Inspect recipients");
   for (let i = 0; i < Number(config.recipientCount); i++) {
     const recipient = await registry.getRecipient(configId, i);
-    console.log(`Recipient ${i}:`);
-    console.log(`  Wallet: ${recipient.wallet}`);
-    console.log(`  Share: ${recipient.sharePercent / 100}%`);
-    console.log(`  Strategy: ${recipient.strategy}`);
+    console.log(`   Recipient ${i + 1}:`);
+    console.log(`     Wallet: ${recipient.wallet}`);
+    console.log(`     Share: ${Number(recipient.sharePercent) / 100}%`);
+    console.log(`     Strategy: ${recipient.strategy}`);
   }
 
-  // Test 4: Get public configs
-  console.log("\n4. Getting public configs...");
-  const publicConfigIds = await registry.getPublicConfigIds();
-  console.log(`Public config count: ${publicConfigIds.length}`);
-  console.log(`Public config IDs: ${publicConfigIds.join(", ")}`);
-
-  // Test 5: Get user configs
-  console.log("\n5. Getting user configs...");
+  console.log("\n📋 Test 4: Get user configs");
   const userConfigIds = await registry.getUserConfigIds(signer.address);
-  console.log(`User config count: ${userConfigIds.length}`);
-  console.log(`User config IDs: ${userConfigIds.join(", ")}`);
+  console.log(`   User has ${userConfigIds.length} config(s)`);
+  userConfigIds.forEach((id: bigint, index: number) => {
+    console.log(`     ${index + 1}. Config ID: ${id}`);
+  });
 
-  console.log("\n✅ All tests completed successfully!");
+  console.log("\n🌐 Test 5: Get public configs");
+  const publicConfigIds = await registry.getPublicConfigIds();
+  console.log(`   ${publicConfigIds.length} public config(s) available`);
+  publicConfigIds.forEach((id: bigint, index: number) => {
+    console.log(`     ${index + 1}. Config ID: ${id}`);
+  });
+
+  console.log("\n✏️  Test 6: Update configuration");
+  const updatedRecipients = [
+    {
+      wallet: "0xC94d68094FA65E991dFfa0A941306E8460876169",
+      sharePercent: 6000,
+      strategy: 0,
+    },
+    {
+      wallet: "0x08D811A358850892029251CcC8a565a32fd2dCB8",
+      sharePercent: 2000,
+      strategy: 1,
+    },
+    {
+      wallet: "0x783140003cFF6C06B230937707eB5222186F0118",
+      sharePercent: 2000,
+      strategy: 3,
+    },
+  ];
+
+  console.log("   Updating config...");
+  const updateTx = await registry.updateConfig(
+    configId,
+    "Updated Gifting Config",
+    "Updated description",
+    updatedRecipients
+  );
+  await updateTx.wait();
+  console.log("   ✅ Config updated!");
+
+  console.log("\n🧹 Test 7: Delete configuration");
+  const deleteTx = await registry.deleteConfig(configId);
+  await deleteTx.wait();
+  console.log("   ✅ Config deleted!");
+
+  console.log("\n✅ All tests completed successfully!\n");
 }
 
 main()

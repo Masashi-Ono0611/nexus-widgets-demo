@@ -6,7 +6,7 @@ export default function PayrollPage() {
   return (
     <main className="container">
       <div>
-        <h1 className="header">Payment splitter</h1>
+        <h1 className="header">Payroll Manager</h1>
         <p className="subheader-main">
           Configure multi-wallet distributions with multiple strategies and time-based schedules.
         </p>

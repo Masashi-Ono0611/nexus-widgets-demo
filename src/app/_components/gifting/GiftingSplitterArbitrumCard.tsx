@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { BridgeAndExecuteButton } from "@avail-project/nexus-widgets";
+import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation, FLEXIBLE_SPLITTER_ADDRESS } from "./types";
 import { isValidAddress, toContractRecipients, totalShare, sumPercent, buildFlatRecipientsFromGroups } from "./utils";
@@ -199,12 +199,22 @@ function GiftingSplitterArbitrumCardInner() {
 
   const isValid = validationMessages.length === 0;
 
-  const buildFunctionParams = (token: string, amount: string, chainId: number) => {
-    const USDC_ADDRESS = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831"; // Arbitrum Sepolia USDC
-    const amountWei = parseUnits(amount, 6);
+  const prefillConfig = useMemo(() => {
+    const base = { toChainId: 421614 as const, token: "USDC" as const };
+    const total = parseFloat(totalAmount);
+    if (total && total > 0) {
+      return { ...base, amount: String(total) };
+    }
+    return base;
+  }, [totalAmount]);
+
+  const buildFunctionParams = (token: string, amount: string, chainId: number, userAddress?: string) => {
+    const decimals = TOKEN_METADATA[token].decimals;
+    const amountWei = parseUnits(amount, decimals);
+    const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
     const contractRecipients = toContractRecipients(flatRecipients);
     return {
-      functionParams: [USDC_ADDRESS, amountWei, contractRecipients] as const,
+      functionParams: [tokenAddress, amountWei, contractRecipients] as const,
     };
   };
 
@@ -281,10 +291,7 @@ function GiftingSplitterArbitrumCardInner() {
           contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
           contractAbi={FLEXIBLE_SPLITTER_ABI}
           functionName="distributeTokens"
-          prefill={{
-            toChainId: 421614,
-            token: "USDC",
-          }}
+          prefill={prefillConfig}
           buildFunctionParams={buildFunctionParams}
         >
           {({ onClick, isLoading }) => (

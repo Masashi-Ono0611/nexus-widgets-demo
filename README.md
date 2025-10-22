@@ -225,6 +225,15 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   2. **Load** – open "📂 Load", browse public + owned configs, and hydrate the form with a single click
   3. **Update** – after loading, use "✏️ Update Save" to push edits back on-chain
 
+### 14. Gifting Splitter (Arbitrum)
+- **UI**: `GiftingSplitterArbitrumCard.tsx`
+- **Description**: Percentage-based gifting workflows powered by the on-chain `FlexibleSplitter` on Arbitrum Sepolia. Configure up to five recipient groups, each with four DeFi strategy allocations, then execute instantly through Nexus Widgets.
+- **Features**:
+  - Total amount prefill automatically syncs with the Nexus Widget bridge form
+  - Strategy presets (Even / 60-30-10-0 / Normalize) per recipient group for rapid configuration
+  - Config save/load/update flows reuse the on-chain `GiftingConfigRegistry` (`0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F`)
+  - Supports the same four strategies as payroll: Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap (USDC→WETH)
+
 ## Issues Found
 
 ### 1. AAVE Markets USDC Compatibility

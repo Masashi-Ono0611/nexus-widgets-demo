@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import { GiftingSplitterArbitrumCard } from "./_components/gifting/GiftingSplitterArbitrumCard";
 
 export default function Home() {
   return (
@@ -11,9 +11,15 @@ export default function Home() {
       </div>
 
       <div className="action-bar">
-        <a href="/payroll" className="btn btn-primary">Go to Payroll</a>
-        <a href="/gifting" className="btn btn-primary">Go to Gifting</a>
-        <a href="/tools" className="btn btn-accent">Go to Tools</a>
+        <a href="/payroll" className="btn btn-primary">
+          Go to Payroll
+        </a>
+        <a href="/gifting" className="btn btn-primary">
+          Go to Gifting
+        </a>
+        <a href="/tools" className="btn btn-accent">
+          Go to Tools
+        </a>
       </div>
     </main>
   );
