@@ -33,19 +33,7 @@ const FLEXIBLE_SPLITTER_ABI = [
 ] as const;
 
 function GiftingSplitterArbitrumCardInner() {
-  const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([
-    {
-      wallet: "",
-      sharePercent: "100",
-      strategies: [
-        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "100" },
-        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
-        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "0" },
-        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
-      ],
-    },
-  ]);
-  const [totalAmount, setTotalAmount] = useState("");
+  const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([]);
 
   const handleLoadConfig = (loadedRecipients: Recipient[]) => {
     // Convert flat recipients to RecipientGroups
@@ -79,16 +67,7 @@ function GiftingSplitterArbitrumCardInner() {
       groups.push({ wallet, sharePercent: data.sharePercent.toString(), strategies });
     });
     
-    setRecipientGroups(groups.length > 0 ? groups : [{
-      wallet: "",
-      sharePercent: "100",
-      strategies: [
-        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "100" },
-        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
-        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "0" },
-        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
-      ],
-    }]);
+    setRecipientGroups(groups.length > 0 ? groups : []);
   };
 
   const addRecipientGroup = () => {
@@ -114,7 +93,9 @@ function GiftingSplitterArbitrumCardInner() {
 
   const removeRecipientGroup = (index: number) => {
     if (recipientGroups.length <= 1) {
-      alert("At least one recipient required");
+      if (recipientGroups.length === 1) {
+        alert("At least one recipient required");
+      }
       return;
     }
     setRecipientGroups(recipientGroups.filter((_, i) => i !== index));
@@ -185,28 +166,19 @@ function GiftingSplitterArbitrumCardInner() {
 
   const validationMessages = useMemo(() => {
     const msgs: string[] = [];
-    if (Math.abs(totalRecipientPercent - 100) >= 0.01) msgs.push("Recipients Total must be 100%");
+    if (recipientGroups.length > 0 && Math.abs(totalRecipientPercent - 100) >= 0.01) msgs.push("Recipients Total must be 100%");
     recipientGroups.forEach((g, i) => {
       const s = sumPercent(g.strategies.map((x) => x.subPercent));
       if (Math.abs(s - 100) >= 0.01) msgs.push(`Recipient ${i + 1}: Strategies Total must be 100%`);
       if (!isValidAddress(g.wallet)) msgs.push(`Recipient ${i + 1}: Invalid address`);
     });
     if (flatRecipients.length > 20) msgs.push("Recipients exceed 20");
-    const amt = parseFloat(totalAmount);
-    if (!totalAmount || isNaN(amt) || amt <= 0) msgs.push("Total amount must be greater than 0");
     return msgs;
-  }, [recipientGroups, totalRecipientPercent, flatRecipients, totalAmount]);
+  }, [recipientGroups, totalRecipientPercent, flatRecipients]);
 
   const isValid = validationMessages.length === 0;
 
-  const prefillConfig = useMemo(() => {
-    const base = { toChainId: 421614 as const, token: "USDC" as const };
-    const total = parseFloat(totalAmount);
-    if (total && total > 0) {
-      return { ...base, amount: String(total) };
-    }
-    return base;
-  }, [totalAmount]);
+  const prefillConfig = useMemo(() => ({ toChainId: 421614 as const, token: "USDC" as const }), []);
 
   const buildFunctionParams = (token: string, amount: string, chainId: number, userAddress?: string) => {
     const decimals = TOKEN_METADATA[token].decimals;
@@ -222,22 +194,7 @@ function GiftingSplitterArbitrumCardInner() {
     <div className="card">
       <h3>Gifting Splitter (Arbitrum Sepolia)</h3>
 
-      <TotalsSummary recipients={flatRecipients} totalAmount={totalAmount} />
-
-      <div style={{ marginBottom: "1rem" }}>
-        <label className="field">
-          <span>Total Amount (USDC)</span>
-          <input
-            type="number"
-            min="0"
-            step="0.000001"
-            placeholder="e.g., 100"
-            value={totalAmount}
-            onChange={(e) => setTotalAmount(e.target.value)}
-            className="input"
-          />
-        </label>
-      </div>
+      <TotalsSummary recipientGroups={recipientGroups} />
 
       <div style={{ marginBottom: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
