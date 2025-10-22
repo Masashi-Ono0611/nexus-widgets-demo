@@ -13,6 +13,7 @@ interface SaveConfigModalProps {
   isSaving: boolean;
   title: string;
   saveButtonText: string;
+  showPublicToggle?: boolean;
 }
 
 export function SaveConfigModal({
@@ -28,6 +29,7 @@ export function SaveConfigModal({
   isSaving,
   title,
   saveButtonText,
+  showPublicToggle = true,
 }: SaveConfigModalProps) {
   if (!isOpen) return null;
 
@@ -80,12 +82,14 @@ export function SaveConfigModal({
             style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
           />
         </div>
-        <div style={{ marginBottom: "1rem" }}>
-          <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-            <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
-            <span>Make this configuration public (others can view and copy)</span>
-          </label>
-        </div>
+        {showPublicToggle && (
+          <div style={{ marginBottom: "1rem" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
+              <span>Make this configuration public (others can view and copy)</span>
+            </label>
+          </div>
+        )}
         <div style={{ display: "flex", gap: "0.5rem" }}>
           <button
             onClick={onSave}

@@ -72,8 +72,7 @@ function ConfigManagerComponent({
       walletGroups,
       scheduleEnabled,
       intervalMinutes,
-      maxExecutions,
-      isPublic
+      maxExecutions
     );
 
     if (success) {
@@ -175,6 +174,7 @@ function ConfigManagerComponent({
         isSaving={isSaving}
         title="Update Configuration"
         saveButtonText="Update"
+        showPublicToggle={false}
       />
 
       <LoadConfigModal

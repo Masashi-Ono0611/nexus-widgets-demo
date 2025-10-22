@@ -125,8 +125,7 @@ export function useConfigRegistry(
     walletGroups: WalletGroup[],
     scheduleEnabled: boolean,
     intervalMinutes: string,
-    maxExecutions: string,
-    isPublic: boolean
+    maxExecutions: string
   ) => {
     if (!signer || !address || !provider) {
       alert("Please connect your wallet");
