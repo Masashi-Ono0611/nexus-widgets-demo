@@ -3,6 +3,7 @@ import { ethers } from "ethers";
 import { WalletGroup, DeFiStrategy, PAYROLL_CONFIG_REGISTRY_ADDRESS } from "../../types";
 import { SavedConfig } from "./types";
 import { REGISTRY_ABI } from "./abi";
+import { useToast } from "../../../common/ToastProvider";
 
 export function useConfigRegistry(
   provider: ethers.BrowserProvider | null,
@@ -12,6 +13,7 @@ export function useConfigRegistry(
   const [configs, setConfigs] = useState<SavedConfig[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const { showSuccess, showError, showInfo } = useToast();
 
   const loadConfigList = async () => {
     if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return;
@@ -63,7 +65,7 @@ export function useConfigRegistry(
       setConfigs(loadedConfigs);
     } catch (error) {
       console.error("Failed to load configs:", error);
-      alert("Failed to load configurations");
+      showError("Failed to load configurations");
     } finally {
       setIsLoading(false);
     }
@@ -79,17 +81,17 @@ export function useConfigRegistry(
     isPublic: boolean
   ) => {
     if (!signer || !address || !provider) {
-      alert("Please connect your wallet");
+      showInfo("Please connect your wallet");
       return;
     }
 
     if (!PAYROLL_CONFIG_REGISTRY_ADDRESS) {
-      alert("Registry contract not configured");
+      showError("Registry contract not configured");
       return;
     }
 
     if (!configName.trim()) {
-      alert("Please enter a configuration name");
+      showInfo("Please enter a configuration name");
       return;
     }
 
@@ -127,11 +129,11 @@ export function useConfigRegistry(
       const hash = receipt.hash;
 
       console.log("Transaction hash:", hash);
-      alert("Configuration saved successfully! Tx: " + hash);
+      showSuccess("Configuration saved successfully");
       return true;
     } catch (error: any) {
       console.error("Failed to save config:", error);
-      alert("Failed to save configuration: " + (error.message || error));
+      showError("Failed to save configuration: " + (error.message || error));
       return false;
     } finally {
       setIsSaving(false);
@@ -148,12 +150,12 @@ export function useConfigRegistry(
     maxExecutions: string
   ) => {
     if (!signer || !address || !provider) {
-      alert("Please connect your wallet");
+      showInfo("Please connect your wallet");
       return;
     }
 
     if (!configName.trim()) {
-      alert("Please enter a configuration name");
+      showInfo("Please enter a configuration name");
       return;
     }
 
@@ -191,11 +193,11 @@ export function useConfigRegistry(
       const hash = receipt.hash;
 
       console.log("Transaction hash:", hash);
-      alert("Configuration updated successfully! Tx: " + hash);
+      showSuccess("Configuration updated successfully");
       return true;
     } catch (error: any) {
       console.error("Failed to update config:", error);
-      alert("Failed to update configuration: " + (error.message || error));
+      showError("Failed to update configuration: " + (error.message || error));
       return false;
     } finally {
       setIsSaving(false);
@@ -256,7 +258,7 @@ export function useConfigRegistry(
       };
     } catch (error) {
       console.error("Failed to load config:", error);
-      alert("Failed to load configuration");
+      showError("Failed to load configuration");
       return null;
     } finally {
       setIsLoading(false);
@@ -265,13 +267,11 @@ export function useConfigRegistry(
 
   const deleteConfig = async (configId: bigint) => {
     if (!signer || !address || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
-      alert("Please connect your wallet");
+      showInfo("Please connect your wallet");
       return;
     }
 
-    if (!confirm("Are you sure you want to delete this configuration?")) {
-      return;
-    }
+    // confirmはUI側に任せる想定。ここではそのまま実行。
 
     try {
       const contract = new ethers.Contract(
@@ -285,11 +285,11 @@ export function useConfigRegistry(
       const hash = receipt.hash;
 
       console.log("Delete transaction hash:", hash);
-      alert("Configuration deleted successfully!");
+      showSuccess("Configuration deleted successfully");
       loadConfigList();
     } catch (error: any) {
       console.error("Failed to delete config:", error);
-      alert("Failed to delete configuration: " + (error.message || error));
+      showError("Failed to delete configuration: " + (error.message || error));
     }
   };
 

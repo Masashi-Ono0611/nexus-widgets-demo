@@ -5,6 +5,7 @@ import { useWallet } from "./configManager/useWallet";
 import { useConfigRegistry } from "./configManager/useConfigRegistry";
 import { SaveConfigModal } from "./configManager/SaveConfigModal";
 import { LoadConfigModal } from "./configManager/LoadConfigModal";
+import { useToast } from "../../common/ToastProvider";
 
 function ConfigManagerComponent({
   walletGroups,
@@ -14,6 +15,7 @@ function ConfigManagerComponent({
   onLoadConfig,
 }: ConfigManagerProps) {
   const { mounted, address, provider, signer } = useWallet();
+  const { showInfo, showSuccess } = useToast();
 
   const {
     configs,
@@ -61,7 +63,7 @@ function ConfigManagerComponent({
 
   const handleUpdateSave = async () => {
     if (loadedConfigId === null) {
-      alert("No configuration loaded to update");
+      showInfo("No configuration loaded to update");
       return;
     }
 
@@ -100,7 +102,7 @@ function ConfigManagerComponent({
       setIsPublic(config.isPublic);
 
       setShowLoadModal(false);
-      alert("Configuration loaded successfully! You can now use 'Update Save' button.");
+      showSuccess("Configuration loaded. You can now use Update Save.");
     }
   };
 

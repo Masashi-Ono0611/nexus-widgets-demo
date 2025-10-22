@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { SavedConfig } from "./types";
 
 interface LoadConfigModalProps {
@@ -22,7 +23,7 @@ export function LoadConfigModal({
 }: LoadConfigModalProps) {
   if (!isOpen) return null;
 
-  return (
+  const modal = (
     <div
       style={{
         position: "fixed",
@@ -31,9 +32,9 @@ export function LoadConfigModal({
         right: 0,
         bottom: 0,
         display: "flex",
-        alignItems: "flex-end",
+        alignItems: "center",
         justifyContent: "center",
-        paddingBottom: "2rem",
+        background: "rgba(0,0,0,0.2)",
         zIndex: 1000,
       }}
       onClick={onClose}
@@ -126,4 +127,6 @@ export function LoadConfigModal({
       </div>
     </div>
   );
+
+  return createPortal(modal, document.body);
 }
