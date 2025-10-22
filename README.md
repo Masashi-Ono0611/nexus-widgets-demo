@@ -200,10 +200,11 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **Contract**: `PayrollConfigRegistry.sol` (Deploy with `pnpm run deploy:payroll-config-registry`)
 - **Description**: On-chain storage for payroll configuration presets. Save, load, and share payroll configurations without relying on centralized databases.
 - **Features**:
+  - **Flexible contract address**: No hardcoded addresses - users input contract address via UI
   - **Save configurations**: Store wallet groups, strategy allocations, and schedule settings on-chain
-  - **Load configurations**: Retrieve and reuse saved configurations
+  - **Load configurations**: Anyone can load configurations from any contract address
   - **Public/Private**: Choose whether to share configurations publicly
-  - **Delete configurations**: Remove unwanted configurations
+  - **Delete/Update**: Only configuration owner can delete or update their configurations
   - **Wallet-based**: No account registration required, uses connected wallet
   - **Transparent**: All configurations are verifiable on-chain
   - **Permanent**: Configurations persist as long as the contract exists
@@ -212,16 +213,22 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   # Deploy to Arbitrum Sepolia
   pnpm run deploy:payroll-config-registry
   
-  # Update PAYROLL_CONFIG_REGISTRY_ADDRESS in src/app/_components/payroll/types.ts
+  # Copy the deployed contract address
+  # Users will input this address in the UI when saving/loading
   
   # Test the contract
   pnpm run test:payroll-config-registry
   ```
+- **How to Use**:
+  1. **Save**: Click "💾 Save Configuration", enter contract address, fill in details, and save
+  2. **Load**: Click "📂 Load Configuration", enter contract address, and browse available configs
+  3. **Share**: Share your contract address with others so they can load your public configurations
 - **Use Cases**:
   - Save monthly payroll templates
-  - Share payroll configurations with team members
+  - Share payroll configurations with team members (share contract address)
   - Reuse complex multi-recipient setups
   - Version control for payroll changes
+  - Multiple teams can deploy their own registry contracts
 
 ## Issues Found
 

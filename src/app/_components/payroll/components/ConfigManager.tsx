@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { WalletGroup, DeFiStrategy, PAYROLL_CONFIG_REGISTRY_ADDRESS } from "../types";
+import { WalletGroup, DeFiStrategy } from "../types";
 
 interface ConfigManagerProps {
   walletGroups: WalletGroup[];
@@ -161,10 +161,8 @@ export function ConfigManager({
   const [userConfigs, setUserConfigs] = useState<SavedConfig[]>([]);
   const [publicConfigs, setPublicConfigs] = useState<SavedConfig[]>([]);
   const [showPublicConfigs, setShowPublicConfigs] = useState(false);
-  const [directConfigId, setDirectConfigId] = useState("");
-  const [showDirectLoad, setShowDirectLoad] = useState(false);
-
-  const isRegistryConfigured = !!PAYROLL_CONFIG_REGISTRY_ADDRESS;
+  const [registryAddress, setRegistryAddress] = useState("");
+  const [loadRegistryAddress, setLoadRegistryAddress] = useState("");
 
   useEffect(() => {
     setMounted(true);
@@ -211,18 +209,18 @@ export function ConfigManager({
   }, []);
 
   useEffect(() => {
-    if (showLoadModal && isRegistryConfigured) {
+    if (showLoadModal && loadRegistryAddress && ethers.isAddress(loadRegistryAddress)) {
       loadConfigList();
     }
-  }, [showLoadModal, showPublicConfigs]);
+  }, [showLoadModal, showPublicConfigs, loadRegistryAddress]);
 
   const loadConfigList = async () => {
-    if (!provider || !address) return;
+    if (!provider || !loadRegistryAddress) return;
 
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        loadRegistryAddress,
         REGISTRY_ABI,
         provider
       );
@@ -264,6 +262,16 @@ export function ConfigManager({
       return;
     }
 
+    if (!registryAddress.trim()) {
+      alert("Please enter a registry contract address");
+      return;
+    }
+
+    if (!ethers.isAddress(registryAddress)) {
+      alert("Invalid contract address");
+      return;
+    }
+
     if (!configName.trim()) {
       alert("Please enter a configuration name");
       return;
@@ -288,7 +296,7 @@ export function ConfigManager({
       };
 
       const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        registryAddress,
         REGISTRY_ABI,
         signer
       );
@@ -320,12 +328,12 @@ export function ConfigManager({
   };
 
   const handleLoad = async (configId: bigint) => {
-    if (!provider) return;
+    if (!provider || !loadRegistryAddress) return;
 
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        loadRegistryAddress,
         REGISTRY_ABI,
         provider
       );
@@ -383,7 +391,7 @@ export function ConfigManager({
   };
 
   const handleDelete = async (configId: bigint) => {
-    if (!signer || !address) {
+    if (!signer || !address || !loadRegistryAddress) {
       alert("Please connect your wallet");
       return;
     }
@@ -394,7 +402,7 @@ export function ConfigManager({
 
     try {
       const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        loadRegistryAddress,
         REGISTRY_ABI,
         signer
       );
@@ -414,16 +422,6 @@ export function ConfigManager({
 
   if (!mounted) {
     return null;
-  }
-
-  if (!isRegistryConfigured) {
-    return (
-      <div style={{ marginBottom: "1rem", padding: "1rem", background: "#FFF3CD", borderRadius: "8px" }}>
-        <p style={{ margin: 0, color: "#856404" }}>
-          ⚠️ PayrollConfigRegistry not deployed yet. Deploy the contract first.
-        </p>
-      </div>
-    );
   }
 
   return (
@@ -466,6 +464,21 @@ export function ConfigManager({
           >
             <h3 style={{ marginTop: 0 }}>Save Configuration</h3>
             <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                Registry Contract Address *
+              </label>
+              <input
+                type="text"
+                value={registryAddress}
+                onChange={(e) => setRegistryAddress(e.target.value)}
+                placeholder="0x..."
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+              />
+              <small style={{ color: "#666", fontSize: "0.85em" }}>
+                Enter the PayrollConfigRegistry contract address
+              </small>
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Name *</label>
               <input
                 type="text"
@@ -485,15 +498,10 @@ export function ConfigManager({
                 style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
               />
             </div>
-            <div style={{ marginBottom: "1rem", padding: "1rem", background: "#E3F2FD", borderRadius: "8px" }}>
-              <p style={{ margin: 0, fontSize: "0.9em", color: "#1565C0" }}>
-                💡 <strong>Note:</strong> All configurations can be loaded by anyone who knows the Config ID. Only you can edit or delete your configurations.
-              </p>
-            </div>
             <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
-                <span>List in public directory (helps others discover your config)</span>
+                <span>Make this configuration public (others can view and copy)</span>
               </label>
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -544,152 +552,105 @@ export function ConfigManager({
           >
             <h3 style={{ marginTop: 0 }}>Load Configuration</h3>
 
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                Registry Contract Address *
+              </label>
+              <input
+                type="text"
+                value={loadRegistryAddress}
+                onChange={(e) => setLoadRegistryAddress(e.target.value)}
+                placeholder="0x..."
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+              />
+              <small style={{ color: "#666", fontSize: "0.85em" }}>
+                Enter any PayrollConfigRegistry contract address to load configurations
+              </small>
+            </div>
+
             <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
               <button
-                onClick={() => setShowDirectLoad(false)}
+                onClick={() => setShowPublicConfigs(false)}
                 className="btn"
                 style={{
                   flex: 1,
-                  background: !showDirectLoad ? "#2196F3" : "#e0e0e0",
-                  color: !showDirectLoad ? "white" : "black",
+                  background: !showPublicConfigs ? "#2196F3" : "#e0e0e0",
+                  color: !showPublicConfigs ? "white" : "black",
                 }}
               >
-                📋 Browse
+                My Configs
               </button>
               <button
-                onClick={() => setShowDirectLoad(true)}
+                onClick={() => setShowPublicConfigs(true)}
                 className="btn"
                 style={{
                   flex: 1,
-                  background: showDirectLoad ? "#2196F3" : "#e0e0e0",
-                  color: showDirectLoad ? "white" : "black",
+                  background: showPublicConfigs ? "#2196F3" : "#e0e0e0",
+                  color: showPublicConfigs ? "white" : "black",
                 }}
               >
-                🔗 Load by ID
+                Public Configs
               </button>
             </div>
 
-            {showDirectLoad ? (
-              <div>
-                <div style={{ marginBottom: "1rem", padding: "1rem", background: "#E8F5E9", borderRadius: "8px" }}>
-                  <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.9em", color: "#2E7D32" }}>
-                    💡 <strong>Load any configuration by ID</strong>
-                  </p>
-                  <p style={{ margin: 0, fontSize: "0.85em", color: "#558B2F" }}>
-                    Enter a Config ID to load any configuration, regardless of who created it. You can only edit/delete your own configurations.
-                  </p>
-                </div>
-                <div style={{ marginBottom: "1rem" }}>
-                  <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Config ID</label>
-                  <input
-                    type="text"
-                    value={directConfigId}
-                    onChange={(e) => setDirectConfigId(e.target.value)}
-                    placeholder="e.g., 0, 1, 2..."
-                    style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-                  />
-                </div>
-                <button
-                  onClick={() => {
-                    const id = directConfigId.trim();
-                    if (id && !isNaN(Number(id))) {
-                      handleLoad(BigInt(id));
-                    } else {
-                      alert("Please enter a valid Config ID (number)");
-                    }
-                  }}
-                  disabled={!directConfigId.trim() || isNaN(Number(directConfigId.trim()))}
-                  className="btn btn-primary"
-                  style={{ width: "100%", marginBottom: "1rem" }}
-                >
-                  Load Configuration
-                </button>
-              </div>
+            {isLoading ? (
+              <p>Loading...</p>
             ) : (
               <div>
-                <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
-                  <button
-                    onClick={() => setShowPublicConfigs(false)}
-                    className="btn"
-                    style={{
-                      flex: 1,
-                      background: !showPublicConfigs ? "#4CAF50" : "#e0e0e0",
-                      color: !showPublicConfigs ? "white" : "black",
-                    }}
-                  >
-                    My Configs
-                  </button>
-                  <button
-                    onClick={() => setShowPublicConfigs(true)}
-                    className="btn"
-                    style={{
-                      flex: 1,
-                      background: showPublicConfigs ? "#4CAF50" : "#e0e0e0",
-                      color: showPublicConfigs ? "white" : "black",
-                    }}
-                  >
-                    Public Directory
-                  </button>
-                </div>
-
-                {isLoading ? (
-                  <p>Loading...</p>
+                {(showPublicConfigs ? publicConfigs : userConfigs).length === 0 ? (
+                  <p style={{ textAlign: "center", color: "#666" }}>
+                    No configurations found
+                  </p>
                 ) : (
-                  <div>
-                    {(showPublicConfigs ? publicConfigs : userConfigs).length === 0 ? (
-                      <p style={{ textAlign: "center", color: "#666" }}>
-                        No configurations found
-                      </p>
-                    ) : (
-                      (showPublicConfigs ? publicConfigs : userConfigs).map((config) => (
-                        <div
-                          key={config.id.toString()}
-                          style={{
-                            border: "1px solid #ddd",
-                            borderRadius: "8px",
-                            padding: "1rem",
-                            marginBottom: "0.5rem",
-                          }}
-                        >
-                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
-                            <div style={{ flex: 1 }}>
-                              <h4 style={{ margin: "0 0 0.5rem 0" }}>
-                                {config.name}
-                                <span style={{ marginLeft: "0.5rem", fontSize: "0.8em", color: "#999" }}>ID: {config.id.toString()}</span>
-                              </h4>
-                              {config.description && (
-                                <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.9em", color: "#666" }}>
-                                  {config.description}
-                                </p>
-                              )}
-                              <p style={{ margin: 0, fontSize: "0.85em", color: "#999" }}>
-                                {Number(config.walletGroupCount)} wallet group(s) • Owner: {config.owner.slice(0, 6)}...
-                                {config.owner.slice(-4)}
-                              </p>
-                            </div>
-                            <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
-                              <button
-                                onClick={() => handleLoad(config.id)}
-                                className="btn"
-                                style={{ background: "#4CAF50", padding: "0.5rem 1rem" }}
-                              >
-                                Load
-                              </button>
-                              {address?.toLowerCase() === config.owner.toLowerCase() && (
-                                <button
-                                  onClick={() => handleDelete(config.id)}
-                                  className="btn"
-                                  style={{ background: "#f44336", padding: "0.5rem 1rem" }}
-                                >
-                                  Delete
-                                </button>
-                              )}
-                            </div>
-                          </div>
+                  (showPublicConfigs ? publicConfigs : userConfigs).map((config) => (
+                    <div
+                      key={config.id.toString()}
+                      style={{
+                        border: "1px solid #ddd",
+                        borderRadius: "8px",
+                        padding: "1rem",
+                        marginBottom: "0.5rem",
+                      }}
+                    >
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                        <div style={{ flex: 1 }}>
+                          <h4 style={{ margin: "0 0 0.5rem 0" }}>
+                            {config.name}
+                            {config.isPublic && (
+                              <span style={{ marginLeft: "0.5rem", fontSize: "0.8em", color: "#666" }}>🌐 Public</span>
+                            )}
+                          </h4>
+                          {config.description && (
+                            <p style={{ margin: "0 0 0.5rem 0", fontSize: "0.9em", color: "#666" }}>
+                              {config.description}
+                            </p>
+                          )}
+                          <p style={{ margin: 0, fontSize: "0.85em", color: "#999" }}>
+                            {Number(config.walletGroupCount)} wallet group(s) • Owner: {config.owner.slice(0, 6)}...
+                            {config.owner.slice(-4)}
+                          </p>
                         </div>
-                      ))
-                    )}
-                  </div>
+                        <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
+                          <button
+                            onClick={() => handleLoad(config.id)}
+                            className="btn"
+                            style={{ background: "#4CAF50", padding: "0.5rem 1rem" }}
+                          >
+                            Load
+                          </button>
+                          {!showPublicConfigs && address?.toLowerCase() === config.owner.toLowerCase() && (
+                            <button
+                              onClick={() => handleDelete(config.id)}
+                              className="btn"
+                              style={{ background: "#f44336", padding: "0.5rem 1rem" }}
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))
                 )}
               </div>
             )}
