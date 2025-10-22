@@ -63,6 +63,43 @@ const REGISTRY_ABI = [
     outputs: [{ name: "configId", type: "uint256" }],
   },
   {
+    name: "updateConfig",
+    type: "function",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "configId", type: "uint256" },
+      { name: "name", type: "string" },
+      { name: "description", type: "string" },
+      {
+        name: "walletGroups",
+        type: "tuple[]",
+        components: [
+          { name: "wallet", type: "address" },
+          { name: "walletAmount", type: "uint256" },
+          {
+            name: "strategies",
+            type: "tuple[]",
+            components: [
+              { name: "strategy", type: "uint8" },
+              { name: "subPercent", type: "uint16" },
+            ],
+          },
+        ],
+      },
+      {
+        name: "schedule",
+        type: "tuple",
+        components: [
+          { name: "enabled", type: "bool" },
+          { name: "intervalMinutes", type: "uint256" },
+          { name: "maxExecutions", type: "uint256" },
+        ],
+      },
+      { name: "isPublic", type: "bool" },
+    ],
+    outputs: [],
+  },
+  {
     name: "getConfig",
     type: "function",
     stateMutability: "view",
@@ -324,7 +361,7 @@ function ConfigManagerComponent({
       return;
     }
 
-    if (!loadedConfigId) {
+    if (loadedConfigId === null) {
       alert("No configuration loaded to update");
       return;
     }
