@@ -155,7 +155,7 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **Description**: Bridge USDC and split deposit to Morpho Vault between two addresses on Base Sepolia.
 
 ### 10. Delayed Transfer (Base)
-- **UI**: `DelayedTransferCard.tsx`
+- **UI**: `DelayedTransferBaseCard.tsx`
 - **Contract**: `DelayedTransfer.sol` (`0x9B31E6D589657d37fFf3d8D8f3699C8d28c4B8F9`)
 - **Description**: Schedule token transfers with customizable delay (1 minute to 365 days) on Base Sepolia. Gelato Automate automatically executes transfers when the delay period expires.
 - **Features**:
@@ -165,7 +165,7 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Manual execution available
 
 ### 11. Flexible Token Splitter (Arbitrum)
-- **UI**: `FlexibleSplitterCard.tsx`
+- **UI**: `FlexibleSplitterArbitrumCard.tsx`
 - **Contract**: `FlexibleSplitter.sol` (`0xF0D2995090a680F188100b364d1f499A5Ab130fF`)
 - **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Arbitrum Sepolia.
 - **Features**:
@@ -177,7 +177,7 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
     - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
 
 ### 12. Recurring Token Splitter (Arbitrum)
-- **UI**: `RecurringSplitterCard.tsx`
+- **UI**: `RecurringSplitterArbitrumCard.tsx`
 - **Contract**: `RecurringSplitter.sol` (`0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9`)
 - **Description**: Create recurring token distributions with Gelato automation on Arbitrum Sepolia.
 - **Features**:

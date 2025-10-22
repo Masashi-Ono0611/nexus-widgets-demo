@@ -9,9 +9,9 @@ import { MorphoSupplyBaseCard } from "./_components/morpho/MorphoSupplyBaseCard"
 import { MorphoSplitDepositBaseCard } from "./_components/morpho/MorphoSplitDepositBaseCard";
 import { TransferBaseCard } from "./_components/transfer/TransferBaseCard";
 import { TransferSplitBaseCard } from "./_components/splitter/TransferSplitBaseCard";
-import { DelayedTransferCard } from "./_components/scheduled/DelayedTransferCard";
-import { FlexibleSplitterCard } from "./_components/splitter/FlexibleSplitterCard";
-import { RecurringSplitterCard } from "./_components/scheduled/RecurringSplitterCard";
+import { DelayedTransferBaseCard } from "./_components/scheduled/DelayedTransferBaseCard";
+import { FlexibleSplitterArbitrumCard } from "./_components/splitter/FlexibleSplitterArbitrumCard";
+import { RecurringSplitterArbitrumCard } from "./_components/scheduled/RecurringSplitterArbitrumCard";
 
 
 export default function Home() {
@@ -77,9 +77,9 @@ export default function Home() {
         <SplitSupplyArbitrumCard />
         <MorphoSupplyBaseCard />
         <MorphoSplitDepositBaseCard />
-        <DelayedTransferCard />
-        <FlexibleSplitterCard />
-        <RecurringSplitterCard />
+        <DelayedTransferBaseCard />
+        <FlexibleSplitterArbitrumCard />
+        <RecurringSplitterArbitrumCard />
       </section>
     </main>
   );

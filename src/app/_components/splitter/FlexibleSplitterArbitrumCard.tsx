@@ -31,7 +31,7 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
 
-export function FlexibleSplitterCard() {
+export function FlexibleSplitterArbitrumCard() {
   const [recipients, setRecipients] = useState<Recipient[]>([
     {
       wallet: "",
