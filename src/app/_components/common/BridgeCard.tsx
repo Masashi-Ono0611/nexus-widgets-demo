@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { BridgeButton } from "@avail-project/nexus-widgets";
-import styles from "../components.module.css";
+import styles from "../../components.module.css";
 
 export function BridgeCard() {
   return (

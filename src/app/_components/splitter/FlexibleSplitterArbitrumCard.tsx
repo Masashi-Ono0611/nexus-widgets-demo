@@ -8,7 +8,7 @@ import {
 import { parseUnits } from "viem";
 
 // Contract address (deployed on Arbitrum Sepolia)
-const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
+const FLEXIBLE_SPLITTER_ADDRESS = "0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
@@ -31,12 +31,12 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
 
-export function RecurringSplitterCard() {
+export function FlexibleSplitterArbitrumCard() {
   const [recipients, setRecipients] = useState<Recipient[]>([
     {
       wallet: "",
       sharePercent: "50",
-      strategy: DeFiStrategy.MORPHO_DEPOSIT,
+      strategy: DeFiStrategy.DIRECT_TRANSFER,
     },
     {
       wallet: "",
@@ -44,9 +44,6 @@ export function RecurringSplitterCard() {
       strategy: DeFiStrategy.DIRECT_TRANSFER,
     },
   ]);
-
-  const [intervalMinutes, setIntervalMinutes] = useState("60");
-  const [maxExecutions, setMaxExecutions] = useState("3");
 
   const addRecipient = () => {
     if (recipients.length >= 20) {
@@ -97,45 +94,15 @@ export function RecurringSplitterCard() {
     const hasValidAddresses = recipients.every(
       (r) => r.wallet && r.wallet.startsWith("0x") && r.wallet.length === 42
     );
-    const validInterval = parseInt(intervalMinutes) >= 1 && parseInt(intervalMinutes) <= 525600;
-    const validMaxExecutions = parseInt(maxExecutions) >= 0 && parseInt(maxExecutions) <= 1000;
-    return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses && validInterval && validMaxExecutions;
+    return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses;
   };
 
   return (
     <div className="card">
-      <h3>Recurring Token Splitter (Arbitrum Sepolia) 🔄</h3>
+      <h3>Flexible Token Splitter (Arbitrum Sepolia)</h3>
       <p className="text-sm" style={{ marginBottom: "1rem" }}>
-        Create recurring token distributions with Gelato automation
+        Distribute tokens to multiple recipients with different DeFi strategies
       </p>
-
-      {/* Schedule Configuration */}
-      <div style={{ marginBottom: "1rem" }}>
-        <label className="field">
-          <span>Interval (minutes)</span>
-          <input
-            type="number"
-            min="1"
-            max="525600"
-            value={intervalMinutes}
-            onChange={(e) => setIntervalMinutes(e.target.value)}
-            className="input"
-            placeholder="60 = 1 hour, 1440 = 1 day"
-          />
-        </label>
-
-        <label className="field">
-          <span>Max Executions (0 = unlimited)</span>
-          <input
-            type="number"
-            min="0"
-            max="1000"
-            value={maxExecutions}
-            onChange={(e) => setMaxExecutions(e.target.value)}
-            className="input"
-          />
-        </label>
-      </div>
 
       {/* Recipients Configuration */}
       <div style={{ marginBottom: "1rem" }}>
@@ -260,16 +227,16 @@ export function RecurringSplitterCard() {
 
       {/* Bridge and Execute Button */}
       <BridgeAndExecuteButton
-        contractAddress={RECURRING_SPLITTER_ADDRESS}
+        contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
         contractAbi={
           [
             {
-              name: "createSchedule",
+              name: "distributeTokens",
               type: "function",
               stateMutability: "nonpayable",
               inputs: [
                 { name: "asset", type: "address" },
-                { name: "amountPerExecution", type: "uint256" },
+                { name: "amount", type: "uint256" },
                 {
                   name: "recipients",
                   type: "tuple[]",
@@ -279,24 +246,17 @@ export function RecurringSplitterCard() {
                     { name: "strategy", type: "uint8" },
                   ],
                 },
-                { name: "intervalSeconds", type: "uint256" },
-                { name: "maxExecutions", type: "uint256" },
               ],
-              outputs: [{ name: "scheduleId", type: "uint256" }],
+              outputs: [],
             },
           ] as const
         }
-        functionName="createSchedule"
+        functionName="distributeTokens"
         prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
-          const totalAmountWei = parseUnits(amount, decimals);
+          const amountWei = parseUnits(amount, decimals);
           const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
-
-          // Calculate amount per execution
-          // Nexus Widget amount = amountPerExecution × maxExecutions
-          const maxExec = parseInt(maxExecutions);
-          const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
 
           // Convert recipients to contract format
           const contractRecipients = recipients.map((r) => ({
@@ -305,16 +265,8 @@ export function RecurringSplitterCard() {
             strategy: r.strategy,
           }));
 
-          const intervalSeconds = parseInt(intervalMinutes) * 60;
-
           return {
-            functionParams: [
-              tokenAddress,
-              amountPerExecution,
-              contractRecipients,
-              intervalSeconds,
-              maxExec,
-            ],
+            functionParams: [tokenAddress, amountWei, contractRecipients],
           };
         }}
       >
@@ -323,7 +275,7 @@ export function RecurringSplitterCard() {
             onClick={async () => {
               if (!isValidConfiguration()) {
                 alert(
-                  "Please ensure all addresses are valid, total share is 100%, and interval/executions are valid"
+                  "Please ensure all addresses are valid and total share is 100%"
                 );
                 return;
               }
@@ -332,7 +284,7 @@ export function RecurringSplitterCard() {
             disabled={isLoading || !isValidConfiguration()}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Create Recurring Schedule"}
+            {isLoading ? "Processing…" : "Bridge & Distribute Tokens"}
           </button>
         )}
       </BridgeAndExecuteButton>
@@ -348,29 +300,21 @@ export function RecurringSplitterCard() {
           color: "#333",
         }}
       >
-        <strong>How it works:</strong>
+        <strong>Strategy Details:</strong>
         <ul style={{ marginTop: "0.5rem", paddingLeft: "1.5rem" }}>
           <li>
-            <strong>Recurring Distribution:</strong> Automatically distributes tokens at set intervals
+            <strong>Direct Transfer:</strong> Tokens sent directly to recipient
+            wallet
           </li>
           <li>
-            <strong>Gelato Automation:</strong> No manual execution needed after setup
+            <strong>AAVE Supply:</strong> Tokens supplied to AAVE on behalf of
+            recipient
           </li>
           <li>
-            <strong>Flexible Strategies:</strong> Each recipient can have different DeFi strategies
-          </li>
-          <li>
-            <strong>Max Executions:</strong> Set limit or run unlimited (0)
+            <strong>Morpho Deposit:</strong> Tokens deposited to Morpho Vault
+            on behalf of recipient
           </li>
         </ul>
-        <div style={{ marginTop: "0.5rem", color: "#0066cc", background: "#e6f2ff", padding: "0.5rem", borderRadius: "4px" }}>
-          💡 <strong>Amount Calculation:</strong> The total amount you enter will be divided by max executions.
-          <br />
-          Example: 3 USDC with 3 executions = 1 USDC per execution
-        </div>
-        <div style={{ marginTop: "0.5rem", color: "#ff6600" }}>
-          ⚠️ <strong>Important:</strong> The widget will automatically approve the total amount (amount per execution × max executions)
-        </div>
       </div>
     </div>
   );

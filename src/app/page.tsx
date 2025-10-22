@@ -1,20 +1,17 @@
 "use client";
 import React from "react";
 import { useNexus } from "@avail-project/nexus-widgets";
-import { BridgeCard } from "./_components/BridgeCard";
-import { TransferCard } from "./_components/TransferCard";
-import { SupplyOptimismCard } from "./_components/SupplyOptimismCard";
-import { SupplyArbitrumCard } from "./_components/SupplyArbitrumCard";
-import { SplitSupplyArbitrumCard } from "./_components/SplitSupplyArbitrumCard";
-import { SplitSupplyOptimismCard } from "./_components/SplitSupplyOptimismCard";
-import { MorphoSupplyBaseCard } from "./_components/MorphoSupplyBaseCard";
-import { MorphoSplitDepositBaseCard } from "./_components/MorphoSplitDepositBaseCard";
-import { TransferBaseCard } from "./_components/TransferBaseCard";
-import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
-import { UniswapV4SwapCard } from "./_components/UniswapV4SwapCard";
-import { DelayedTransferCard } from "./_components/DelayedTransferCard";
-import { FlexibleSplitterCard } from "./_components/FlexibleSplitterCard";
-import { RecurringSplitterCard } from "./_components/RecurringSplitterCard";
+import { BridgeCard } from "./_components/common/BridgeCard";
+import { TransferCard } from "./_components/transfer/TransferCard";
+import { SupplyArbitrumCard } from "./_components/aave/SupplyArbitrumCard";
+import { SplitSupplyArbitrumCard } from "./_components/aave/SplitSupplyArbitrumCard";
+import { MorphoSupplyBaseCard } from "./_components/morpho/MorphoSupplyBaseCard";
+import { MorphoSplitDepositBaseCard } from "./_components/morpho/MorphoSplitDepositBaseCard";
+import { TransferBaseCard } from "./_components/transfer/TransferBaseCard";
+import { TransferSplitBaseCard } from "./_components/splitter/TransferSplitBaseCard";
+import { DelayedTransferBaseCard } from "./_components/scheduled/DelayedTransferBaseCard";
+import { FlexibleSplitterArbitrumCard } from "./_components/splitter/FlexibleSplitterArbitrumCard";
+import { RecurringSplitterArbitrumCard } from "./_components/scheduled/RecurringSplitterArbitrumCard";
 
 
 export default function Home() {
@@ -76,16 +73,13 @@ export default function Home() {
         <TransferCard />
         <TransferBaseCard />
         <TransferSplitBaseCard />
-        <SupplyOptimismCard />
         <SupplyArbitrumCard />
         <SplitSupplyArbitrumCard />
-        <SplitSupplyOptimismCard />
         <MorphoSupplyBaseCard />
         <MorphoSplitDepositBaseCard />
-        <UniswapV4SwapCard />
-        <DelayedTransferCard />
-        <FlexibleSplitterCard />
-        <RecurringSplitterCard />
+        <DelayedTransferBaseCard />
+        <FlexibleSplitterArbitrumCard />
+        <RecurringSplitterArbitrumCard />
       </section>
     </main>
   );

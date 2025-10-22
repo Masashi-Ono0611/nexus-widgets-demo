@@ -9,7 +9,7 @@ import { parseUnits } from "viem";
 
 const DELAYED_TRANSFER_CONTRACT_ADDRESS = "0x9B31E6D589657d37fFf3d8D8f3699C8d28c4B8F9";
 
-export function DelayedTransferCard() {
+export function DelayedTransferBaseCard() {
   const [recipientAddress, setRecipientAddress] = React.useState("");
   const [delayMinutes, setDelayMinutes] = React.useState("60");
 

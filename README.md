@@ -62,7 +62,7 @@ pnpm run deploy:flexible-splitter
 
 See `package.json` scripts section for all available deployment commands.
 
-**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
+**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deploy/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
 
 ### After Deployment
 
@@ -136,11 +136,7 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **UI**: `TransferSplitBaseCard.tsx`
 - **Description**: Bridge and split transfer on Base Sepolia.
 
-### 5. AAVE Supply (Optimism)
-- **UI**: `SupplyOptimismCard.tsx`
-- **Description**: Bridge USDC and supply to AAVE on Optimism Sepolia.
-
-### 6. AAVE Supply (Arbitrum)
+### 5. AAVE Supply (Arbitrum)
 - **UI**: `SupplyArbitrumCard.tsx`
 - **Description**: Bridge USDC and supply to AAVE on Arbitrum Sepolia.
 
@@ -149,26 +145,17 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **Contract**: `AaveSupplySplitter.sol`
 - **Description**: Bridge USDC and split supply to AAVE between two addresses on Arbitrum Sepolia.
 
-### 8. AAVE Supply Splitter (Optimism)
-- **UI**: `SplitSupplyOptimismCard.tsx`
-- **Contract**: `AaveSupplySplitter.sol`
-- **Description**: Bridge USDC and split supply to AAVE between two addresses on Optimism Sepolia.
-
-### 9. Morpho Supply (Base)
+### 8. Morpho Supply (Base)
 - **UI**: `MorphoSupplyBaseCard.tsx`
 - **Description**: Bridge USDC and supply to Morpho Vault on Base Sepolia.
 
-### 10. Morpho Deposit Splitter (Base)
+### 9. Morpho Deposit Splitter (Base)
 - **UI**: `MorphoSplitDepositBaseCard.tsx`
 - **Contract**: `MorphoDepositSplitter.sol` (`0x104A5ED0a02e95b23D0C29543Ab8Bed5Dd4010eD`)
 - **Description**: Bridge USDC and split deposit to Morpho Vault between two addresses on Base Sepolia.
 
-### 11. Uniswap V4 Swap (Base)
-- **UI**: `UniswapV4SwapCard.tsx`
-- **Description**: Swap tokens using Uniswap V4 on Base Sepolia.
-
-### 12. Delayed Transfer (Base)
-- **UI**: `DelayedTransferCard.tsx`
+### 10. Delayed Transfer (Base)
+- **UI**: `DelayedTransferBaseCard.tsx`
 - **Contract**: `DelayedTransfer.sol` (`0x9B31E6D589657d37fFf3d8D8f3699C8d28c4B8F9`)
 - **Description**: Schedule token transfers with customizable delay (1 minute to 365 days) on Base Sepolia. Gelato Automate automatically executes transfers when the delay period expires.
 - **Features**:
@@ -177,8 +164,8 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Flexible delay time in minutes
   - Manual execution available
 
-### 13. Flexible Token Splitter (Arbitrum) 🆕
-- **UI**: `FlexibleSplitterCard.tsx`
+### 11. Flexible Token Splitter (Arbitrum)
+- **UI**: `FlexibleSplitterArbitrumCard.tsx`
 - **Contract**: `FlexibleSplitter.sol` (`0xF0D2995090a680F188100b364d1f499A5Ab130fF`)
 - **Description**: Distribute tokens to multiple recipients (up to 20) with different DeFi strategies on Arbitrum Sepolia.
 - **Features**:
@@ -189,8 +176,8 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
     - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
     - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
 
-### 14. Recurring Token Splitter (Arbitrum) 🔄🆕
-- **UI**: `RecurringSplitterCard.tsx`
+### 12. Recurring Token Splitter (Arbitrum)
+- **UI**: `RecurringSplitterArbitrumCard.tsx`
 - **Contract**: `RecurringSplitter.sol` (`0x6E5cb8981a716a472Fa6967608714Ab1a9Aae0E9`)
 - **Description**: Create recurring token distributions with Gelato automation on Arbitrum Sepolia.
 - **Features**:

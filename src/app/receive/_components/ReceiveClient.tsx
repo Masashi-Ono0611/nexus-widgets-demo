@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { type TransferParams } from "@avail-project/nexus-widgets";
-import { TransferCard } from "@/app/_components/TransferCard";
+import { TransferCard } from "@/app/_components/transfer/TransferCard";
 
 interface ReceiveClientProps {
   prefill?: Partial<TransferParams>;
