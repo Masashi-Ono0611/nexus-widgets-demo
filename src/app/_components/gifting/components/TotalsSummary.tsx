@@ -2,6 +2,25 @@ import React from "react";
 import { RecipientGroup, RECIPIENT_COLORS, STRATEGY_COLORS, STRATEGY_LABELS } from "../types";
 import { sumPercent } from "../utils";
 
+const PIE_SIZE = 96;
+const PIE_RADIUS = PIE_SIZE / 2 - 4;
+
+function polarToCartesian(cx: number, cy: number, radius: number, angleInDegrees: number) {
+  const angleInRadians = ((angleInDegrees - 90) * Math.PI) / 180;
+  return {
+    x: cx + radius * Math.cos(angleInRadians),
+    y: cy + radius * Math.sin(angleInRadians),
+  };
+}
+
+function describeArc(cx: number, cy: number, radius: number, startAngle: number, endAngle: number) {
+  const start = polarToCartesian(cx, cy, radius, endAngle);
+  const end = polarToCartesian(cx, cy, radius, startAngle);
+  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+
+  return `M ${cx} ${cy} L ${start.x} ${start.y} A ${radius} ${radius} 0 ${largeArcFlag} 0 ${end.x} ${end.y} Z`;
+}
+
 interface TotalsSummaryProps {
   recipientGroups: RecipientGroup[];
 }
@@ -34,8 +53,20 @@ export function TotalsSummary({ recipientGroups }: TotalsSummaryProps) {
       {recipientGroups.map((group, index) => {
         const share = parseFloat(group.sharePercent) || 0;
         const strategiesTotal = sumPercent(group.strategies.map((s) => s.subPercent));
+        const overallSegments = group.strategies.map((strategyAllocation) => {
+          const sub = parseFloat(strategyAllocation.subPercent) || 0;
+          const overall = (share * sub) / 100;
+          return {
+            strategy: strategyAllocation.strategy,
+            sub,
+            overall,
+          };
+        });
+
+        let cumulativeAngle = 0;
+
         return (
-          <div key={index} style={{ marginBottom: "0.85rem" }}>
+          <div key={index} style={{ marginBottom: "1rem" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.35rem" }}>
               <span
                 style={{
@@ -55,36 +86,48 @@ export function TotalsSummary({ recipientGroups }: TotalsSummaryProps) {
               </span>
             </div>
 
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {group.strategies.map((strategyAllocation, si) => {
-                const sub = parseFloat(strategyAllocation.subPercent) || 0;
-                const overall = (share * sub) / 100;
-                return (
-                  <span
-                    key={si}
-                    style={{
-                      display: "inline-flex",
-                      alignItems: "center",
-                      gap: 6,
-                      padding: "0.25rem 0.5rem",
-                      borderRadius: 4,
-                      background: "#f5f5f5",
-                      fontSize: "0.8rem",
-                    }}
-                  >
+            <div style={{ display: "flex", gap: "1rem", alignItems: "center", flexWrap: "wrap" }}>
+              <svg width={PIE_SIZE} height={PIE_SIZE} viewBox={`0 0 ${PIE_SIZE} ${PIE_SIZE}`}>
+                <circle cx={PIE_SIZE / 2} cy={PIE_SIZE / 2} r={PIE_RADIUS} fill="#f5f5f5" />
+                {overallSegments.map((segment, si) => {
+                  const angle = (segment.sub / 100) * 360;
+                  if (angle <= 0) {
+                    return null;
+                  }
+                  const path = describeArc(
+                    PIE_SIZE / 2,
+                    PIE_SIZE / 2,
+                    PIE_RADIUS,
+                    cumulativeAngle,
+                    cumulativeAngle + angle
+                  );
+                  const element = (
+                    <path key={si} d={path} fill={STRATEGY_COLORS[segment.strategy]} stroke="#fff" strokeWidth={1} />
+                  );
+                  cumulativeAngle += angle;
+                  return element;
+                })}
+              </svg>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: "0.85rem", minWidth: "200px" }}>
+                {overallSegments.map((segment, si) => (
+                  <div key={si} style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     <span
                       style={{
                         display: "inline-block",
-                        width: 8,
-                        height: 8,
-                        background: STRATEGY_COLORS[strategyAllocation.strategy],
+                        width: 10,
+                        height: 10,
+                        background: STRATEGY_COLORS[segment.strategy],
                         borderRadius: 2,
                       }}
                     />
-                    {STRATEGY_LABELS[strategyAllocation.strategy]}: {sub.toFixed(2)}% (overall {overall.toFixed(2)}%)
-                  </span>
-                );
-              })}
+                    <span style={{ flex: 1 }}>{STRATEGY_LABELS[segment.strategy]}</span>
+                    <span style={{ fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>
+                      {segment.sub.toFixed(2)}%
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         );
