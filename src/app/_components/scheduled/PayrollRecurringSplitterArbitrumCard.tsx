@@ -50,19 +50,21 @@ function totalShare(recipients: Recipient[]) {
 
 // Hierarchical UI types
 interface StrategyAllocation { strategy: DeFiStrategy; subPercent: string }
-interface WalletGroup { wallet: string; totalPercent: string; strategies: StrategyAllocation[] }
+interface WalletGroup { wallet: string; walletAmount: string; strategies: StrategyAllocation[] }
 
 function sumPercent(values: string[]) {
   return values.reduce((s, v) => s + (parseFloat(v) || 0), 0);
 }
 
-function buildFlatRecipientsFromGroups(groups: WalletGroup[]): Recipient[] {
+function buildFlatRecipientsFromGroups(groups: WalletGroup[], totalAmount: number): Recipient[] {
   const result: Recipient[] = [];
+  if (!totalAmount || totalAmount <= 0) return result;
   for (const g of groups) {
-    const total = parseFloat(g.totalPercent) || 0;
+    const walletAmt = parseFloat(g.walletAmount) || 0;
+    const walletPct = (walletAmt / totalAmount) * 100; // wallet share in %
     for (const s of g.strategies) {
       const sub = parseFloat(s.subPercent) || 0;
-      const overallPercent = (total * sub) / 100; // overall % of total
+      const overallPercent = (walletPct * sub) / 100; // overall % of total
       if (overallPercent > 0) {
         result.push({
           wallet: g.wallet,
@@ -76,11 +78,10 @@ function buildFlatRecipientsFromGroups(groups: WalletGroup[]): Recipient[] {
 }
 
 export function PayrollRecurringSplitterArbitrumCard() {
-  const [totalAmount, setTotalAmount] = useState<string>("");
   const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([
     {
       wallet: "",
-      totalPercent: "100",
+      walletAmount: "",
       strategies: [
         { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "60" },
         { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "30" },
@@ -104,7 +105,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
       ...walletGroups,
       {
         wallet: "",
-        totalPercent: "0",
+        walletAmount: "",
         strategies: [
           { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "100" },
           { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
@@ -144,17 +145,23 @@ export function PayrollRecurringSplitterArbitrumCard() {
     setWalletGroups(updated);
   };
 
-  const totalWalletPercent = useMemo(() => sumPercent(walletGroups.map((g) => g.totalPercent)), [walletGroups]);
-  const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(walletGroups), [walletGroups]);
+  const totalAmountComputed = useMemo(() => walletGroups.reduce((s, g) => s + (parseFloat(g.walletAmount) || 0), 0), [walletGroups]);
+  const totalWalletPercent = useMemo(() => {
+    // Derived: sum of wallet % equals 100% if amounts entered
+    return totalAmountComputed > 0
+      ? walletGroups.reduce((s, g) => s + (((parseFloat(g.walletAmount) || 0) / totalAmountComputed) * 100), 0)
+      : 0;
+  }, [walletGroups, totalAmountComputed]);
+  const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(walletGroups, totalAmountComputed), [walletGroups, totalAmountComputed]);
   const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
 
   const prefillConfig = useMemo(() => {
     const base = { toChainId: 421614 as const, token: "USDC" as const };
-    if (totalAmount && parseFloat(totalAmount) > 0) {
-      return { ...base, amount: totalAmount };
+    if (totalAmountComputed && totalAmountComputed > 0) {
+      return { ...base, amount: String(totalAmountComputed) };
     }
     return base;
-  }, [totalAmount]);
+  }, [totalAmountComputed]);
 
   const isValidConfiguration = () => {
     const recipientsOk = walletGroups.every((g) => isValidAddress(g.wallet));
@@ -178,20 +185,10 @@ export function PayrollRecurringSplitterArbitrumCard() {
         Create recurring token distributions with Gelato automation
       </p>
 
-      {/* Total Amount Input */}
-      <div style={{ marginBottom: "1rem" }}>
-        <label className="field">
-          <span>Total Amount (USDC)</span>
-          <input
-            type="number"
-            min="0"
-            step="0.000001"
-            value={totalAmount}
-            onChange={(e) => setTotalAmount(e.target.value)}
-            className="input"
-            placeholder="e.g. 100"
-          />
-        </label>
+      {/* Totals Summary */}
+      <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "space-between" }}>
+        <div><strong>Total Amount:</strong> {totalAmountComputed ? totalAmountComputed.toFixed(6) : "0"} USDC</div>
+        <div><strong>Overall Share:</strong> {totalShareValue.toFixed(2)}%</div>
       </div>
 
       {/* Schedule Configuration */}
@@ -249,8 +246,8 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
         {walletGroups.map((g, gi) => {
           const strategiesSum = sumPercent(g.strategies.map((s) => s.subPercent));
-          const walletOverallPct = (parseFloat(g.totalPercent) || 0);
-          const walletAmount = (parseFloat(totalAmount) || 0) * walletOverallPct / 100;
+          const walletAmount = parseFloat(g.walletAmount) || 0;
+          const walletOverallPct = totalAmountComputed > 0 ? (walletAmount / totalAmountComputed) * 100 : 0;
           return (
             <div key={gi} style={{ border: "1px solid #ddd", padding: "0.75rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
@@ -266,13 +263,11 @@ export function PayrollRecurringSplitterArbitrumCard() {
               </label>
 
               <label className="field">
-                <span>Total Percentage (%)</span>
-                <input type="number" min="0" max="100" step="0.01" value={g.totalPercent} onChange={(e) => updateWalletField(gi, "totalPercent", e.target.value)} className="input" />
+                <span>Wallet Amount (USDC)</span>
+                <input type="number" min="0" step="0.000001" value={g.walletAmount} onChange={(e) => updateWalletField(gi, "walletAmount", e.target.value)} className="input" />
               </label>
 
-              <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>
-                Wallet Amount: {walletAmount ? walletAmount.toFixed(6) : "0"} USDC
-              </div>
+              <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>Wallet Share: {walletOverallPct.toFixed(2)}%</div>
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
                 <strong>Strategies (fixed 4)</strong>
@@ -282,8 +277,9 @@ export function PayrollRecurringSplitterArbitrumCard() {
               </div>
 
               {g.strategies.map((s, si) => {
-                const overall = ((parseFloat(g.totalPercent) || 0) * (parseFloat(s.subPercent) || 0)) / 100;
-                const strategyAmount = (parseFloat(totalAmount) || 0) * overall / 100;
+                const sub = parseFloat(s.subPercent) || 0;
+                const overall = (walletOverallPct * sub) / 100;
+                const strategyAmount = walletAmount * sub / 100;
                 return (
                   <div key={si} style={{ border: "1px solid #eee", padding: "0.5rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -298,9 +294,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
                       </label>
                     </div>
 
-                    <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
-                      Overall: {overall.toFixed(2)}% of total · Amount: {strategyAmount ? strategyAmount.toFixed(6) : "0"} USDC
-                    </div>
+                    <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>Overall: {overall.toFixed(2)}% of total · Amount: {strategyAmount ? strategyAmount.toFixed(6) : "0"} USDC</div>
                   </div>
                 );
               })}
