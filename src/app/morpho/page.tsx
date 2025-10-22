@@ -32,7 +32,7 @@ export default function MorphoVaultPage() {
 
   return (
     <main className="container">
-      <h1 className="header">Morpho Vault v2 (Base Sepolia)</h1>
+      <h1 className="header">Morpho Vault v2 (Arbitrum Sepolia)</h1>
       <p className="subheader">
         Interact with the Morpho Vault v2 contract at {CONTRACT_ADDRESS}. Use the form below to
         approve tokens, deposit, withdraw, and inspect balances.
@@ -66,3 +66,4 @@ export default function MorphoVaultPage() {
     </main>
   );
 }
+
