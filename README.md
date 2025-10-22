@@ -195,40 +195,35 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - `pnpm run execute:recurring-schedule [id]` - Manually execute
 - **Important**: Contract needs ETH for Gelato fees. Send ~0.01 ETH to contract address.
 
-### 13. Payroll Config Registry (Arbitrum)
-- **UI**: Integrated in `PayrollRecurringSplitterArbitrumCard.tsx`
-- **Contract**: `PayrollConfigRegistry.sol` (Deploy with `pnpm run deploy:payroll-config-registry`)
-- **Description**: On-chain storage for payroll configuration presets. Save, load, and share payroll configurations without relying on centralized databases.
+### 13. Payroll Recurring Splitter (Arbitrum)
+- **UI**: `PayrollRecurringSplitterArbitrumCard.tsx`
+- **Description**: Unified payroll operations console that lets teams configure wallet groups, execute one-off payouts, or schedule recurring runs on Arbitrum Sepolia.
 - **Features**:
-  - **Flexible contract address**: No hardcoded addresses - users input contract address via UI
-  - **Save configurations**: Store wallet groups, strategy allocations, and schedule settings on-chain
-  - **Load configurations**: Anyone can load configurations from any contract address
-  - **Public/Private**: Choose whether to share configurations publicly
-  - **Delete/Update**: Only configuration owner can delete or update their configurations
-  - **Wallet-based**: No account registration required, uses connected wallet
-  - **Transparent**: All configurations are verifiable on-chain
-  - **Permanent**: Configurations persist as long as the contract exists
-- **Deployment**:
+  - Interactive wallet group editor with per-wallet strategy allocation and validation (`WalletCard.tsx`)
+  - Immediate execution mode (via `FlexibleSplitter`) or scheduled execution mode (via `RecurringSplitter`) with a single toggle
+  - `ConfigManager.tsx` provides modal-driven save/load/update flows backed by on-chain storage
+  - Toast-based notifications and centered modals for modern UX feedback
+  - Up to 5 wallet groups and 4 DeFi strategies per wallet (Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap)
+
+#### Supplement: Payroll Config Registry (Arbitrum)
+- **Contract**: `PayrollConfigRegistry.sol` (deploy with `pnpm run deploy:payroll-config-registry`)
+- **Purpose**: Shared on-chain registry that stores payroll presets loaded by `ConfigManager.tsx`
+- **Key Capabilities**:
+  - Save wallet groups, strategy splits, and schedule settings as reusable configurations
+  - Load public configurations or private ones owned by the connected wallet
+  - Update or delete previously saved presets (owner only); toggle public visibility
+- **Deployment & Testing**:
   ```bash
   # Deploy to Arbitrum Sepolia
   pnpm run deploy:payroll-config-registry
-  
-  # Copy the deployed contract address
-  # Users will input this address in the UI when saving/loading
-  
-  # Test the contract
+
+  # Run regression tests
   pnpm run test:payroll-config-registry
   ```
-- **How to Use**:
-  1. **Save**: Click "💾 Save Configuration", enter contract address, fill in details, and save
-  2. **Load**: Click "📂 Load Configuration", enter contract address, and browse available configs
-  3. **Share**: Share your contract address with others so they can load your public configurations
-- **Use Cases**:
-  - Save monthly payroll templates
-  - Share payroll configurations with team members (share contract address)
-  - Reuse complex multi-recipient setups
-  - Version control for payroll changes
-  - Multiple teams can deploy their own registry contracts
+- **Usage Flow in UI**:
+  1. **Save** – open "💾 New Save", enter name/description/visibility, and persist current wallet groups
+  2. **Load** – open "📂 Load", browse public + owned configs, and hydrate the form with a single click
+  3. **Update** – after loading, use "✏️ Update Save" to push edits back on-chain
 
 ## Issues Found
 

@@ -179,7 +179,7 @@ function PayrollRecurringSplitterArbitrumCardInner() {
 
   return (
     <div className="card">
-      <h3>Payroll Recurring Splitter (Arbitrum Sepolia) 🔄</h3>
+      <h3>Payroll Recurring Splitter (Arbitrum Sepolia)</h3>
 
 
       <TotalsSummary
