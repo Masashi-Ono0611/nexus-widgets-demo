@@ -12,6 +12,7 @@ export default function Home() {
 
       <div className="action-bar">
         <a href="/payroll" className="btn btn-primary">Go to Payroll</a>
+        <a href="/gifting" className="btn btn-primary">Go to Gifting</a>
         <a href="/tools" className="btn btn-accent">Go to Tools</a>
       </div>
     </main>

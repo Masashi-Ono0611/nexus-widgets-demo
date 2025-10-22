@@ -811,6 +811,42 @@
       "artifacts": [
         "PayrollConfigRegistry"
       ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/GiftingConfigRegistry.sol": {
+      "lastModificationDate": 1761131440520,
+      "contentHash": "bd04ae164418a4b09ac330b8461f65b1",
+      "sourceName": "contracts/GiftingConfigRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "GiftingConfigRegistry"
+      ]
     }
   }
 }
