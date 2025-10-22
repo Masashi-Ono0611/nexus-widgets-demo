@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   BridgeAndExecuteButton,
   TOKEN_CONTRACT_ADDRESSES,
@@ -7,8 +7,8 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-// Contract address (deployed on Arbitrum Sepolia)
 const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
+const FLEXIBLE_SPLITTER_ADDRESS = "0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
@@ -31,75 +31,141 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
 
+// helpers
+function isValidAddress(addr: string) {
+  return !!addr && addr.startsWith("0x") && addr.length === 42;
+}
+
+function toContractRecipients(recipients: Recipient[]) {
+  return recipients.map((r) => ({
+    wallet: r.wallet as `0x${string}`,
+    sharePercent: Math.round(parseFloat(r.sharePercent || "0") * 100),
+    strategy: r.strategy,
+  }));
+}
+
+function totalShare(recipients: Recipient[]) {
+  return recipients.reduce((sum, r) => sum + (parseFloat(r.sharePercent) || 0), 0);
+}
+
+function hasValidRecipients(recipients: Recipient[]) {
+  return recipients.every((r) => isValidAddress(r.wallet));
+}
+
+// Hierarchical UI types
+interface StrategyAllocation { strategy: DeFiStrategy; subPercent: string }
+interface WalletGroup { wallet: string; totalPercent: string; strategies: StrategyAllocation[] }
+
+function sumPercent(values: string[]) {
+  return values.reduce((s, v) => s + (parseFloat(v) || 0), 0);
+}
+
+function buildFlatRecipientsFromGroups(groups: WalletGroup[]): Recipient[] {
+  const result: Recipient[] = [];
+  for (const g of groups) {
+    const total = parseFloat(g.totalPercent) || 0;
+    for (const s of g.strategies) {
+      const sub = parseFloat(s.subPercent) || 0;
+      const overallPercent = (total * sub) / 100; // overall % of total
+      if (overallPercent > 0) {
+        result.push({
+          wallet: g.wallet,
+          sharePercent: overallPercent.toString(),
+          strategy: s.strategy,
+        });
+      }
+    }
+  }
+  return result;
+}
+
 export function RecurringSplitterArbitrumCard() {
-  const [recipients, setRecipients] = useState<Recipient[]>([
+  const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([
     {
       wallet: "",
-      sharePercent: "50",
-      strategy: DeFiStrategy.MORPHO_DEPOSIT,
-    },
-    {
-      wallet: "",
-      sharePercent: "50",
-      strategy: DeFiStrategy.DIRECT_TRANSFER,
+      totalPercent: "100",
+      strategies: [
+        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "60" },
+        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "30" },
+        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "10" },
+        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
+      ],
     },
   ]);
 
   const [intervalMinutes, setIntervalMinutes] = useState("60");
   const [maxExecutions, setMaxExecutions] = useState("3");
+  // OFF = Flexible (immediate), ON = Recurring (schedule)
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
 
-  const addRecipient = () => {
-    if (recipients.length >= 20) {
-      alert("Maximum 20 recipients allowed");
+  const addWalletGroup = () => {
+    if (walletGroups.length >= 5) {
+      alert("Maximum 5 wallets allowed");
       return;
     }
-    setRecipients([
-      ...recipients,
+    setWalletGroups([
+      ...walletGroups,
       {
         wallet: "",
-        sharePercent: "0",
-        strategy: DeFiStrategy.DIRECT_TRANSFER,
+        totalPercent: "0",
+        strategies: [
+          { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "100" },
+          { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
+          { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "0" },
+          { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
+        ],
       },
     ]);
   };
 
-  const removeRecipient = (index: number) => {
-    if (recipients.length <= 1) {
-      alert("At least one recipient required");
+  const removeWalletGroup = (index: number) => {
+    if (walletGroups.length <= 1) {
+      alert("At least one wallet required");
       return;
     }
-    setRecipients(recipients.filter((_, i) => i !== index));
+    setWalletGroups(walletGroups.filter((_, i) => i !== index));
   };
 
-  const updateRecipient = (
-    index: number,
-    field: keyof Recipient,
+  const updateWalletField = (index: number, field: keyof WalletGroup, value: string) => {
+    const updated = [...walletGroups];
+    (updated[index] as any)[field] = value;
+    setWalletGroups(updated);
+  };
+
+  // Strategies are fixed (4). No add/remove rows.
+
+  const updateStrategyField = (
+    walletIndex: number,
+    strategyIndex: number,
+    field: keyof StrategyAllocation,
     value: string | DeFiStrategy
   ) => {
-    const updated = [...recipients];
+    const updated = [...walletGroups];
     if (field === "strategy") {
-      updated[index][field] = value as DeFiStrategy;
+      updated[walletIndex].strategies[strategyIndex][field] = value as DeFiStrategy;
     } else {
-      updated[index][field] = value as string;
+      updated[walletIndex].strategies[strategyIndex][field] = value as string;
     }
-    setRecipients(updated);
+    setWalletGroups(updated);
   };
 
-  const getTotalShare = () => {
-    return recipients.reduce(
-      (sum, r) => sum + (parseFloat(r.sharePercent) || 0),
-      0
-    );
-  };
+  const totalWalletPercent = useMemo(() => sumPercent(walletGroups.map((g) => g.totalPercent)), [walletGroups]);
+  const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(walletGroups), [walletGroups]);
+  const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
 
   const isValidConfiguration = () => {
-    const totalShare = getTotalShare();
-    const hasValidAddresses = recipients.every(
-      (r) => r.wallet && r.wallet.startsWith("0x") && r.wallet.length === 42
-    );
-    const validInterval = parseInt(intervalMinutes) >= 1 && parseInt(intervalMinutes) <= 525600;
-    const validMaxExecutions = parseInt(maxExecutions) >= 0 && parseInt(maxExecutions) <= 1000;
-    return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses && validInterval && validMaxExecutions;
+    const recipientsOk = walletGroups.every((g) => isValidAddress(g.wallet));
+    const shareOk = Math.abs(totalShareValue - 100) < 0.01;
+    // also require wallets total = 100 and each wallet strategies = 100
+    const walletsTotalOk = Math.abs(totalWalletPercent - 100) < 0.01;
+    const eachWalletOk = walletGroups.every((g) => Math.abs(sumPercent(g.strategies.map((s) => s.subPercent)) - 100) < 0.01);
+    const recipientCountOk = flatRecipients.length <= 20;
+    if (!scheduleEnabled) return recipientsOk && shareOk && walletsTotalOk && eachWalletOk && recipientCountOk;
+    const interval = parseInt(intervalMinutes);
+    const maxExec = parseInt(maxExecutions);
+    const validInterval = interval >= 1 && interval <= 525600;
+    const validMaxExecutions = maxExec >= 0 && maxExec <= 1000;
+    return recipientsOk && shareOk && walletsTotalOk && eachWalletOk && recipientCountOk && validInterval && validMaxExecutions;
   };
 
   return (
@@ -111,202 +177,183 @@ export function RecurringSplitterArbitrumCard() {
 
       {/* Schedule Configuration */}
       <div style={{ marginBottom: "1rem" }}>
-        <label className="field">
-          <span>Interval (minutes)</span>
+        <label className="field" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <input
-            type="number"
-            min="1"
-            max="525600"
-            value={intervalMinutes}
-            onChange={(e) => setIntervalMinutes(e.target.value)}
-            className="input"
-            placeholder="60 = 1 hour, 1440 = 1 day"
+            type="checkbox"
+            checked={scheduleEnabled}
+            onChange={(e) => setScheduleEnabled(e.target.checked)}
           />
+          <span>Enable Recurring Schedule</span>
         </label>
 
-        <label className="field">
-          <span>Max Executions (0 = unlimited)</span>
-          <input
-            type="number"
-            min="0"
-            max="1000"
-            value={maxExecutions}
-            onChange={(e) => setMaxExecutions(e.target.value)}
-            className="input"
-          />
-        </label>
-      </div>
-
-      {/* Recipients Configuration */}
-      <div style={{ marginBottom: "1rem" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "0.5rem",
-          }}
-        >
-          <strong>Recipients ({recipients.length}/20)</strong>
-          <span
-            style={{
-              color: isValidConfiguration() ? "green" : "red",
-              fontSize: "0.9rem",
-            }}
-          >
-            Total: {getTotalShare().toFixed(2)}%
-            {isValidConfiguration() ? " ✓" : " (must be 100%)"}
-          </span>
-        </div>
-
-        {recipients.map((recipient, index) => (
-          <div
-            key={index}
-            style={{
-              border: "1px solid #ddd",
-              padding: "0.75rem",
-              marginBottom: "0.5rem",
-              borderRadius: "4px",
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "0.5rem",
-              }}
-            >
-              <strong>Recipient {index + 1}</strong>
-              {recipients.length > 1 && (
-                <button
-                  onClick={() => removeRecipient(index)}
-                  className="btn"
-                  style={{
-                    padding: "0.25rem 0.5rem",
-                    fontSize: "0.8rem",
-                    background: "#ff4444",
-                  }}
-                >
-                  Remove
-                </button>
-              )}
-            </div>
-
+        {scheduleEnabled && (
+          <>
             <label className="field">
-              <span>Wallet Address</span>
+              <span>Interval (minutes)</span>
               <input
-                type="text"
-                placeholder="0x..."
-                value={recipient.wallet}
-                onChange={(e) =>
-                  updateRecipient(index, "wallet", e.target.value)
-                }
+                type="number"
+                min="1"
+                max="525600"
+                value={intervalMinutes}
+                onChange={(e) => setIntervalMinutes(e.target.value)}
                 className="input"
+                placeholder="60 = 1 hour, 1440 = 1 day"
               />
             </label>
 
             <label className="field">
-              <span>Share Percentage (%)</span>
+              <span>Max Executions (0 = unlimited)</span>
               <input
                 type="number"
                 min="0"
-                max="100"
-                step="0.01"
-                value={recipient.sharePercent}
-                onChange={(e) =>
-                  updateRecipient(index, "sharePercent", e.target.value)
-                }
+                max="1000"
+                value={maxExecutions}
+                onChange={(e) => setMaxExecutions(e.target.value)}
                 className="input"
               />
             </label>
-
-            <label className="field">
-              <span>DeFi Strategy</span>
-              <select
-                value={recipient.strategy}
-                onChange={(e) =>
-                  updateRecipient(
-                    index,
-                    "strategy",
-                    parseInt(e.target.value) as DeFiStrategy
-                  )
-                }
-                className="input"
-              >
-                {Object.entries(STRATEGY_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-        ))}
-
-        <button
-          onClick={addRecipient}
-          className="btn"
-          style={{
-            width: "100%",
-            marginTop: "0.5rem",
-            background: "#4CAF50",
-          }}
-          disabled={recipients.length >= 20}
-        >
-          + Add Recipient
-        </button>
+          </>
+        )}
       </div>
 
-      {/* Bridge and Execute Button */}
+      {/* Recipients Configuration (Wallet -> Strategies) */}
+      <div style={{ marginBottom: "1rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+          <strong>Wallet Allocations ({walletGroups.length}/5)</strong>
+          <span style={{ color: Math.abs(totalWalletPercent - 100) < 0.01 ? "green" : "red", fontSize: "0.9rem" }}>
+            Wallets Total: {totalWalletPercent.toFixed(2)}% {Math.abs(totalWalletPercent - 100) < 0.01 ? "✓" : "(must be 100%)"}
+          </span>
+        </div>
+        <div style={{ fontSize: "0.85rem", marginBottom: "0.5rem", color: flatRecipients.length <= 20 ? "#2e7d32" : "#c62828" }}>
+          Recipients Total: {flatRecipients.length}/20
+        </div>
+
+        {walletGroups.map((g, gi) => {
+          const strategiesSum = sumPercent(g.strategies.map((s) => s.subPercent));
+          return (
+            <div key={gi} style={{ border: "1px solid #ddd", padding: "0.75rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+                <strong>Wallet {gi + 1}</strong>
+                {walletGroups.length > 1 && (
+                  <button onClick={() => removeWalletGroup(gi)} className="btn" style={{ padding: "0.25rem 0.5rem", fontSize: "0.8rem", background: "#ff4444" }}>Remove</button>
+                )}
+              </div>
+
+              <label className="field">
+                <span>Wallet Address</span>
+                <input type="text" placeholder="0x..." value={g.wallet} onChange={(e) => updateWalletField(gi, "wallet", e.target.value)} className="input" />
+              </label>
+
+              <label className="field">
+                <span>Total Percentage (%)</span>
+                <input type="number" min="0" max="100" step="0.01" value={g.totalPercent} onChange={(e) => updateWalletField(gi, "totalPercent", e.target.value)} className="input" />
+              </label>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
+                <strong>Strategies (fixed 4)</strong>
+                <span style={{ color: Math.abs(strategiesSum - 100) < 0.01 ? "green" : "red", fontSize: "0.9rem" }}>
+                  Strategies Total: {strategiesSum.toFixed(2)}% {Math.abs(strategiesSum - 100) < 0.01 ? "✓" : "(must be 100%)"}
+                </span>
+              </div>
+
+              {g.strategies.map((s, si) => {
+                const overall = ((parseFloat(g.totalPercent) || 0) * (parseFloat(s.subPercent) || 0)) / 100;
+                return (
+                  <div key={si} style={{ border: "1px solid #eee", padding: "0.5rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <div className="field" style={{ flex: 1 }}>
+                        <span>Strategy</span>
+                        <div className="input" style={{ display: "flex", alignItems: "center", height: "36px" }}>{STRATEGY_LABELS[s.strategy]}</div>
+                      </div>
+
+                      <label className="field" style={{ width: "200px" }}>
+                        <span>Sub Percentage (%)</span>
+                        <input type="number" min="0" max="100" step="0.01" value={s.subPercent} onChange={(e) => updateStrategyField(gi, si, "subPercent", e.target.value)} className="input" />
+                      </label>
+                    </div>
+
+                    <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
+                      Overall: {overall.toFixed(2)}% of total
+                    </div>
+                  </div>
+                );
+              })}
+
+              </div>
+          );
+        })}
+
+        <button onClick={addWalletGroup} disabled={walletGroups.length >= 5 || flatRecipients.length >= 20} className="btn" style={{ width: "100%", marginTop: "0.5rem", background: "#4CAF50", opacity: (walletGroups.length >= 5 || flatRecipients.length >= 20) ? 0.6 : 1 }}>+ Add Wallet</button>
+      </div>
+
       <BridgeAndExecuteButton
-        contractAddress={RECURRING_SPLITTER_ADDRESS}
+        contractAddress={scheduleEnabled ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}
         contractAbi={
-          [
-            {
-              name: "createSchedule",
-              type: "function",
-              stateMutability: "nonpayable",
-              inputs: [
-                { name: "asset", type: "address" },
-                { name: "amountPerExecution", type: "uint256" },
+          scheduleEnabled
+            ? ([
                 {
-                  name: "recipients",
-                  type: "tuple[]",
-                  components: [
-                    { name: "wallet", type: "address" },
-                    { name: "sharePercent", type: "uint16" },
-                    { name: "strategy", type: "uint8" },
+                  name: "createSchedule",
+                  type: "function",
+                  stateMutability: "nonpayable",
+                  inputs: [
+                    { name: "asset", type: "address" },
+                    { name: "amountPerExecution", type: "uint256" },
+                    {
+                      name: "recipients",
+                      type: "tuple[]",
+                      components: [
+                        { name: "wallet", type: "address" },
+                        { name: "sharePercent", type: "uint16" },
+                        { name: "strategy", type: "uint8" },
+                      ],
+                    },
+                    { name: "intervalSeconds", type: "uint256" },
+                    { name: "maxExecutions", type: "uint256" },
                   ],
+                  outputs: [{ name: "scheduleId", type: "uint256" }],
                 },
-                { name: "intervalSeconds", type: "uint256" },
-                { name: "maxExecutions", type: "uint256" },
-              ],
-              outputs: [{ name: "scheduleId", type: "uint256" }],
-            },
-          ] as const
+              ] as const)
+            : ([
+                {
+                  name: "distributeTokens",
+                  type: "function",
+                  stateMutability: "nonpayable",
+                  inputs: [
+                    { name: "asset", type: "address" },
+                    { name: "amount", type: "uint256" },
+                    {
+                      name: "recipients",
+                      type: "tuple[]",
+                      components: [
+                        { name: "wallet", type: "address" },
+                        { name: "sharePercent", type: "uint16" },
+                        { name: "strategy", type: "uint8" },
+                      ],
+                    },
+                  ],
+                  outputs: [],
+                },
+              ] as const)
         }
-        functionName="createSchedule"
+        functionName={scheduleEnabled ? "createSchedule" : "distributeTokens"}
         prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const totalAmountWei = parseUnits(amount, decimals);
           const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
 
-          // Calculate amount per execution
-          // Nexus Widget amount = amountPerExecution × maxExecutions
           const maxExec = parseInt(maxExecutions);
           const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
+          const contractRecipients = toContractRecipients(flatRecipients);
 
-          // Convert recipients to contract format
-          const contractRecipients = recipients.map((r) => ({
-            wallet: r.wallet as `0x${string}`,
-            sharePercent: Math.round(parseFloat(r.sharePercent) * 100), // Convert to basis points
-            strategy: r.strategy,
-          }));
+          if (!scheduleEnabled) {
+            // Immediate execution uses the full total amount
+            return {
+              functionParams: [tokenAddress, totalAmountWei, contractRecipients],
+            };
+          }
 
           const intervalSeconds = parseInt(intervalMinutes) * 60;
-
           return {
             functionParams: [
               tokenAddress,
@@ -332,7 +379,7 @@ export function RecurringSplitterArbitrumCard() {
             disabled={isLoading || !isValidConfiguration()}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Create Recurring Schedule"}
+            {isLoading ? "Processing…" : scheduleEnabled ? "Create Recurring Schedule" : "Execute Now"}
           </button>
         )}
       </BridgeAndExecuteButton>
