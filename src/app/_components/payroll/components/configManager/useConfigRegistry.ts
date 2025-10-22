@@ -24,10 +24,30 @@ export function useConfigRegistry(
         provider
       );
 
-      const configIds = await contract.getPublicConfigIds();
+      const publicIds: bigint[] = await contract.getPublicConfigIds();
+      let userIds: bigint[] = [];
+      if (address) {
+        try {
+          userIds = await contract.getUserConfigIds(address);
+        } catch (e) {
+          console.error("Failed to load user config ids:", e);
+        }
+      }
+
+      // Deduplicate by string key (ethers v6 BigInt-like values)
+      const idSet = new Set<string>();
+      const mergedIdStrings: string[] = [];
+      for (const id of [...publicIds, ...userIds]) {
+        const key = id.toString();
+        if (!idSet.has(key)) {
+          idSet.add(key);
+          mergedIdStrings.push(key);
+        }
+      }
 
       const loadedConfigs: SavedConfig[] = [];
-      for (const id of configIds) {
+      for (const idStr of mergedIdStrings) {
+        const id = BigInt(idStr);
         const config = await contract.getConfig(id);
 
         loadedConfigs.push({
