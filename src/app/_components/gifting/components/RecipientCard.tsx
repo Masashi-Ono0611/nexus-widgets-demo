@@ -1,5 +1,5 @@
 import React from "react";
-import { RecipientGroup, DeFiStrategy, StrategyAllocation } from "../types";
+import { RecipientGroup, DeFiStrategy, StrategyAllocation, STRATEGY_COLORS } from "../types";
 import { sumPercent } from "../utils";
 import { StrategyRow } from "./StrategyRow";
 
@@ -68,43 +68,42 @@ export function RecipientCard({
         />
       </label>
 
-      <div style={{ marginTop: "0.5rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.25rem" }}>
-          <span style={{ fontSize: "0.9rem", fontWeight: "bold" }}>Strategies (Total: {strategiesSum.toFixed(2)}%)</span>
-          <div style={{ display: "flex", gap: "0.25rem" }}>
-            <button
-              onClick={onPresetEvenSplit}
-              className="btn"
-              style={{ padding: "0.2rem 0.4rem", fontSize: "0.75rem" }}
-            >
-              Even
-            </button>
-            <button
-              onClick={onPreset_60_30_10_0}
-              className="btn"
-              style={{ padding: "0.2rem 0.4rem", fontSize: "0.75rem" }}
-            >
-              60/30/10/0
-            </button>
-            <button
-              onClick={onNormalize}
-              className="btn"
-              style={{ padding: "0.2rem 0.4rem", fontSize: "0.75rem" }}
-            >
-              Normalize
-            </button>
-          </div>
-        </div>
-
-        {recipient.strategies.map((strategy, si) => (
-          <StrategyRow
-            key={si}
-            strategy={strategy}
-            recipientSharePercent={recipientSharePercent}
-            onUpdate={(field, value) => onUpdateStrategy(si, field, value)}
-          />
-        ))}
+      <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>
+        Total Recipient Share: {recipientSharePercent.toFixed(2)}%
       </div>
+
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
+        <strong>Strategies</strong>
+        <div style={{ display: "flex", gap: "0.25rem" }}>
+          <button className="btn" style={{ fontSize: "0.75rem", padding: "0.25rem 0.4rem" }} onClick={onPresetEvenSplit}>
+            Even
+          </button>
+          <button className="btn" style={{ fontSize: "0.75rem", padding: "0.25rem 0.4rem" }} onClick={onPreset_60_30_10_0}>
+            60/30/10/0
+          </button>
+          <button className="btn" style={{ fontSize: "0.75rem", padding: "0.25rem 0.4rem" }} onClick={onNormalize}>
+            Normalize 100%
+          </button>
+        </div>
+      </div>
+
+      <div style={{ height: 8, width: "100%", background: "#eee", borderRadius: 4, overflow: "hidden", marginBottom: "0.5rem" }}>
+        <div style={{ display: "flex", height: "100%" }}>
+          {recipient.strategies.map((s, si) => {
+            const width = `${parseFloat(s.subPercent) || 0}%`;
+            return <div key={si} style={{ width, background: STRATEGY_COLORS[s.strategy] }} />;
+          })}
+        </div>
+      </div>
+
+      {recipient.strategies.map((strategy, si) => (
+        <StrategyRow
+          key={si}
+          strategy={strategy}
+          recipientSharePercent={recipientSharePercent}
+          onUpdate={(field, value) => onUpdateStrategy(si, field, value)}
+        />
+      ))}
     </div>
   );
 }
