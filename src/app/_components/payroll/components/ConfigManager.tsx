@@ -158,9 +158,7 @@ export function ConfigManager({
   const [isSaving, setIsSaving] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const [userConfigs, setUserConfigs] = useState<SavedConfig[]>([]);
-  const [publicConfigs, setPublicConfigs] = useState<SavedConfig[]>([]);
-  const [showPublicConfigs, setShowPublicConfigs] = useState(false);
+  const [configs, setConfigs] = useState<SavedConfig[]>([]);
   const [registryAddress, setRegistryAddress] = useState("");
   const [loadRegistryAddress, setLoadRegistryAddress] = useState("");
 
@@ -212,7 +210,7 @@ export function ConfigManager({
     if (showLoadModal && loadRegistryAddress && ethers.isAddress(loadRegistryAddress)) {
       loadConfigList();
     }
-  }, [showLoadModal, showPublicConfigs, loadRegistryAddress]);
+  }, [showLoadModal, loadRegistryAddress]);
 
   const loadConfigList = async () => {
     if (!provider || !loadRegistryAddress) return;
@@ -225,15 +223,14 @@ export function ConfigManager({
         provider
       );
 
-      const configIds = showPublicConfigs
-        ? await contract.getPublicConfigIds()
-        : await contract.getUserConfigIds(address);
+      // Get all public configs from the contract
+      const configIds = await contract.getPublicConfigIds();
 
-      const configs: SavedConfig[] = [];
+      const loadedConfigs: SavedConfig[] = [];
       for (const id of configIds) {
         const config = await contract.getConfig(id);
 
-        configs.push({
+        loadedConfigs.push({
           id: config[0],
           owner: config[1],
           name: config[2],
@@ -243,11 +240,7 @@ export function ConfigManager({
         });
       }
 
-      if (showPublicConfigs) {
-        setPublicConfigs(configs);
-      } else {
-        setUserConfigs(configs);
-      }
+      setConfigs(loadedConfigs);
     } catch (error) {
       console.error("Failed to load configs:", error);
       alert("Failed to load configurations");
@@ -568,41 +561,16 @@ export function ConfigManager({
               </small>
             </div>
 
-            <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
-              <button
-                onClick={() => setShowPublicConfigs(false)}
-                className="btn"
-                style={{
-                  flex: 1,
-                  background: !showPublicConfigs ? "#2196F3" : "#e0e0e0",
-                  color: !showPublicConfigs ? "white" : "black",
-                }}
-              >
-                My Configs
-              </button>
-              <button
-                onClick={() => setShowPublicConfigs(true)}
-                className="btn"
-                style={{
-                  flex: 1,
-                  background: showPublicConfigs ? "#2196F3" : "#e0e0e0",
-                  color: showPublicConfigs ? "white" : "black",
-                }}
-              >
-                Public Configs
-              </button>
-            </div>
-
             {isLoading ? (
               <p>Loading...</p>
             ) : (
               <div>
-                {(showPublicConfigs ? publicConfigs : userConfigs).length === 0 ? (
+                {configs.length === 0 ? (
                   <p style={{ textAlign: "center", color: "#666" }}>
-                    No configurations found
+                    No public configurations found
                   </p>
                 ) : (
-                  (showPublicConfigs ? publicConfigs : userConfigs).map((config) => (
+                  configs.map((config) => (
                     <div
                       key={config.id.toString()}
                       style={{
@@ -638,7 +606,7 @@ export function ConfigManager({
                           >
                             Load
                           </button>
-                          {!showPublicConfigs && address?.toLowerCase() === config.owner.toLowerCase() && (
+                          {address?.toLowerCase() === config.owner.toLowerCase() && (
                             <button
                               onClick={() => handleDelete(config.id)}
                               className="btn"
