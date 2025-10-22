@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   BridgeAndExecuteButton,
   TOKEN_CONTRACT_ADDRESSES,
@@ -30,6 +30,27 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.MORPHO_DEPOSIT]: "Morpho Deposit",
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
+
+// helpers
+function isValidAddress(addr: string) {
+  return !!addr && addr.startsWith("0x") && addr.length === 42;
+}
+
+function toContractRecipients(recipients: Recipient[]) {
+  return recipients.map((r) => ({
+    wallet: r.wallet as `0x${string}`,
+    sharePercent: Math.round(parseFloat(r.sharePercent || "0") * 100),
+    strategy: r.strategy,
+  }));
+}
+
+function totalShare(recipients: Recipient[]) {
+  return recipients.reduce((sum, r) => sum + (parseFloat(r.sharePercent) || 0), 0);
+}
+
+function hasValidRecipients(recipients: Recipient[]) {
+  return recipients.every((r) => isValidAddress(r.wallet));
+}
 
 export function RecurringSplitterArbitrumCard() {
   const [recipients, setRecipients] = useState<Recipient[]>([
@@ -87,25 +108,17 @@ export function RecurringSplitterArbitrumCard() {
     setRecipients(updated);
   };
 
-  const getTotalShare = () => {
-    return recipients.reduce(
-      (sum, r) => sum + (parseFloat(r.sharePercent) || 0),
-      0
-    );
-  };
+  const totalShareValue = useMemo(() => totalShare(recipients), [recipients]);
 
   const isValidConfiguration = () => {
-    const totalShare = getTotalShare();
-    const hasValidAddresses = recipients.every(
-      (r) => r.wallet && r.wallet.startsWith("0x") && r.wallet.length === 42
-    );
-    if (!scheduleEnabled) {
-      // Immediate execution: only shares and addresses need validation
-      return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses;
-    }
-    const validInterval = parseInt(intervalMinutes) >= 1 && parseInt(intervalMinutes) <= 525600;
-    const validMaxExecutions = parseInt(maxExecutions) >= 0 && parseInt(maxExecutions) <= 1000;
-    return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses && validInterval && validMaxExecutions;
+    const recipientsOk = hasValidRecipients(recipients);
+    const shareOk = Math.abs(totalShareValue - 100) < 0.01;
+    if (!scheduleEnabled) return recipientsOk && shareOk;
+    const interval = parseInt(intervalMinutes);
+    const maxExec = parseInt(maxExecutions);
+    const validInterval = interval >= 1 && interval <= 525600;
+    const validMaxExecutions = maxExec >= 0 && maxExec <= 1000;
+    return recipientsOk && shareOk && validInterval && validMaxExecutions;
   };
 
   return (
@@ -173,7 +186,7 @@ export function RecurringSplitterArbitrumCard() {
               fontSize: "0.9rem",
             }}
           >
-            Total: {getTotalShare().toFixed(2)}%
+            Total: {totalShareValue.toFixed(2)}%
             {isValidConfiguration() ? " ✓" : " (must be 100%)"}
           </span>
         </div>
@@ -335,12 +348,7 @@ export function RecurringSplitterArbitrumCard() {
 
           const maxExec = parseInt(maxExecutions);
           const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
-
-          const contractRecipients = recipients.map((r) => ({
-            wallet: r.wallet as `0x${string}`,
-            sharePercent: Math.round(parseFloat(r.sharePercent) * 100),
-            strategy: r.strategy,
-          }));
+          const contractRecipients = toContractRecipients(recipients);
 
           if (!scheduleEnabled) {
             // Immediate execution uses the full total amount
