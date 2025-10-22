@@ -20,6 +20,7 @@ import { TotalsSummary } from "./components/TotalsSummary";
 import { WalletCard } from "./components/WalletCard";
 import { ExecutionModeCard } from "./components/ExecutionModeCard";
 import { ValidationMessages } from "./components/ValidationMessages";
+import { ConfigManager } from "./components/ConfigManager";
 
 export function PayrollRecurringSplitterArbitrumCard() {
   const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([
@@ -124,6 +125,18 @@ export function PayrollRecurringSplitterArbitrumCard() {
     setWalletGroups(updated);
   };
 
+  const handleLoadConfig = (
+    loadedWalletGroups: WalletGroup[],
+    loadedIntervalMinutes: string,
+    loadedMaxExecutions: string,
+    loadedScheduleEnabled: boolean
+  ) => {
+    setWalletGroups(loadedWalletGroups);
+    setIntervalMinutes(loadedIntervalMinutes);
+    setMaxExecutions(loadedMaxExecutions);
+    setScheduleEnabled(loadedScheduleEnabled);
+  };
+
   const totalAmountComputed = useMemo(
     () => walletGroups.reduce((s, g) => s + (parseFloat(g.walletAmount) || 0), 0),
     [walletGroups]
@@ -176,6 +189,14 @@ export function PayrollRecurringSplitterArbitrumCard() {
   return (
     <div className="card">
       <h3>Recurring Token Splitter (Arbitrum Sepolia) 🔄</h3>
+
+      <ConfigManager
+        walletGroups={walletGroups}
+        intervalMinutes={intervalMinutes}
+        maxExecutions={maxExecutions}
+        scheduleEnabled={scheduleEnabled}
+        onLoadConfig={handleLoadConfig}
+      />
 
       <TotalsSummary
         totalAmountComputed={totalAmountComputed}

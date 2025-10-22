@@ -188,11 +188,40 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Configurable max executions (or unlimited with 0)
   - Each recipient can choose: Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap (USDC→WETH)
   - Schedule management (create, execute, cancel)
+  - **NEW**: Save and load payroll configurations on-chain via PayrollConfigRegistry
 - **Management Commands**:
   - `pnpm run test:recurring-splitter` - Create a new schedule
   - `pnpm run check:recurring-schedule [id]` - Check schedule status
   - `pnpm run execute:recurring-schedule [id]` - Manually execute
 - **Important**: Contract needs ETH for Gelato fees. Send ~0.01 ETH to contract address.
+
+### 13. Payroll Config Registry (Arbitrum)
+- **UI**: Integrated in `PayrollRecurringSplitterArbitrumCard.tsx`
+- **Contract**: `PayrollConfigRegistry.sol` (Deploy with `pnpm run deploy:payroll-config-registry`)
+- **Description**: On-chain storage for payroll configuration presets. Save, load, and share payroll configurations without relying on centralized databases.
+- **Features**:
+  - **Save configurations**: Store wallet groups, strategy allocations, and schedule settings on-chain
+  - **Load configurations**: Retrieve and reuse saved configurations
+  - **Public/Private**: Choose whether to share configurations publicly
+  - **Delete configurations**: Remove unwanted configurations
+  - **Wallet-based**: No account registration required, uses connected wallet
+  - **Transparent**: All configurations are verifiable on-chain
+  - **Permanent**: Configurations persist as long as the contract exists
+- **Deployment**:
+  ```bash
+  # Deploy to Arbitrum Sepolia
+  pnpm run deploy:payroll-config-registry
+  
+  # Update PAYROLL_CONFIG_REGISTRY_ADDRESS in src/app/_components/payroll/types.ts
+  
+  # Test the contract
+  pnpm run test:payroll-config-registry
+  ```
+- **Use Cases**:
+  - Save monthly payroll templates
+  - Share payroll configurations with team members
+  - Reuse complex multi-recipient setups
+  - Version control for payroll changes
 
 ## Issues Found
 
