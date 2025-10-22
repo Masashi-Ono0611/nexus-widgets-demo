@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { FlexibleSplitterArbitrumCard } from "../_components/splitter/FlexibleSplitterArbitrumCard";
 import { RecurringSplitterArbitrumCard } from "../_components/scheduled/RecurringSplitterArbitrumCard";
 
 export default function PayrollPage() {
@@ -14,7 +13,6 @@ export default function PayrollPage() {
       </div>
 
       <section className="grid">
-        <FlexibleSplitterArbitrumCard />
         <RecurringSplitterArbitrumCard />
       </section>
     </main>

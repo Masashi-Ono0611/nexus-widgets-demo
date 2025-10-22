@@ -7,8 +7,8 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-// Contract address (deployed on Arbitrum Sepolia)
 const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
+const FLEXIBLE_SPLITTER_ADDRESS = "0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454";
 
 // DeFi Strategy enum (must match contract)
 enum DeFiStrategy {
@@ -47,6 +47,8 @@ export function RecurringSplitterArbitrumCard() {
 
   const [intervalMinutes, setIntervalMinutes] = useState("60");
   const [maxExecutions, setMaxExecutions] = useState("3");
+  // OFF = Flexible (immediate), ON = Recurring (schedule)
+  const [scheduleEnabled, setScheduleEnabled] = useState(false);
 
   const addRecipient = () => {
     if (recipients.length >= 20) {
@@ -97,6 +99,10 @@ export function RecurringSplitterArbitrumCard() {
     const hasValidAddresses = recipients.every(
       (r) => r.wallet && r.wallet.startsWith("0x") && r.wallet.length === 42
     );
+    if (!scheduleEnabled) {
+      // Immediate execution: only shares and addresses need validation
+      return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses;
+    }
     const validInterval = parseInt(intervalMinutes) >= 1 && parseInt(intervalMinutes) <= 525600;
     const validMaxExecutions = parseInt(maxExecutions) >= 0 && parseInt(maxExecutions) <= 1000;
     return Math.abs(totalShare - 100) < 0.01 && hasValidAddresses && validInterval && validMaxExecutions;
@@ -111,30 +117,43 @@ export function RecurringSplitterArbitrumCard() {
 
       {/* Schedule Configuration */}
       <div style={{ marginBottom: "1rem" }}>
-        <label className="field">
-          <span>Interval (minutes)</span>
+        <label className="field" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <input
-            type="number"
-            min="1"
-            max="525600"
-            value={intervalMinutes}
-            onChange={(e) => setIntervalMinutes(e.target.value)}
-            className="input"
-            placeholder="60 = 1 hour, 1440 = 1 day"
+            type="checkbox"
+            checked={scheduleEnabled}
+            onChange={(e) => setScheduleEnabled(e.target.checked)}
           />
+          <span>Enable Recurring Schedule</span>
         </label>
 
-        <label className="field">
-          <span>Max Executions (0 = unlimited)</span>
-          <input
-            type="number"
-            min="0"
-            max="1000"
-            value={maxExecutions}
-            onChange={(e) => setMaxExecutions(e.target.value)}
-            className="input"
-          />
-        </label>
+        {scheduleEnabled && (
+          <>
+            <label className="field">
+              <span>Interval (minutes)</span>
+              <input
+                type="number"
+                min="1"
+                max="525600"
+                value={intervalMinutes}
+                onChange={(e) => setIntervalMinutes(e.target.value)}
+                className="input"
+                placeholder="60 = 1 hour, 1440 = 1 day"
+              />
+            </label>
+
+            <label className="field">
+              <span>Max Executions (0 = unlimited)</span>
+              <input
+                type="number"
+                min="0"
+                max="1000"
+                value={maxExecutions}
+                onChange={(e) => setMaxExecutions(e.target.value)}
+                className="input"
+              />
+            </label>
+          </>
+        )}
       </div>
 
       {/* Recipients Configuration */}
@@ -258,55 +277,79 @@ export function RecurringSplitterArbitrumCard() {
         </button>
       </div>
 
-      {/* Bridge and Execute Button */}
       <BridgeAndExecuteButton
-        contractAddress={RECURRING_SPLITTER_ADDRESS}
+        contractAddress={scheduleEnabled ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}
         contractAbi={
-          [
-            {
-              name: "createSchedule",
-              type: "function",
-              stateMutability: "nonpayable",
-              inputs: [
-                { name: "asset", type: "address" },
-                { name: "amountPerExecution", type: "uint256" },
+          scheduleEnabled
+            ? ([
                 {
-                  name: "recipients",
-                  type: "tuple[]",
-                  components: [
-                    { name: "wallet", type: "address" },
-                    { name: "sharePercent", type: "uint16" },
-                    { name: "strategy", type: "uint8" },
+                  name: "createSchedule",
+                  type: "function",
+                  stateMutability: "nonpayable",
+                  inputs: [
+                    { name: "asset", type: "address" },
+                    { name: "amountPerExecution", type: "uint256" },
+                    {
+                      name: "recipients",
+                      type: "tuple[]",
+                      components: [
+                        { name: "wallet", type: "address" },
+                        { name: "sharePercent", type: "uint16" },
+                        { name: "strategy", type: "uint8" },
+                      ],
+                    },
+                    { name: "intervalSeconds", type: "uint256" },
+                    { name: "maxExecutions", type: "uint256" },
                   ],
+                  outputs: [{ name: "scheduleId", type: "uint256" }],
                 },
-                { name: "intervalSeconds", type: "uint256" },
-                { name: "maxExecutions", type: "uint256" },
-              ],
-              outputs: [{ name: "scheduleId", type: "uint256" }],
-            },
-          ] as const
+              ] as const)
+            : ([
+                {
+                  name: "distributeTokens",
+                  type: "function",
+                  stateMutability: "nonpayable",
+                  inputs: [
+                    { name: "asset", type: "address" },
+                    { name: "amount", type: "uint256" },
+                    {
+                      name: "recipients",
+                      type: "tuple[]",
+                      components: [
+                        { name: "wallet", type: "address" },
+                        { name: "sharePercent", type: "uint16" },
+                        { name: "strategy", type: "uint8" },
+                      ],
+                    },
+                  ],
+                  outputs: [],
+                },
+              ] as const)
         }
-        functionName="createSchedule"
+        functionName={scheduleEnabled ? "createSchedule" : "distributeTokens"}
         prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const totalAmountWei = parseUnits(amount, decimals);
           const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
 
-          // Calculate amount per execution
-          // Nexus Widget amount = amountPerExecution × maxExecutions
           const maxExec = parseInt(maxExecutions);
           const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
 
-          // Convert recipients to contract format
           const contractRecipients = recipients.map((r) => ({
             wallet: r.wallet as `0x${string}`,
-            sharePercent: Math.round(parseFloat(r.sharePercent) * 100), // Convert to basis points
+            sharePercent: Math.round(parseFloat(r.sharePercent) * 100),
             strategy: r.strategy,
           }));
 
-          const intervalSeconds = parseInt(intervalMinutes) * 60;
+          if (!scheduleEnabled) {
+            // Immediate execution uses the full total amount
+            return {
+              functionParams: [tokenAddress, totalAmountWei, contractRecipients],
+            };
+          }
 
+          const intervalSeconds = parseInt(intervalMinutes) * 60;
           return {
             functionParams: [
               tokenAddress,
@@ -332,7 +375,7 @@ export function RecurringSplitterArbitrumCard() {
             disabled={isLoading || !isValidConfiguration()}
             className="btn btn-primary"
           >
-            {isLoading ? "Processing…" : "Create Recurring Schedule"}
+            {isLoading ? "Processing…" : scheduleEnabled ? "Create Recurring Schedule" : "Execute Now"}
           </button>
         )}
       </BridgeAndExecuteButton>
