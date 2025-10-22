@@ -44,15 +44,10 @@ export function StrategyRow({ strategy, recipientSharePercent, onUpdate }: Strat
             className="input"
           />
         </label>
-
-        <div style={{ minWidth: "140px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 4 }}>
-          <span style={{ fontSize: "0.75rem", color: "#777" }}>Overall Share</span>
-          <span style={{ fontSize: "0.95rem", fontWeight: 600 }}>{overallLabel}%</span>
-        </div>
       </div>
 
       <div style={{ fontSize: "0.75rem", color: "#888", marginTop: "0.25rem" }}>
-        Sub allocation {subLabel}% × Recipient share {recipientSharePercent.toFixed(2)}% = Overall {overallLabel}%
+        Sub allocation {subLabel}% × Recipient share {recipientSharePercent.toFixed(2)}% = Overall allocation {overallLabel}%
       </div>
     </div>
   );
