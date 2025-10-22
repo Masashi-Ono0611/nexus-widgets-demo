@@ -12,6 +12,17 @@ export interface Recipient {
   strategy: DeFiStrategy;
 }
 
+export interface StrategyAllocation {
+  strategy: DeFiStrategy;
+  subPercent: string;
+}
+
+export interface RecipientGroup {
+  wallet: string;
+  sharePercent: string;
+  strategies: StrategyAllocation[];
+}
+
 export const FLEXIBLE_SPLITTER_ADDRESS = "0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454";
 export const GIFTING_CONFIG_REGISTRY_ADDRESS = "0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F";
 
