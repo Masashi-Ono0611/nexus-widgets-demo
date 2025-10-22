@@ -31,6 +31,15 @@ const STRATEGY_LABELS = {
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
 
+const STRATEGY_COLORS: Record<number, string> = {
+  [DeFiStrategy.DIRECT_TRANSFER]: "#4CAF50",
+  [DeFiStrategy.AAVE_SUPPLY]: "#1976D2",
+  [DeFiStrategy.MORPHO_DEPOSIT]: "#8E24AA",
+  [DeFiStrategy.UNISWAP_V2_SWAP]: "#F57C00",
+};
+
+const WALLET_COLORS = ["#1565C0", "#2E7D32", "#EF6C00", "#6A1B9A", "#00838F"];
+
 // helpers
 function isValidAddress(addr: string) {
   return !!addr && addr.startsWith("0x") && addr.length === 42;
@@ -145,6 +154,36 @@ export function PayrollRecurringSplitterArbitrumCard() {
     setWalletGroups(updated);
   };
 
+  const presetEvenSplit = (walletIndex: number) => {
+    const updated = [...walletGroups];
+    const n = updated[walletIndex].strategies.length;
+    const base = Math.floor((10000 / n)) / 100;
+    const remainder = 100 - base * (n - 1);
+    updated[walletIndex].strategies = updated[walletIndex].strategies.map((s, i) => ({ ...s, subPercent: String(i === n - 1 ? remainder : base) }));
+    setWalletGroups(updated);
+  };
+
+  const preset_60_30_10_0 = (walletIndex: number) => {
+    const updated = [...walletGroups];
+    const arr = [60, 30, 10, 0];
+    updated[walletIndex].strategies = updated[walletIndex].strategies.map((s, i) => ({ ...s, subPercent: String(arr[i] ?? 0) }));
+    setWalletGroups(updated);
+  };
+
+  const normalizeStrategies = (walletIndex: number) => {
+    const updated = [...walletGroups];
+    const sum = updated[walletIndex].strategies.reduce((s, x) => s + (parseFloat(x.subPercent) || 0), 0);
+    if (sum <= 0) {
+      presetEvenSplit(walletIndex);
+      return;
+    }
+    updated[walletIndex].strategies = updated[walletIndex].strategies.map((s) => ({
+      ...s,
+      subPercent: String(((parseFloat(s.subPercent) || 0) / sum) * 100),
+    }));
+    setWalletGroups(updated);
+  };
+
   const totalAmountComputed = useMemo(() => walletGroups.reduce((s, g) => s + (parseFloat(g.walletAmount) || 0), 0), [walletGroups]);
   const totalWalletPercent = useMemo(() => {
     // Derived: sum of wallet % equals 100% if amounts entered
@@ -178,72 +217,52 @@ export function PayrollRecurringSplitterArbitrumCard() {
     return recipientsOk && shareOk && walletsTotalOk && eachWalletOk && recipientCountOk && validInterval && validMaxExecutions;
   };
 
+  const validationMessages: string[] = [];
+  if (totalAmountComputed <= 0) validationMessages.push("Enter wallet amounts (USDC) to compute total");
+  if (Math.abs(totalWalletPercent - 100) >= 0.01) validationMessages.push("Wallets Total must be 100%");
+  walletGroups.forEach((g, i) => {
+    const s = sumPercent(g.strategies.map((x) => x.subPercent));
+    if (Math.abs(s - 100) >= 0.01) validationMessages.push(`Wallet ${i + 1}: Strategies Total must be 100%`);
+    if (!isValidAddress(g.wallet)) validationMessages.push(`Wallet ${i + 1}: Invalid address`);
+  });
+  if (flatRecipients.length > 20) validationMessages.push("Recipients exceed 20");
+
   return (
     <div className="card">
       <h3>Recurring Token Splitter (Arbitrum Sepolia) 🔄</h3>
-      <p className="text-sm" style={{ marginBottom: "1rem" }}>
-        Create recurring token distributions with Gelato automation
-      </p>
 
       {/* Totals Summary */}
-      <div style={{ marginBottom: "1rem", display: "flex", justifyContent: "space-between" }}>
-        <div><strong>Total Amount:</strong> {totalAmountComputed ? totalAmountComputed.toFixed(6) : "0"} USDC</div>
-        <div><strong>Overall Share:</strong> {totalShareValue.toFixed(2)}%</div>
-      </div>
-
-      {/* Schedule Configuration */}
       <div style={{ marginBottom: "1rem" }}>
-        <label className="field" style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-          <input
-            type="checkbox"
-            checked={scheduleEnabled}
-            onChange={(e) => setScheduleEnabled(e.target.checked)}
-          />
-          <span>Enable Recurring Schedule</span>
-        </label>
-
-        {scheduleEnabled && (
-          <>
-            <label className="field">
-              <span>Interval (minutes)</span>
-              <input
-                type="number"
-                min="1"
-                max="525600"
-                value={intervalMinutes}
-                onChange={(e) => setIntervalMinutes(e.target.value)}
-                className="input"
-                placeholder="60 = 1 hour, 1440 = 1 day"
-              />
-            </label>
-
-            <label className="field">
-              <span>Max Executions (0 = unlimited)</span>
-              <input
-                type="number"
-                min="0"
-                max="1000"
-                value={maxExecutions}
-                onChange={(e) => setMaxExecutions(e.target.value)}
-                className="input"
-              />
-            </label>
-          </>
-        )}
+        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
+          <div><strong>Total Amount:</strong> {totalAmountComputed ? totalAmountComputed.toFixed(6) : "0"} USDC</div>
+          <div><strong>Overall Share:</strong> {totalShareValue.toFixed(2)}%</div>
+        </div>
+        <div style={{ height: 10, width: "100%", background: "#eee", borderRadius: 4, overflow: "hidden" }}>
+          <div style={{ display: "flex", height: "100%" }}>
+            {walletGroups.map((g, gi) => {
+              const walletAmount = parseFloat(g.walletAmount) || 0;
+              const pct = totalAmountComputed > 0 ? (walletAmount / totalAmountComputed) * 100 : 0;
+              return <div key={gi} style={{ width: `${pct}%`, background: WALLET_COLORS[gi % WALLET_COLORS.length] }} />;
+            })}
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginTop: "0.25rem", fontSize: "0.85rem" }}>
+          {walletGroups.map((g, gi) => {
+            const walletAmount = parseFloat(g.walletAmount) || 0;
+            const pct = totalAmountComputed > 0 ? (walletAmount / totalAmountComputed) * 100 : 0;
+            return <div key={gi} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ display: "inline-block", width: 10, height: 10, background: WALLET_COLORS[gi % WALLET_COLORS.length], borderRadius: 2 }} />
+              <span>Wallet {gi + 1}: {pct.toFixed(2)}% ({walletAmount ? walletAmount.toFixed(6) : "0"} USDC)</span>
+            </div>;
+          })}
+        </div>
       </div>
 
       {/* Recipients Configuration (Wallet -> Strategies) */}
       <div style={{ marginBottom: "1rem" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
           <strong>Wallet Allocations ({walletGroups.length}/5)</strong>
-          <span style={{ color: Math.abs(totalWalletPercent - 100) < 0.01 ? "green" : "red", fontSize: "0.9rem" }}>
-            Wallets Total: {totalWalletPercent.toFixed(2)}% {Math.abs(totalWalletPercent - 100) < 0.01 ? "✓" : "(must be 100%)"}
-          </span>
         </div>
-        <div style={{ fontSize: "0.85rem", marginBottom: "0.5rem", color: flatRecipients.length <= 20 ? "#2e7d32" : "#c62828" }}>
-          Recipients Total: {flatRecipients.length}/20
-        </div>
-
         {walletGroups.map((g, gi) => {
           const strategiesSum = sumPercent(g.strategies.map((s) => s.subPercent));
           const walletAmount = parseFloat(g.walletAmount) || 0;
@@ -271,9 +290,20 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
                 <strong>Strategies (fixed 4)</strong>
-                <span style={{ color: Math.abs(strategiesSum - 100) < 0.01 ? "green" : "red", fontSize: "0.9rem" }}>
-                  Strategies Total: {strategiesSum.toFixed(2)}% {Math.abs(strategiesSum - 100) < 0.01 ? "✓" : "(must be 100%)"}
-                </span>
+                <div style={{ display: "flex", gap: "0.25rem" }}>
+                  <button className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => presetEvenSplit(gi)}>Even</button>
+                  <button className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => preset_60_30_10_0(gi)}>60/30/10/0</button>
+                  <button className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={() => normalizeStrategies(gi)}>Normalize 100%</button>
+                </div>
+              </div>
+
+              <div style={{ height: 8, width: "100%", background: "#eee", borderRadius: 4, overflow: "hidden", marginBottom: "0.5rem" }}>
+                <div style={{ display: "flex", height: "100%" }}>
+                  {g.strategies.map((s, si) => {
+                    const width = `${(parseFloat(s.subPercent) || 0)}%`;
+                    return <div key={si} style={{ width, background: STRATEGY_COLORS[s.strategy] }} />;
+                  })}
+                </div>
               </div>
 
               {g.strategies.map((s, si) => {
@@ -285,7 +315,10 @@ export function PayrollRecurringSplitterArbitrumCard() {
                     <div style={{ display: "flex", gap: "0.5rem" }}>
                       <div className="field" style={{ flex: 1 }}>
                         <span>Strategy</span>
-                        <div className="input" style={{ display: "flex", alignItems: "center", height: "36px" }}>{STRATEGY_LABELS[s.strategy]}</div>
+                        <div className="input" style={{ display: "flex", alignItems: "center", height: "36px", gap: 8 }}>
+                          <span style={{ display: "inline-block", width: 12, height: 12, background: STRATEGY_COLORS[s.strategy], borderRadius: 3 }} />
+                          {STRATEGY_LABELS[s.strategy]}
+                        </div>
                       </div>
 
                       <label className="field" style={{ width: "200px" }}>
@@ -304,6 +337,94 @@ export function PayrollRecurringSplitterArbitrumCard() {
         })}
 
         <button onClick={addWalletGroup} disabled={walletGroups.length >= 5 || flatRecipients.length >= 20} className="btn" style={{ width: "100%", marginTop: "0.5rem", background: "#4CAF50", opacity: (walletGroups.length >= 5 || flatRecipients.length >= 20) ? 0.6 : 1 }}>+ Add Wallet</button>
+      </div>
+
+      {/* Execution Mode */}
+      <div style={{ margin: "1.25rem 0", border: "1px solid #e0e0e0", borderRadius: "6px", padding: "0.75rem", background: "#ffffff" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
+          <strong>Execution Mode</strong>
+          <span
+            style={{
+              fontSize: "0.85rem",
+              fontWeight: 600,
+              padding: "0.2rem 0.6rem",
+              borderRadius: "999px",
+              background: scheduleEnabled ? "#E3F2FD" : "#E8F5E9",
+              color: scheduleEnabled ? "#0D47A1" : "#1B5E20",
+            }}
+          >
+            {scheduleEnabled ? "Recurring Schedule" : "Immediate Transfer"}
+          </span>
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem", marginBottom: scheduleEnabled ? "0.75rem" : 0 }}>
+          <button
+            type="button"
+            onClick={() => setScheduleEnabled(false)}
+            style={{
+              flex: 1,
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.5rem",
+              border: "1px solid #1565C0",
+              background: scheduleEnabled ? "#ffffff" : "#1565C0",
+              color: scheduleEnabled ? "#1565C0" : "#ffffff",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+          >
+            Immediate
+          </button>
+          <button
+            type="button"
+            onClick={() => setScheduleEnabled(true)}
+            style={{
+              flex: 1,
+              padding: "0.5rem 0.75rem",
+              borderRadius: "0.5rem",
+              border: "1px solid #1565C0",
+              background: scheduleEnabled ? "#1565C0" : "#ffffff",
+              color: scheduleEnabled ? "#ffffff" : "#1565C0",
+              fontWeight: 600,
+              cursor: "pointer",
+              transition: "all 0.2s ease",
+            }}
+          >
+            Recurring
+          </button>
+        </div>
+        {scheduleEnabled && (
+          <div
+            style={{
+              display: "grid",
+              gap: "0.75rem",
+              gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+            }}
+          >
+            <label className="field" style={{ margin: 0 }}>
+              <span>Interval (minutes)</span>
+              <input
+                type="number"
+                min="1"
+                max="525600"
+                value={intervalMinutes}
+                onChange={(e) => setIntervalMinutes(e.target.value)}
+                className="input"
+                placeholder="60 = 1 hour, 1440 = 1 day"
+              />
+            </label>
+            <label className="field" style={{ margin: 0 }}>
+              <span>Max Executions (0 = unlimited)</span>
+              <input
+                type="number"
+                min="0"
+                max="1000"
+                value={maxExecutions}
+                onChange={(e) => setMaxExecutions(e.target.value)}
+                className="input"
+              />
+            </label>
+          </div>
+        )}
       </div>
 
       <BridgeAndExecuteButton
@@ -403,42 +524,6 @@ export function PayrollRecurringSplitterArbitrumCard() {
           </button>
         )}
       </BridgeAndExecuteButton>
-
-      {/* Info Section */}
-      <div
-        style={{
-          marginTop: "1rem",
-          padding: "0.75rem",
-          background: "#f5f5f5",
-          borderRadius: "4px",
-          fontSize: "0.85rem",
-          color: "#333",
-        }}
-      >
-        <strong>How it works:</strong>
-        <ul style={{ marginTop: "0.5rem", paddingLeft: "1.5rem" }}>
-          <li>
-            <strong>Recurring Distribution:</strong> Automatically distributes tokens at set intervals
-          </li>
-          <li>
-            <strong>Gelato Automation:</strong> No manual execution needed after setup
-          </li>
-          <li>
-            <strong>Flexible Strategies:</strong> Each recipient can have different DeFi strategies
-          </li>
-          <li>
-            <strong>Max Executions:</strong> Set limit or run unlimited (0)
-          </li>
-        </ul>
-        <div style={{ marginTop: "0.5rem", color: "#0066cc", background: "#e6f2ff", padding: "0.5rem", borderRadius: "4px" }}>
-          💡 <strong>Amount Calculation:</strong> The total amount you enter will be divided by max executions.
-          <br />
-          Example: 3 USDC with 3 executions = 1 USDC per execution
-        </div>
-        <div style={{ marginTop: "0.5rem", color: "#ff6600" }}>
-          ⚠️ <strong>Important:</strong> The widget will automatically approve the total amount (amount per execution × max executions)
-        </div>
-      </div>
     </div>
   );
 }
