@@ -8,18 +8,18 @@ import {
   StrategyAllocation,
   RECURRING_SPLITTER_ADDRESS,
   FLEXIBLE_SPLITTER_ADDRESS,
-} from "./payroll/types";
+} from "./types";
 import {
   isValidAddress,
   toContractRecipients,
   totalShare,
   sumPercent,
   buildFlatRecipientsFromGroups,
-} from "./payroll/utils";
-import { TotalsSummary } from "./payroll/components/TotalsSummary";
-import { WalletCard } from "./payroll/components/WalletCard";
-import { ExecutionModeCard } from "./payroll/components/ExecutionModeCard";
-import { ValidationMessages } from "./payroll/components/ValidationMessages";
+} from "./utils";
+import { TotalsSummary } from "./components/TotalsSummary";
+import { WalletCard } from "./components/WalletCard";
+import { ExecutionModeCard } from "./components/ExecutionModeCard";
+import { ValidationMessages } from "./components/ValidationMessages";
 
 export function PayrollRecurringSplitterArbitrumCard() {
   const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { PayrollRecurringSplitterArbitrumCard } from "../_components/scheduled/PayrollRecurringSplitterArbitrumCard";
+import { PayrollRecurringSplitterArbitrumCard } from "../_components/payroll/PayrollRecurringSplitterArbitrumCard";
 
 export default function PayrollPage() {
   return (
