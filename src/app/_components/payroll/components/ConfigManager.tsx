@@ -138,13 +138,14 @@ const REGISTRY_ABI = [
   },
 ] as const;
 
-export function ConfigManager({
+function ConfigManagerComponent({
   walletGroups,
   intervalMinutes,
   maxExecutions,
   scheduleEnabled,
   onLoadConfig,
 }: ConfigManagerProps) {
+  
   const [mounted, setMounted] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
@@ -444,7 +445,7 @@ export function ConfigManager({
       setIsPublic(config[6]); // isPublic
 
       setShowLoadModal(false);
-      alert("Configuration loaded successfully!");
+      alert("Configuration loaded successfully! You can now use 'Update Save' button.");
     } catch (error) {
       console.error("Failed to load config:", error);
       alert("Failed to load configuration");
@@ -487,6 +488,8 @@ export function ConfigManager({
     return null;
   }
 
+  const hasLoadedConfig = loadedConfigId !== null;
+
   return (
     <div style={{ marginBottom: "1rem" }}>
       <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -497,12 +500,19 @@ export function ConfigManager({
           💾 New Save
         </button>
         <button 
-          onClick={() => setShowUpdateSaveModal(true)} 
+          onClick={() => {
+            setShowUpdateSaveModal(true);
+          }} 
           className="btn" 
-          style={{ flex: 1, background: loadedConfigId ? "#FF9800" : "#ccc" }}
-          disabled={!loadedConfigId}
+          style={{ 
+            flex: 1, 
+            background: hasLoadedConfig ? "#FF9800" : "#ccc",
+            cursor: hasLoadedConfig ? "pointer" : "not-allowed"
+          }}
+          disabled={!hasLoadedConfig}
+          title={hasLoadedConfig ? "Update the loaded configuration" : "Load a configuration first to enable update"}
         >
-          ✏️ Update Save
+          ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
         </button>
       </div>
 
@@ -515,7 +525,6 @@ export function ConfigManager({
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -525,7 +534,6 @@ export function ConfigManager({
         >
           <div
             style={{
-              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "500px",
@@ -586,7 +594,6 @@ export function ConfigManager({
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -596,7 +603,6 @@ export function ConfigManager({
         >
           <div
             style={{
-              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "500px",
@@ -657,7 +663,6 @@ export function ConfigManager({
             left: 0,
             right: 0,
             bottom: 0,
-            background: "rgba(0,0,0,0.5)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
@@ -667,7 +672,6 @@ export function ConfigManager({
         >
           <div
             style={{
-              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "600px",
@@ -754,3 +758,6 @@ export function ConfigManager({
     </div>
   );
 }
+
+// Wrap with React.memo to prevent unnecessary re-renders that would reset internal state
+export const ConfigManager = React.memo(ConfigManagerComponent);
