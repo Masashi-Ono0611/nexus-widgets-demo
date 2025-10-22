@@ -150,7 +150,8 @@ export function ConfigManager({
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
 
-  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showSaveNewModal, setShowSaveNewModal] = useState(false);
+  const [showUpdateModal, setShowUpdateModal] = useState(false);
   const [showLoadModal, setShowLoadModal] = useState(false);
   const [configName, setConfigName] = useState("");
   const [configDescription, setConfigDescription] = useState("");
@@ -159,7 +160,9 @@ export function ConfigManager({
   const [isLoading, setIsLoading] = useState(false);
 
   const [configs, setConfigs] = useState<SavedConfig[]>([]);
-  const [registryAddress, setRegistryAddress] = useState("");
+  const [newRegistryAddress, setNewRegistryAddress] = useState("");
+  const [updateRegistryAddress, setUpdateRegistryAddress] = useState("");
+  const [updateConfigId, setUpdateConfigId] = useState<bigint | null>(null);
   const [loadRegistryAddress, setLoadRegistryAddress] = useState("");
 
   useEffect(() => {
@@ -249,18 +252,18 @@ export function ConfigManager({
     }
   };
 
-  const handleSave = async () => {
+  const handleSaveNew = async () => {
     if (!signer || !address || !provider) {
       alert("Please connect your wallet");
       return;
     }
 
-    if (!registryAddress.trim()) {
+    if (!newRegistryAddress.trim()) {
       alert("Please enter a registry contract address");
       return;
     }
 
-    if (!ethers.isAddress(registryAddress)) {
+    if (!ethers.isAddress(newRegistryAddress)) {
       alert("Invalid contract address");
       return;
     }
@@ -289,7 +292,7 @@ export function ConfigManager({
       };
 
       const contract = new ethers.Contract(
-        registryAddress,
+        newRegistryAddress,
         REGISTRY_ABI,
         signer
       );
@@ -308,13 +311,83 @@ export function ConfigManager({
       console.log("Transaction hash:", hash);
       alert("Configuration saved successfully! Tx: " + hash);
 
-      setShowSaveModal(false);
+      setShowSaveNewModal(false);
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
+      setNewRegistryAddress("");
     } catch (error: any) {
       console.error("Failed to save config:", error);
       alert("Failed to save configuration: " + (error.message || error));
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleUpdate = async () => {
+    if (!signer || !address || !provider) {
+      alert("Please connect your wallet");
+      return;
+    }
+
+    if (!updateRegistryAddress.trim() || !updateConfigId) {
+      alert("Invalid update parameters");
+      return;
+    }
+
+    if (!configName.trim()) {
+      alert("Please enter a configuration name");
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      // Convert wallet groups to contract format
+      const contractWalletGroups = walletGroups.map((group) => ({
+        wallet: group.wallet,
+        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6),
+        strategies: group.strategies.map((s) => ({
+          strategy: s.strategy,
+          subPercent: Math.round(parseFloat(s.subPercent) * 100),
+        })),
+      }));
+
+      const schedule = {
+        enabled: scheduleEnabled,
+        intervalMinutes: BigInt(intervalMinutes || "0"),
+        maxExecutions: BigInt(maxExecutions || "0"),
+      };
+
+      const contract = new ethers.Contract(
+        updateRegistryAddress,
+        REGISTRY_ABI,
+        signer
+      );
+
+      // Execute update transaction
+      const tx = await contract.updateConfig(
+        updateConfigId,
+        configName,
+        configDescription,
+        contractWalletGroups,
+        schedule,
+        isPublic
+      );
+      const receipt = await tx.wait();
+      const hash = receipt.hash;
+
+      console.log("Transaction hash:", hash);
+      alert("Configuration updated successfully! Tx: " + hash);
+
+      setShowUpdateModal(false);
+      setConfigName("");
+      setConfigDescription("");
+      setIsPublic(false);
+      setUpdateRegistryAddress("");
+      setUpdateConfigId(null);
+    } catch (error: any) {
+      console.error("Failed to update config:", error);
+      alert("Failed to update configuration: " + (error.message || error));
     } finally {
       setIsSaving(false);
     }
@@ -417,19 +490,82 @@ export function ConfigManager({
     return null;
   }
 
+  const handlePrepareUpdate = async (config: SavedConfig) => {
+    setUpdateRegistryAddress(loadRegistryAddress);
+    setUpdateConfigId(config.id);
+    setConfigName(config.name);
+    setConfigDescription(config.description);
+    setIsPublic(config.isPublic);
+    
+    // Load the full config data to populate the form
+    try {
+      const contract = new ethers.Contract(
+        loadRegistryAddress,
+        REGISTRY_ABI,
+        provider!
+      );
+      
+      const fullConfig = await contract.getConfig(config.id);
+      const schedule = fullConfig[5];
+      
+      // Load wallet groups
+      const walletGroupCount = Number(config.walletGroupCount);
+      const loadedWalletGroups: WalletGroup[] = [];
+      
+      for (let i = 0; i < walletGroupCount; i++) {
+        const group = await contract.getWalletGroup(config.id, BigInt(i));
+        const strategyCount = Number(group[2]);
+        const strategies = [];
+        
+        for (let j = 0; j < strategyCount; j++) {
+          const strategy = await contract.getStrategyAllocation(
+            config.id,
+            BigInt(i),
+            BigInt(j)
+          );
+          
+          strategies.push({
+            strategy: strategy[0] as DeFiStrategy,
+            subPercent: String(Number(strategy[1]) / 100),
+          });
+        }
+        
+        loadedWalletGroups.push({
+          wallet: group[0],
+          walletAmount: ethers.formatUnits(group[1], 6),
+          strategies,
+        });
+      }
+      
+      // Load into form
+      onLoadConfig(
+        loadedWalletGroups,
+        String(schedule.intervalMinutes),
+        String(schedule.maxExecutions),
+        schedule.enabled
+      );
+      
+      setShowUpdateModal(true);
+      setShowLoadModal(false);
+    } catch (error) {
+      console.error("Failed to load config for update:", error);
+      alert("Failed to load configuration data");
+    }
+  };
+
   return (
     <div style={{ marginBottom: "1rem" }}>
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button onClick={() => setShowSaveModal(true)} className="btn" style={{ flex: 1, background: "#4CAF50" }}>
-          💾 Save Configuration
+        <button onClick={() => setShowSaveNewModal(true)} className="btn" style={{ flex: 1, background: "#4CAF50" }}>
+          💾 Save New Config
         </button>
         <button onClick={() => setShowLoadModal(true)} className="btn" style={{ flex: 1, background: "#2196F3" }}>
           📂 Load Configuration
         </button>
       </div>
 
-      {/* Save Modal */}
-      {showSaveModal && (
+      {/* Save New Modal */}
+      {showSaveNewModal && (
         <div
           style={{
             position: "fixed",
@@ -443,11 +579,10 @@ export function ConfigManager({
             justifyContent: "center",
             zIndex: 1000,
           }}
-          onClick={() => setShowSaveModal(false)}
+          onClick={() => setShowSaveNewModal(false)}
         >
           <div
             style={{
-              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "500px",
@@ -455,20 +590,20 @@ export function ConfigManager({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginTop: 0 }}>Save Configuration</h3>
+            <h3 style={{ marginTop: 0 }}>Save New Configuration</h3>
             <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
                 Registry Contract Address *
               </label>
               <input
                 type="text"
-                value={registryAddress}
-                onChange={(e) => setRegistryAddress(e.target.value)}
+                value={newRegistryAddress}
+                onChange={(e) => setNewRegistryAddress(e.target.value)}
                 placeholder="0x..."
                 style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
               />
               <small style={{ color: "#666", fontSize: "0.85em" }}>
-                Enter the PayrollConfigRegistry contract address
+                Enter the PayrollConfigRegistry contract address (new or existing)
               </small>
             </div>
             <div style={{ marginBottom: "1rem" }}>
@@ -499,14 +634,98 @@ export function ConfigManager({
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
-                onClick={handleSave}
+                onClick={handleSaveNew}
                 disabled={isSaving}
                 className="btn btn-primary"
                 style={{ flex: 1 }}
               >
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Saving..." : "Save New"}
               </button>
-              <button onClick={() => setShowSaveModal(false)} className="btn" style={{ flex: 1 }}>
+              <button onClick={() => setShowSaveNewModal(false)} className="btn" style={{ flex: 1 }}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update Modal */}
+      {showUpdateModal && (
+        <div
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: "rgba(0,0,0,0.5)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowUpdateModal(false)}
+        >
+          <div
+            style={{
+              padding: "2rem",
+              borderRadius: "12px",
+              maxWidth: "500px",
+              width: "90%",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ marginTop: 0 }}>Update Configuration</h3>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
+                Registry Contract Address
+              </label>
+              <input
+                type="text"
+                value={updateRegistryAddress}
+                disabled
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc", background: "#f5f5f5" }}
+              />
+              <small style={{ color: "#666", fontSize: "0.85em" }}>
+                Config ID: {updateConfigId?.toString()}
+              </small>
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Name *</label>
+              <input
+                type="text"
+                value={configName}
+                onChange={(e) => setConfigName(e.target.value)}
+                placeholder="e.g., Monthly Payroll"
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+              />
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Description</label>
+              <textarea
+                value={configDescription}
+                onChange={(e) => setConfigDescription(e.target.value)}
+                placeholder="Optional description"
+                rows={3}
+                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
+              />
+            </div>
+            <div style={{ marginBottom: "1rem" }}>
+              <label style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <input type="checkbox" checked={isPublic} onChange={(e) => setIsPublic(e.target.checked)} />
+                <span>Make this configuration public (others can view and copy)</span>
+              </label>
+            </div>
+            <div style={{ display: "flex", gap: "0.5rem" }}>
+              <button
+                onClick={handleUpdate}
+                disabled={isSaving}
+                className="btn btn-primary"
+                style={{ flex: 1 }}
+              >
+                {isSaving ? "Updating..." : "Update"}
+              </button>
+              <button onClick={() => setShowUpdateModal(false)} className="btn" style={{ flex: 1 }}>
                 Cancel
               </button>
             </div>
@@ -533,7 +752,6 @@ export function ConfigManager({
         >
           <div
             style={{
-              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "600px",
@@ -598,7 +816,7 @@ export function ConfigManager({
                             {config.owner.slice(-4)}
                           </p>
                         </div>
-                        <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
+                        <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem", flexWrap: "wrap" }}>
                           <button
                             onClick={() => handleLoad(config.id)}
                             className="btn"
@@ -607,13 +825,22 @@ export function ConfigManager({
                             Load
                           </button>
                           {address?.toLowerCase() === config.owner.toLowerCase() && (
-                            <button
-                              onClick={() => handleDelete(config.id)}
-                              className="btn"
-                              style={{ background: "#f44336", padding: "0.5rem 1rem" }}
-                            >
-                              Delete
-                            </button>
+                            <>
+                              <button
+                                onClick={() => handlePrepareUpdate(config)}
+                                className="btn"
+                                style={{ background: "#FF9800", padding: "0.5rem 1rem" }}
+                              >
+                                Update
+                              </button>
+                              <button
+                                onClick={() => handleDelete(config.id)}
+                                className="btn"
+                                style={{ background: "#f44336", padding: "0.5rem 1rem" }}
+                              >
+                                Delete
+                              </button>
+                            </>
                           )}
                         </div>
                       </div>
