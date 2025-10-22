@@ -16,8 +16,7 @@ contract MorphoDepositSplitter {
 
     address public constant FORWARD_ADDRESS_1 = 0xC94d68094FA65E991dFfa0A941306E8460876169;
     address public constant FORWARD_ADDRESS_2 = 0x08D811A358850892029251CcC8a565a32fd2dCB8;
-    // Arbitrum Sepolia Morpho Vault v2
-    address public constant MORPHO_VAULT = 0xAbF102ed5F977331BDaD74D9136B6bFb7A2F09B6;
+    address public constant MORPHO_VAULT = 0x66DB50A789a15f4A368A1b3dCb05615Be651fc05;
 
     event SplitDeposited(
         address indexed asset,
