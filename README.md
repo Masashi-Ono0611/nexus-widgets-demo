@@ -62,7 +62,7 @@ pnpm run deploy:flexible-splitter
 
 See `package.json` scripts section for all available deployment commands.
 
-**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
+**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deploy/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
 
 ### After Deployment
 
