@@ -23,8 +23,7 @@ export function ExecutionModeCard({
         margin: "1.25rem 0",
         border: "1px solid #ddd",
         borderRadius: "4px",
-        padding: "0.75rem",
-        background: "#ffffff",
+        padding: "0.75rem"
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.75rem" }}>
@@ -46,7 +45,6 @@ export function ExecutionModeCard({
         <button
           type="button"
           onClick={() => setScheduleEnabled(false)}
-          className="btn"
           style={{
             flex: 1,
             padding: "0.5rem 0.75rem",
@@ -64,7 +62,6 @@ export function ExecutionModeCard({
         <button
           type="button"
           onClick={() => setScheduleEnabled(true)}
-          className="btn"
           style={{
             flex: 1,
             padding: "0.5rem 0.75rem",
