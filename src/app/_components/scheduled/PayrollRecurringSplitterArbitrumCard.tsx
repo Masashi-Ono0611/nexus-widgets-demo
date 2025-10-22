@@ -76,6 +76,7 @@ function buildFlatRecipientsFromGroups(groups: WalletGroup[]): Recipient[] {
 }
 
 export function PayrollRecurringSplitterArbitrumCard() {
+  const [totalAmount, setTotalAmount] = useState<string>("");
   const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([
     {
       wallet: "",
@@ -147,6 +148,14 @@ export function PayrollRecurringSplitterArbitrumCard() {
   const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(walletGroups), [walletGroups]);
   const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
 
+  const prefillConfig = useMemo(() => {
+    const base = { toChainId: 421614 as const, token: "USDC" as const };
+    if (totalAmount && parseFloat(totalAmount) > 0) {
+      return { ...base, amount: totalAmount };
+    }
+    return base;
+  }, [totalAmount]);
+
   const isValidConfiguration = () => {
     const recipientsOk = walletGroups.every((g) => isValidAddress(g.wallet));
     const shareOk = Math.abs(totalShareValue - 100) < 0.01;
@@ -168,6 +177,22 @@ export function PayrollRecurringSplitterArbitrumCard() {
       <p className="text-sm" style={{ marginBottom: "1rem" }}>
         Create recurring token distributions with Gelato automation
       </p>
+
+      {/* Total Amount Input */}
+      <div style={{ marginBottom: "1rem" }}>
+        <label className="field">
+          <span>Total Amount (USDC)</span>
+          <input
+            type="number"
+            min="0"
+            step="0.000001"
+            value={totalAmount}
+            onChange={(e) => setTotalAmount(e.target.value)}
+            className="input"
+            placeholder="e.g. 100"
+          />
+        </label>
+      </div>
 
       {/* Schedule Configuration */}
       <div style={{ marginBottom: "1rem" }}>
@@ -224,6 +249,8 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
         {walletGroups.map((g, gi) => {
           const strategiesSum = sumPercent(g.strategies.map((s) => s.subPercent));
+          const walletOverallPct = (parseFloat(g.totalPercent) || 0);
+          const walletAmount = (parseFloat(totalAmount) || 0) * walletOverallPct / 100;
           return (
             <div key={gi} style={{ border: "1px solid #ddd", padding: "0.75rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
@@ -243,6 +270,10 @@ export function PayrollRecurringSplitterArbitrumCard() {
                 <input type="number" min="0" max="100" step="0.01" value={g.totalPercent} onChange={(e) => updateWalletField(gi, "totalPercent", e.target.value)} className="input" />
               </label>
 
+              <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>
+                Wallet Amount: {walletAmount ? walletAmount.toFixed(6) : "0"} USDC
+              </div>
+
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
                 <strong>Strategies (fixed 4)</strong>
                 <span style={{ color: Math.abs(strategiesSum - 100) < 0.01 ? "green" : "red", fontSize: "0.9rem" }}>
@@ -252,6 +283,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
               {g.strategies.map((s, si) => {
                 const overall = ((parseFloat(g.totalPercent) || 0) * (parseFloat(s.subPercent) || 0)) / 100;
+                const strategyAmount = (parseFloat(totalAmount) || 0) * overall / 100;
                 return (
                   <div key={si} style={{ border: "1px solid #eee", padding: "0.5rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
                     <div style={{ display: "flex", gap: "0.5rem" }}>
@@ -267,7 +299,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
                     </div>
 
                     <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
-                      Overall: {overall.toFixed(2)}% of total
+                      Overall: {overall.toFixed(2)}% of total · Amount: {strategyAmount ? strategyAmount.toFixed(6) : "0"} USDC
                     </div>
                   </div>
                 );
@@ -330,7 +362,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
               ] as const)
         }
         functionName={scheduleEnabled ? "createSchedule" : "distributeTokens"}
-        prefill={{ toChainId: 421614, token: "USDC" }}
+        prefill={prefillConfig}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const totalAmountWei = parseUnits(amount, decimals);
