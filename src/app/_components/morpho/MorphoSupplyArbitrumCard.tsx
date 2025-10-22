@@ -12,7 +12,7 @@ export function MorphoSupplyArbitrumCard() {
     <div className="card">
       <h3>{`Bridge & Deposit to Morpho Vault v2 (Arbitrum Sepolia)`}</h3>
       <BridgeAndExecuteButton
-        contractAddress={"0xAbF102ed5F977331BDaD74D9136B6bFb7A2F09B6"}
+        contractAddress={"0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6"}
         contractAbi={[
           {
             name: "deposit",
@@ -48,3 +48,4 @@ export function MorphoSupplyArbitrumCard() {
     </div>
   );
 }
+

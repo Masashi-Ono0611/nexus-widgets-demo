@@ -1,7 +1,7 @@
 import { createPublicClient, http } from "viem";
 import { arbitrumSepolia } from "viem/chains";
 
-export const CONTRACT_ADDRESS = "0xAbF102ed5F977331BDaD74D9136B6bFb7A2F09B6" as const; // Morpho Vault v2 (Arbitrum Sepolia)
+export const CONTRACT_ADDRESS = "0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6" as const; // Morpho Vault v2 (Arbitrum Sepolia)
 export const DEFAULT_ASSET = "0x75faf114eafb1BDbe2F0316DF893fd58CE46AA4d" as const; // USDC on Arbitrum Sepolia
 export const RPC_URL = process.env.NEXT_PUBLIC_ARBITRUM_SEPOLIA_RPC ?? "https://sepolia-rollup.arbitrum.io/rpc";
 
