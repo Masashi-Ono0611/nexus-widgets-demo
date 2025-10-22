@@ -775,6 +775,42 @@
       "artifacts": [
         "AutoSplitter"
       ]
+    },
+    "/Users/masashi_mac_ssd/Developer/nexus-widgets-demo/contracts/PayrollConfigRegistry.sol": {
+      "lastModificationDate": 1761122505719,
+      "contentHash": "744b7f8221351b4c18895a9826ad7379",
+      "sourceName": "contracts/PayrollConfigRegistry.sol",
+      "solcConfig": {
+        "version": "0.8.25",
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "evmVersion": "paris",
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        "^0.8.25"
+      ],
+      "artifacts": [
+        "PayrollConfigRegistry"
+      ]
     }
   }
 }

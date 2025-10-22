@@ -188,11 +188,42 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Configurable max executions (or unlimited with 0)
   - Each recipient can choose: Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap (USDC→WETH)
   - Schedule management (create, execute, cancel)
+  - **NEW**: Save and load payroll configurations on-chain via PayrollConfigRegistry
 - **Management Commands**:
   - `pnpm run test:recurring-splitter` - Create a new schedule
   - `pnpm run check:recurring-schedule [id]` - Check schedule status
   - `pnpm run execute:recurring-schedule [id]` - Manually execute
 - **Important**: Contract needs ETH for Gelato fees. Send ~0.01 ETH to contract address.
+
+### 13. Payroll Recurring Splitter (Arbitrum)
+- **UI**: `PayrollRecurringSplitterArbitrumCard.tsx`
+- **Description**: Unified payroll operations console that lets teams configure wallet groups, execute one-off payouts, or schedule recurring runs on Arbitrum Sepolia.
+- **Features**:
+  - Interactive wallet group editor with per-wallet strategy allocation and validation (`WalletCard.tsx`)
+  - Immediate execution mode (via `FlexibleSplitter`) or scheduled execution mode (via `RecurringSplitter`) with a single toggle
+  - `ConfigManager.tsx` provides modal-driven save/load/update flows backed by on-chain storage
+  - Toast-based notifications and centered modals for modern UX feedback
+  - Up to 5 wallet groups and 4 DeFi strategies per wallet (Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap)
+
+#### Supplement: Payroll Config Registry (Arbitrum)
+- **Contract**: `PayrollConfigRegistry.sol` (deploy with `pnpm run deploy:payroll-config-registry`)
+- **Purpose**: Shared on-chain registry that stores payroll presets loaded by `ConfigManager.tsx`
+- **Key Capabilities**:
+  - Save wallet groups, strategy splits, and schedule settings as reusable configurations
+  - Load public configurations or private ones owned by the connected wallet
+  - Update or delete previously saved presets (owner only); toggle public visibility
+- **Deployment & Testing**:
+  ```bash
+  # Deploy to Arbitrum Sepolia
+  pnpm run deploy:payroll-config-registry
+
+  # Run regression tests
+  pnpm run test:payroll-config-registry
+  ```
+- **Usage Flow in UI**:
+  1. **Save** – open "💾 New Save", enter name/description/visibility, and persist current wallet groups
+  2. **Load** – open "📂 Load", browse public + owned configs, and hydrate the form with a single click
+  3. **Update** – after loading, use "✏️ Update Save" to push edits back on-chain
 
 ## Issues Found
 

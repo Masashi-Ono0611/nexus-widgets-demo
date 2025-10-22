@@ -24,7 +24,9 @@
     "cancel:recurring-schedule": "HARDHAT_NETWORK=arbitrumSepolia tsx --tsconfig tsconfig.hardhat.json scripts/schedule/cancelRecurringSchedule.ts",
     "wrap-eth": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-baseSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/defi/wrapETH.ts",
     "deploy:swap-executor": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} CONTRACT_NAME=SwapExecutor tsx --tsconfig tsconfig.hardhat.json scripts/deploy/deployContract.ts",
-    "test:uniswap-v2-swap": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/defi/uniswap/testUniswapV2Swap.ts"
+    "test:uniswap-v2-swap": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/defi/uniswap/testUniswapV2Swap.ts",
+    "deploy:payroll-config-registry": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/deploy/deployPayrollConfigRegistry.ts",
+    "test:payroll-config-registry": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/verify/testPayrollConfigRegistry.ts"
   },
   "dependencies": {
     "@avail-project/nexus-widgets": "^0.0.5",

@@ -10,13 +10,8 @@ interface TotalsSummaryProps {
 export function TotalsSummary({ totalAmountComputed, totalShareValue, walletGroups }: TotalsSummaryProps) {
   return (
     <div style={{ marginBottom: "1rem" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.5rem" }}>
-        <div>
-          <strong>Total Amount:</strong> {totalAmountComputed ? totalAmountComputed.toFixed(6) : "0"} USDC
-        </div>
-        <div>
-          <strong>Overall Share:</strong> {totalShareValue.toFixed(2)}%
-        </div>
+      <div style={{ marginBottom: "0.5rem" }}>
+        <strong>Total Amount:</strong> {totalAmountComputed ? totalAmountComputed.toFixed(6) : "0"} USDC
       </div>
       <div style={{ height: 10, width: "100%", background: "#eee", borderRadius: 4, overflow: "hidden" }}>
         <div style={{ display: "flex", height: "100%" }}>
@@ -43,7 +38,7 @@ export function TotalsSummary({ totalAmountComputed, totalShareValue, walletGrou
                 }}
               />
               <span>
-                Wallet {gi + 1}: {pct.toFixed(2)}% ({walletAmount ? walletAmount.toFixed(6) : "0"} USDC)
+                Wallet {gi + 1}: {walletAmount ? walletAmount.toFixed(6) : "0"} USDC ({pct.toFixed(2)}%)
               </span>
             </div>
           );

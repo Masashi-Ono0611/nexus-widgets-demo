@@ -20,28 +20,20 @@ import { TotalsSummary } from "./components/TotalsSummary";
 import { WalletCard } from "./components/WalletCard";
 import { ExecutionModeCard } from "./components/ExecutionModeCard";
 import { ValidationMessages } from "./components/ValidationMessages";
+import { ConfigManager } from "./components/ConfigManager";
+import { ToastProvider, useToast } from "../common/ToastProvider";
 
-export function PayrollRecurringSplitterArbitrumCard() {
-  const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([
-    {
-      wallet: "",
-      walletAmount: "",
-      strategies: [
-        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "60" },
-        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "30" },
-        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "10" },
-        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
-      ],
-    },
-  ]);
+function PayrollRecurringSplitterArbitrumCardInner() {
+  const { showInfo } = useToast();
+  const [walletGroups, setWalletGroups] = useState<WalletGroup[]>([]);
 
-  const [intervalMinutes, setIntervalMinutes] = useState("60");
-  const [maxExecutions, setMaxExecutions] = useState("3");
+  const [intervalMinutes, setIntervalMinutes] = useState("");
+  const [maxExecutions, setMaxExecutions] = useState("");
   const [scheduleEnabled, setScheduleEnabled] = useState(false);
 
   const addWalletGroup = () => {
     if (walletGroups.length >= 5) {
-      alert("Maximum 5 wallets allowed");
+      showInfo("Maximum 5 wallets allowed");
       return;
     }
     setWalletGroups([
@@ -61,7 +53,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
   const removeWalletGroup = (index: number) => {
     if (walletGroups.length <= 1) {
-      alert("At least one wallet required");
+      showInfo("At least one wallet required");
       return;
     }
     setWalletGroups(walletGroups.filter((_, i) => i !== index));
@@ -124,6 +116,18 @@ export function PayrollRecurringSplitterArbitrumCard() {
     setWalletGroups(updated);
   };
 
+  const handleLoadConfig = (
+    loadedWalletGroups: WalletGroup[],
+    loadedIntervalMinutes: string,
+    loadedMaxExecutions: string,
+    loadedScheduleEnabled: boolean
+  ) => {
+    setWalletGroups(loadedWalletGroups);
+    setIntervalMinutes(loadedIntervalMinutes);
+    setMaxExecutions(loadedMaxExecutions);
+    setScheduleEnabled(loadedScheduleEnabled);
+  };
+
   const totalAmountComputed = useMemo(
     () => walletGroups.reduce((s, g) => s + (parseFloat(g.walletAmount) || 0), 0),
     [walletGroups]
@@ -175,7 +179,8 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
   return (
     <div className="card">
-      <h3>Recurring Token Splitter (Arbitrum Sepolia) 🔄</h3>
+      <h3>Payroll Recurring Splitter (Arbitrum Sepolia)</h3>
+
 
       <TotalsSummary
         totalAmountComputed={totalAmountComputed}
@@ -226,6 +231,25 @@ export function PayrollRecurringSplitterArbitrumCard() {
         maxExecutions={maxExecutions}
         setMaxExecutions={setMaxExecutions}
       />
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "0.5rem",
+          flexWrap: "wrap",
+          marginTop: "0.5rem",
+          marginBottom: "0.5rem",
+        }}
+      >
+        <ConfigManager
+          walletGroups={walletGroups}
+          intervalMinutes={intervalMinutes}
+          maxExecutions={maxExecutions}
+          scheduleEnabled={scheduleEnabled}
+          onLoadConfig={handleLoadConfig}
+        />
+      </div>
 
       <BridgeAndExecuteButton
         contractAddress={scheduleEnabled ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}
@@ -303,7 +327,7 @@ export function PayrollRecurringSplitterArbitrumCard() {
           <button
             onClick={async () => {
               if (!isValidConfiguration()) {
-                alert("Please ensure all addresses are valid, total share is 100%, and interval/executions are valid");
+                showInfo("Please ensure all addresses are valid, total share is 100%, and interval/executions are valid");
                 return;
               }
               await onClick();
@@ -318,5 +342,13 @@ export function PayrollRecurringSplitterArbitrumCard() {
 
       <ValidationMessages messages={validationMessages} />
     </div>
+  );
+}
+
+export function PayrollRecurringSplitterArbitrumCard() {
+  return (
+    <ToastProvider>
+      <PayrollRecurringSplitterArbitrumCardInner />
+    </ToastProvider>
   );
 }

@@ -12,7 +12,6 @@ export function ValidationMessages({ messages }: ValidationMessagesProps) {
       style={{
         marginTop: "0.75rem",
         padding: "0.5rem",
-        background: "#FFF3F3",
         color: "#B71C1C",
         borderRadius: 4,
         fontSize: "0.9rem",

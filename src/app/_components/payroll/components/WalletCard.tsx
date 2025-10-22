@@ -75,7 +75,7 @@ export function WalletCard({
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
-        <strong>Strategies (fixed 4)</strong>
+        <strong>Strategies</strong>
         <div style={{ display: "flex", gap: "0.25rem" }}>
           <button className="btn" style={{ fontSize: "0.8rem", padding: "0.25rem 0.5rem" }} onClick={onPresetEvenSplit}>
             Even
