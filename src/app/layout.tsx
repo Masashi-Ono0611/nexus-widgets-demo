@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
-import { Navbar } from "./_components/Navbar";
-import { Footer } from "./_components/Footer";
+import { Navbar } from "./_components/layout/Navbar";
+import { Footer } from "./_components/layout/Footer";
 
 const geistSans = Inter({
   variable: "--font-geist-sans",

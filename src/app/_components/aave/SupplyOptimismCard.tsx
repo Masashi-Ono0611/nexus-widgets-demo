@@ -6,7 +6,7 @@ import {
   TOKEN_METADATA,
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
-import styles from "../components.module.css";
+import styles from "../../components.module.css";
 
 export function SupplyOptimismCard() {
   return (

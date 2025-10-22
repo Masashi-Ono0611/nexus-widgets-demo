@@ -1,20 +1,20 @@
 "use client";
 import React from "react";
 import { useNexus } from "@avail-project/nexus-widgets";
-import { BridgeCard } from "./_components/BridgeCard";
-import { TransferCard } from "./_components/TransferCard";
-import { SupplyOptimismCard } from "./_components/SupplyOptimismCard";
-import { SupplyArbitrumCard } from "./_components/SupplyArbitrumCard";
-import { SplitSupplyArbitrumCard } from "./_components/SplitSupplyArbitrumCard";
-import { SplitSupplyOptimismCard } from "./_components/SplitSupplyOptimismCard";
-import { MorphoSupplyBaseCard } from "./_components/MorphoSupplyBaseCard";
-import { MorphoSplitDepositBaseCard } from "./_components/MorphoSplitDepositBaseCard";
-import { TransferBaseCard } from "./_components/TransferBaseCard";
-import { TransferSplitBaseCard } from "./_components/TransferSplitBaseCard";
-import { UniswapV4SwapCard } from "./_components/UniswapV4SwapCard";
-import { DelayedTransferCard } from "./_components/DelayedTransferCard";
-import { FlexibleSplitterCard } from "./_components/FlexibleSplitterCard";
-import { RecurringSplitterCard } from "./_components/RecurringSplitterCard";
+import { BridgeCard } from "./_components/common/BridgeCard";
+import { TransferCard } from "./_components/transfer/TransferCard";
+import { SupplyOptimismCard } from "./_components/aave/SupplyOptimismCard";
+import { SupplyArbitrumCard } from "./_components/aave/SupplyArbitrumCard";
+import { SplitSupplyArbitrumCard } from "./_components/aave/SplitSupplyArbitrumCard";
+import { SplitSupplyOptimismCard } from "./_components/aave/SplitSupplyOptimismCard";
+import { MorphoSupplyBaseCard } from "./_components/morpho/MorphoSupplyBaseCard";
+import { MorphoSplitDepositBaseCard } from "./_components/morpho/MorphoSplitDepositBaseCard";
+import { TransferBaseCard } from "./_components/transfer/TransferBaseCard";
+import { TransferSplitBaseCard } from "./_components/splitter/TransferSplitBaseCard";
+import { UniswapV4SwapCard } from "./_components/uniswap/UniswapV4SwapCard";
+import { DelayedTransferCard } from "./_components/transfer/DelayedTransferCard";
+import { FlexibleSplitterCard } from "./_components/splitter/FlexibleSplitterCard";
+import { RecurringSplitterCard } from "./_components/splitter/RecurringSplitterCard";
 
 
 export default function Home() {

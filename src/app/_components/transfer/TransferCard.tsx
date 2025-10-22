@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { TransferButton, type TransferParams } from "@avail-project/nexus-widgets";
-import styles from "../components.module.css";
+import styles from "../../components.module.css";
 
 interface TransferCardProps {
   prefill?: Partial<TransferParams>;

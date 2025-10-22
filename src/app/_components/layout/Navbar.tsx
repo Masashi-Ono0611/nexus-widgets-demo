@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import styles from "../navbar.module.css";
+import styles from "../../navbar.module.css";
 
 export function Navbar() {
   const [theme, setTheme] = useState<"light" | "dark">("light");
