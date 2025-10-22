@@ -190,13 +190,6 @@ export function PayrollRecurringSplitterArbitrumCard() {
     <div className="card">
       <h3>Recurring Token Splitter (Arbitrum Sepolia) 🔄</h3>
 
-      <ConfigManager
-        walletGroups={walletGroups}
-        intervalMinutes={intervalMinutes}
-        maxExecutions={maxExecutions}
-        scheduleEnabled={scheduleEnabled}
-        onLoadConfig={handleLoadConfig}
-      />
 
       <TotalsSummary
         totalAmountComputed={totalAmountComputed}
@@ -247,6 +240,25 @@ export function PayrollRecurringSplitterArbitrumCard() {
         maxExecutions={maxExecutions}
         setMaxExecutions={setMaxExecutions}
       />
+
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          gap: "0.5rem",
+          flexWrap: "wrap",
+          marginTop: "0.5rem",
+          marginBottom: "0.5rem",
+        }}
+      >
+        <ConfigManager
+          walletGroups={walletGroups}
+          intervalMinutes={intervalMinutes}
+          maxExecutions={maxExecutions}
+          scheduleEnabled={scheduleEnabled}
+          onLoadConfig={handleLoadConfig}
+        />
+      </div>
 
       <BridgeAndExecuteButton
         contractAddress={scheduleEnabled ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}

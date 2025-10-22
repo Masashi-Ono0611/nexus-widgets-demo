@@ -42,8 +42,9 @@ export function SaveConfigModal({
         right: 0,
         bottom: 0,
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "center",
+        paddingBottom: "2rem",
         zIndex: 1000,
       }}
       onClick={onClose}
@@ -55,6 +56,7 @@ export function SaveConfigModal({
           maxWidth: "500px",
           width: "90%",
         }}
+        className="card"
         onClick={(e) => e.stopPropagation()}
       >
         <h3 style={{ marginTop: 0 }}>{title}</h3>
