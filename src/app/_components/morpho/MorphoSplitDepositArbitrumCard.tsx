@@ -7,9 +7,9 @@ import {
 } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 
-const MORPHO_DEPOSIT_SPLITTER_CONTRACT_ADDRESS = "0x104A5ED0a02e95b23D0C29543Ab8Bed5Dd4010eD";
+const MORPHO_DEPOSIT_SPLITTER_CONTRACT_ADDRESS = "0x9E1fe96bE747aac67aCd3Da9A4131c6A57a0698B";
 
-export function MorphoSplitDepositBaseCard() {
+export function MorphoSplitDepositArbitrumCard() {
   const [sharePercent, setSharePercent] = React.useState("50");
 
   const clampShare = (value: string) => {
@@ -22,7 +22,7 @@ export function MorphoSplitDepositBaseCard() {
 
   return (
     <div className="card">
-      <h3>{`Bridge & Split Deposit to Morpho Vault (Base Sepolia)`}</h3>
+      <h3>{`Bridge & Split Deposit to Morpho Vault (Arbitrum Sepolia)`}</h3>
       <label className="field">
         <span>Split share for address 1 (0-100%)</span>
         <input
@@ -54,7 +54,7 @@ export function MorphoSplitDepositBaseCard() {
           },
         ] as const}
         functionName="splitDeposit"
-        prefill={{ toChainId: 84532, token: "USDC" }}
+        prefill={{ toChainId: 421614, token: "USDC" }}
         buildFunctionParams={(token, amount, chainId, userAddress) => {
           const decimals = TOKEN_METADATA[token].decimals;
           const amountWei = parseUnits(amount, decimals);
