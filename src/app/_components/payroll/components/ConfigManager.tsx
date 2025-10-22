@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { WalletGroup, DeFiStrategy } from "../types";
+import { WalletGroup, DeFiStrategy, PAYROLL_CONFIG_REGISTRY_ADDRESS } from "../types";
 
 interface ConfigManagerProps {
   walletGroups: WalletGroup[];
@@ -150,8 +150,8 @@ export function ConfigManager({
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
 
-  const [showSaveNewModal, setShowSaveNewModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showNewSaveModal, setShowNewSaveModal] = useState(false);
+  const [showUpdateSaveModal, setShowUpdateSaveModal] = useState(false);
   const [showLoadModal, setShowLoadModal] = useState(false);
   const [configName, setConfigName] = useState("");
   const [configDescription, setConfigDescription] = useState("");
@@ -160,10 +160,9 @@ export function ConfigManager({
   const [isLoading, setIsLoading] = useState(false);
 
   const [configs, setConfigs] = useState<SavedConfig[]>([]);
-  const [newRegistryAddress, setNewRegistryAddress] = useState("");
-  const [updateRegistryAddress, setUpdateRegistryAddress] = useState("");
-  const [updateConfigId, setUpdateConfigId] = useState<bigint | null>(null);
-  const [loadRegistryAddress, setLoadRegistryAddress] = useState("");
+  
+  // Track loaded config for update
+  const [loadedConfigId, setLoadedConfigId] = useState<bigint | null>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -210,18 +209,18 @@ export function ConfigManager({
   }, []);
 
   useEffect(() => {
-    if (showLoadModal && loadRegistryAddress && ethers.isAddress(loadRegistryAddress)) {
+    if (showLoadModal && PAYROLL_CONFIG_REGISTRY_ADDRESS) {
       loadConfigList();
     }
-  }, [showLoadModal, loadRegistryAddress]);
+  }, [showLoadModal]);
 
   const loadConfigList = async () => {
-    if (!provider || !loadRegistryAddress) return;
+    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return;
 
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
-        loadRegistryAddress,
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
         provider
       );
@@ -252,19 +251,14 @@ export function ConfigManager({
     }
   };
 
-  const handleSaveNew = async () => {
+  const handleNewSave = async () => {
     if (!signer || !address || !provider) {
       alert("Please connect your wallet");
       return;
     }
 
-    if (!newRegistryAddress.trim()) {
-      alert("Please enter a registry contract address");
-      return;
-    }
-
-    if (!ethers.isAddress(newRegistryAddress)) {
-      alert("Invalid contract address");
+    if (!PAYROLL_CONFIG_REGISTRY_ADDRESS) {
+      alert("Registry contract not configured");
       return;
     }
 
@@ -292,7 +286,7 @@ export function ConfigManager({
       };
 
       const contract = new ethers.Contract(
-        newRegistryAddress,
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
         signer
       );
@@ -311,11 +305,10 @@ export function ConfigManager({
       console.log("Transaction hash:", hash);
       alert("Configuration saved successfully! Tx: " + hash);
 
-      setShowSaveNewModal(false);
+      setShowNewSaveModal(false);
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
-      setNewRegistryAddress("");
     } catch (error: any) {
       console.error("Failed to save config:", error);
       alert("Failed to save configuration: " + (error.message || error));
@@ -324,14 +317,14 @@ export function ConfigManager({
     }
   };
 
-  const handleUpdate = async () => {
+  const handleUpdateSave = async () => {
     if (!signer || !address || !provider) {
       alert("Please connect your wallet");
       return;
     }
 
-    if (!updateRegistryAddress.trim() || !updateConfigId) {
-      alert("Invalid update parameters");
+    if (!loadedConfigId) {
+      alert("No configuration loaded to update");
       return;
     }
 
@@ -345,10 +338,10 @@ export function ConfigManager({
       // Convert wallet groups to contract format
       const contractWalletGroups = walletGroups.map((group) => ({
         wallet: group.wallet,
-        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6),
+        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6), // USDC has 6 decimals
         strategies: group.strategies.map((s) => ({
           strategy: s.strategy,
-          subPercent: Math.round(parseFloat(s.subPercent) * 100),
+          subPercent: Math.round(parseFloat(s.subPercent) * 100), // Convert to basis points
         })),
       }));
 
@@ -359,14 +352,14 @@ export function ConfigManager({
       };
 
       const contract = new ethers.Contract(
-        updateRegistryAddress,
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
         signer
       );
 
-      // Execute update transaction
+      // Execute transaction
       const tx = await contract.updateConfig(
-        updateConfigId,
+        loadedConfigId,
         configName,
         configDescription,
         contractWalletGroups,
@@ -379,12 +372,10 @@ export function ConfigManager({
       console.log("Transaction hash:", hash);
       alert("Configuration updated successfully! Tx: " + hash);
 
-      setShowUpdateModal(false);
+      setShowUpdateSaveModal(false);
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
-      setUpdateRegistryAddress("");
-      setUpdateConfigId(null);
     } catch (error: any) {
       console.error("Failed to update config:", error);
       alert("Failed to update configuration: " + (error.message || error));
@@ -394,12 +385,12 @@ export function ConfigManager({
   };
 
   const handleLoad = async (configId: bigint) => {
-    if (!provider || !loadRegistryAddress) return;
+    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return;
 
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
-        loadRegistryAddress,
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
         provider
       );
@@ -446,6 +437,12 @@ export function ConfigManager({
         schedule.enabled
       );
 
+      // Store loaded config info for update
+      setLoadedConfigId(configId);
+      setConfigName(config[2]); // name
+      setConfigDescription(config[3]); // description
+      setIsPublic(config[6]); // isPublic
+
       setShowLoadModal(false);
       alert("Configuration loaded successfully!");
     } catch (error) {
@@ -457,7 +454,7 @@ export function ConfigManager({
   };
 
   const handleDelete = async (configId: bigint) => {
-    if (!signer || !address || !loadRegistryAddress) {
+    if (!signer || !address || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
       alert("Please connect your wallet");
       return;
     }
@@ -468,7 +465,7 @@ export function ConfigManager({
 
     try {
       const contract = new ethers.Contract(
-        loadRegistryAddress,
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
         signer
       );
@@ -490,82 +487,27 @@ export function ConfigManager({
     return null;
   }
 
-  const handlePrepareUpdate = async (config: SavedConfig) => {
-    setUpdateRegistryAddress(loadRegistryAddress);
-    setUpdateConfigId(config.id);
-    setConfigName(config.name);
-    setConfigDescription(config.description);
-    setIsPublic(config.isPublic);
-    
-    // Load the full config data to populate the form
-    try {
-      const contract = new ethers.Contract(
-        loadRegistryAddress,
-        REGISTRY_ABI,
-        provider!
-      );
-      
-      const fullConfig = await contract.getConfig(config.id);
-      const schedule = fullConfig[5];
-      
-      // Load wallet groups
-      const walletGroupCount = Number(config.walletGroupCount);
-      const loadedWalletGroups: WalletGroup[] = [];
-      
-      for (let i = 0; i < walletGroupCount; i++) {
-        const group = await contract.getWalletGroup(config.id, BigInt(i));
-        const strategyCount = Number(group[2]);
-        const strategies = [];
-        
-        for (let j = 0; j < strategyCount; j++) {
-          const strategy = await contract.getStrategyAllocation(
-            config.id,
-            BigInt(i),
-            BigInt(j)
-          );
-          
-          strategies.push({
-            strategy: strategy[0] as DeFiStrategy,
-            subPercent: String(Number(strategy[1]) / 100),
-          });
-        }
-        
-        loadedWalletGroups.push({
-          wallet: group[0],
-          walletAmount: ethers.formatUnits(group[1], 6),
-          strategies,
-        });
-      }
-      
-      // Load into form
-      onLoadConfig(
-        loadedWalletGroups,
-        String(schedule.intervalMinutes),
-        String(schedule.maxExecutions),
-        schedule.enabled
-      );
-      
-      setShowUpdateModal(true);
-      setShowLoadModal(false);
-    } catch (error) {
-      console.error("Failed to load config for update:", error);
-      alert("Failed to load configuration data");
-    }
-  };
-
   return (
     <div style={{ marginBottom: "1rem" }}>
       <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button onClick={() => setShowSaveNewModal(true)} className="btn" style={{ flex: 1, background: "#4CAF50" }}>
-          💾 Save New Config
-        </button>
         <button onClick={() => setShowLoadModal(true)} className="btn" style={{ flex: 1, background: "#2196F3" }}>
-          📂 Load Configuration
+          📂 Load
+        </button>
+        <button onClick={() => setShowNewSaveModal(true)} className="btn" style={{ flex: 1, background: "#4CAF50" }}>
+          💾 New Save
+        </button>
+        <button 
+          onClick={() => setShowUpdateSaveModal(true)} 
+          className="btn" 
+          style={{ flex: 1, background: loadedConfigId ? "#FF9800" : "#ccc" }}
+          disabled={!loadedConfigId}
+        >
+          ✏️ Update Save
         </button>
       </div>
 
-      {/* Save New Modal */}
-      {showSaveNewModal && (
+      {/* New Save Modal */}
+      {showNewSaveModal && (
         <div
           style={{
             position: "fixed",
@@ -579,10 +521,11 @@ export function ConfigManager({
             justifyContent: "center",
             zIndex: 1000,
           }}
-          onClick={() => setShowSaveNewModal(false)}
+          onClick={() => setShowNewSaveModal(false)}
         >
           <div
             style={{
+              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "500px",
@@ -590,22 +533,7 @@ export function ConfigManager({
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginTop: 0 }}>Save New Configuration</h3>
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
-                Registry Contract Address *
-              </label>
-              <input
-                type="text"
-                value={newRegistryAddress}
-                onChange={(e) => setNewRegistryAddress(e.target.value)}
-                placeholder="0x..."
-                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-              />
-              <small style={{ color: "#666", fontSize: "0.85em" }}>
-                Enter the PayrollConfigRegistry contract address (new or existing)
-              </small>
-            </div>
+            <h3 style={{ marginTop: 0 }}>New Save Configuration</h3>
             <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Name *</label>
               <input
@@ -634,14 +562,14 @@ export function ConfigManager({
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
-                onClick={handleSaveNew}
+                onClick={handleNewSave}
                 disabled={isSaving}
                 className="btn btn-primary"
                 style={{ flex: 1 }}
               >
-                {isSaving ? "Saving..." : "Save New"}
+                {isSaving ? "Saving..." : "Save"}
               </button>
-              <button onClick={() => setShowSaveNewModal(false)} className="btn" style={{ flex: 1 }}>
+              <button onClick={() => setShowNewSaveModal(false)} className="btn" style={{ flex: 1 }}>
                 Cancel
               </button>
             </div>
@@ -649,8 +577,8 @@ export function ConfigManager({
         </div>
       )}
 
-      {/* Update Modal */}
-      {showUpdateModal && (
+      {/* Update Save Modal */}
+      {showUpdateSaveModal && (
         <div
           style={{
             position: "fixed",
@@ -664,10 +592,11 @@ export function ConfigManager({
             justifyContent: "center",
             zIndex: 1000,
           }}
-          onClick={() => setShowUpdateModal(false)}
+          onClick={() => setShowUpdateSaveModal(false)}
         >
           <div
             style={{
+              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "500px",
@@ -677,20 +606,6 @@ export function ConfigManager({
           >
             <h3 style={{ marginTop: 0 }}>Update Configuration</h3>
             <div style={{ marginBottom: "1rem" }}>
-              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
-                Registry Contract Address
-              </label>
-              <input
-                type="text"
-                value={updateRegistryAddress}
-                disabled
-                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc", background: "#f5f5f5" }}
-              />
-              <small style={{ color: "#666", fontSize: "0.85em" }}>
-                Config ID: {updateConfigId?.toString()}
-              </small>
-            </div>
-            <div style={{ marginBottom: "1rem" }}>
               <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>Name *</label>
               <input
                 type="text"
@@ -718,14 +633,14 @@ export function ConfigManager({
             </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button
-                onClick={handleUpdate}
+                onClick={handleUpdateSave}
                 disabled={isSaving}
                 className="btn btn-primary"
                 style={{ flex: 1 }}
               >
                 {isSaving ? "Updating..." : "Update"}
               </button>
-              <button onClick={() => setShowUpdateModal(false)} className="btn" style={{ flex: 1 }}>
+              <button onClick={() => setShowUpdateSaveModal(false)} className="btn" style={{ flex: 1 }}>
                 Cancel
               </button>
             </div>
@@ -752,6 +667,7 @@ export function ConfigManager({
         >
           <div
             style={{
+              background: "white",
               padding: "2rem",
               borderRadius: "12px",
               maxWidth: "600px",
@@ -762,22 +678,6 @@ export function ConfigManager({
             onClick={(e) => e.stopPropagation()}
           >
             <h3 style={{ marginTop: 0 }}>Load Configuration</h3>
-
-            <div style={{ marginBottom: "1rem" }}>
-              <label style={{ display: "block", marginBottom: "0.5rem", fontWeight: "bold" }}>
-                Registry Contract Address *
-              </label>
-              <input
-                type="text"
-                value={loadRegistryAddress}
-                onChange={(e) => setLoadRegistryAddress(e.target.value)}
-                placeholder="0x..."
-                style={{ width: "100%", padding: "0.5rem", borderRadius: "4px", border: "1px solid #ccc" }}
-              />
-              <small style={{ color: "#666", fontSize: "0.85em" }}>
-                Enter any PayrollConfigRegistry contract address to load configurations
-              </small>
-            </div>
 
             {isLoading ? (
               <p>Loading...</p>
@@ -816,7 +716,7 @@ export function ConfigManager({
                             {config.owner.slice(-4)}
                           </p>
                         </div>
-                        <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem", flexWrap: "wrap" }}>
+                        <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
                           <button
                             onClick={() => handleLoad(config.id)}
                             className="btn"
@@ -825,22 +725,13 @@ export function ConfigManager({
                             Load
                           </button>
                           {address?.toLowerCase() === config.owner.toLowerCase() && (
-                            <>
-                              <button
-                                onClick={() => handlePrepareUpdate(config)}
-                                className="btn"
-                                style={{ background: "#FF9800", padding: "0.5rem 1rem" }}
-                              >
-                                Update
-                              </button>
-                              <button
-                                onClick={() => handleDelete(config.id)}
-                                className="btn"
-                                style={{ background: "#f44336", padding: "0.5rem 1rem" }}
-                              >
-                                Delete
-                              </button>
-                            </>
+                            <button
+                              onClick={() => handleDelete(config.id)}
+                              className="btn"
+                              style={{ background: "#f44336", padding: "0.5rem 1rem" }}
+                            >
+                              Delete
+                            </button>
                           )}
                         </div>
                       </div>
