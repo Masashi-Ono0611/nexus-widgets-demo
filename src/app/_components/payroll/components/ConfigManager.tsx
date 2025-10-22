@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { parseUnits, formatUnits } from "viem";
+import { ethers } from "ethers";
 import { WalletGroup, DeFiStrategy, PAYROLL_CONFIG_REGISTRY_ADDRESS } from "../types";
 
 interface ConfigManagerProps {
@@ -147,9 +146,9 @@ export function ConfigManager({
   onLoadConfig,
 }: ConfigManagerProps) {
   const [mounted, setMounted] = useState(false);
-  const { address } = useAccount();
-  const publicClient = usePublicClient();
-  const { data: walletClient } = useWalletClient();
+  const [address, setAddress] = useState<string | null>(null);
+  const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
+  const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
 
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showLoadModal, setShowLoadModal] = useState(false);
@@ -167,6 +166,46 @@ export function ConfigManager({
 
   useEffect(() => {
     setMounted(true);
+    
+    // Initialize ethereum provider
+    const initProvider = async () => {
+      if (typeof window !== "undefined" && (window as any).ethereum) {
+        const ethProvider = new ethers.BrowserProvider((window as any).ethereum);
+        setProvider(ethProvider);
+        
+        try {
+          const accounts = await ethProvider.send("eth_accounts", []);
+          if (accounts.length > 0) {
+            setAddress(accounts[0]);
+            const ethSigner = await ethProvider.getSigner();
+            setSigner(ethSigner);
+          }
+        } catch (error) {
+          console.error("Failed to get accounts:", error);
+        }
+      }
+    };
+    
+    initProvider();
+    
+    // Listen for account changes
+    if (typeof window !== "undefined" && (window as any).ethereum) {
+      const handleAccountsChanged = (accounts: string[]) => {
+        if (accounts.length > 0) {
+          setAddress(accounts[0]);
+          initProvider();
+        } else {
+          setAddress(null);
+          setSigner(null);
+        }
+      };
+      
+      (window as any).ethereum.on("accountsChanged", handleAccountsChanged);
+      
+      return () => {
+        (window as any).ethereum?.removeListener("accountsChanged", handleAccountsChanged);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -176,31 +215,23 @@ export function ConfigManager({
   }, [showLoadModal, showPublicConfigs]);
 
   const loadConfigList = async () => {
-    if (!publicClient || !address) return;
+    if (!provider || !address) return;
 
     setIsLoading(true);
     try {
+      const contract = new ethers.Contract(
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        REGISTRY_ABI,
+        provider
+      );
+
       const configIds = showPublicConfigs
-        ? await publicClient.readContract({
-            address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-            abi: REGISTRY_ABI,
-            functionName: "getPublicConfigIds",
-          })
-        : await publicClient.readContract({
-            address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-            abi: REGISTRY_ABI,
-            functionName: "getUserConfigIds",
-            args: [address],
-          });
+        ? await contract.getPublicConfigIds()
+        : await contract.getUserConfigIds(address);
 
       const configs: SavedConfig[] = [];
-      for (const id of configIds as bigint[]) {
-        const config = await publicClient.readContract({
-          address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-          abi: REGISTRY_ABI,
-          functionName: "getConfig",
-          args: [id],
-        });
+      for (const id of configIds) {
+        const config = await contract.getConfig(id);
 
         configs.push({
           id: config[0],
@@ -226,7 +257,7 @@ export function ConfigManager({
   };
 
   const handleSave = async () => {
-    if (!walletClient || !address || !publicClient) {
+    if (!signer || !address || !provider) {
       alert("Please connect your wallet");
       return;
     }
@@ -240,8 +271,8 @@ export function ConfigManager({
     try {
       // Convert wallet groups to contract format
       const contractWalletGroups = walletGroups.map((group) => ({
-        wallet: group.wallet as `0x${string}`,
-        walletAmount: parseUnits(group.walletAmount || "0", 6), // USDC has 6 decimals
+        wallet: group.wallet,
+        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6), // USDC has 6 decimals
         strategies: group.strategies.map((s) => ({
           strategy: s.strategy,
           subPercent: Math.round(parseFloat(s.subPercent) * 100), // Convert to basis points
@@ -254,22 +285,22 @@ export function ConfigManager({
         maxExecutions: BigInt(maxExecutions || "0"),
       };
 
-      // Simulate to check for errors
-      await publicClient.simulateContract({
-        address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-        abi: REGISTRY_ABI,
-        functionName: "saveConfig",
-        args: [configName, configDescription, contractWalletGroups, schedule, isPublic],
-        account: address,
-      });
+      const contract = new ethers.Contract(
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        REGISTRY_ABI,
+        signer
+      );
 
       // Execute transaction
-      const hash = await walletClient.writeContract({
-        address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-        abi: REGISTRY_ABI,
-        functionName: "saveConfig",
-        args: [configName, configDescription, contractWalletGroups, schedule, isPublic],
-      });
+      const tx = await contract.saveConfig(
+        configName,
+        configDescription,
+        contractWalletGroups,
+        schedule,
+        isPublic
+      );
+      const receipt = await tx.wait();
+      const hash = receipt.hash;
 
       console.log("Transaction hash:", hash);
       alert("Configuration saved successfully! Tx: " + hash);
@@ -287,17 +318,18 @@ export function ConfigManager({
   };
 
   const handleLoad = async (configId: bigint) => {
-    if (!publicClient) return;
+    if (!provider) return;
 
     setIsLoading(true);
     try {
+      const contract = new ethers.Contract(
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        REGISTRY_ABI,
+        provider
+      );
+
       // Get config metadata
-      const config = await publicClient.readContract({
-        address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-        abi: REGISTRY_ABI,
-        functionName: "getConfig",
-        args: [configId],
-      });
+      const config = await contract.getConfig(configId);
 
       const walletGroupCount = Number(config[4]);
       const schedule = config[5];
@@ -305,23 +337,17 @@ export function ConfigManager({
       // Load wallet groups
       const loadedWalletGroups: WalletGroup[] = [];
       for (let i = 0; i < walletGroupCount; i++) {
-        const group = await publicClient.readContract({
-          address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-          abi: REGISTRY_ABI,
-          functionName: "getWalletGroup",
-          args: [configId, BigInt(i)],
-        });
+        const group = await contract.getWalletGroup(configId, BigInt(i));
 
         const strategyCount = Number(group[2]);
         const strategies = [];
 
         for (let j = 0; j < strategyCount; j++) {
-          const strategy = await publicClient.readContract({
-            address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-            abi: REGISTRY_ABI,
-            functionName: "getStrategyAllocation",
-            args: [configId, BigInt(i), BigInt(j)],
-          });
+          const strategy = await contract.getStrategyAllocation(
+            configId,
+            BigInt(i),
+            BigInt(j)
+          );
 
           strategies.push({
             strategy: strategy[0] as DeFiStrategy,
@@ -331,7 +357,7 @@ export function ConfigManager({
 
         loadedWalletGroups.push({
           wallet: group[0],
-          walletAmount: formatUnits(group[1], 6), // USDC has 6 decimals
+          walletAmount: ethers.formatUnits(group[1], 6), // USDC has 6 decimals
           strategies,
         });
       }
@@ -355,7 +381,7 @@ export function ConfigManager({
   };
 
   const handleDelete = async (configId: bigint) => {
-    if (!walletClient || !address) {
+    if (!signer || !address) {
       alert("Please connect your wallet");
       return;
     }
@@ -365,12 +391,15 @@ export function ConfigManager({
     }
 
     try {
-      const hash = await walletClient.writeContract({
-        address: PAYROLL_CONFIG_REGISTRY_ADDRESS as `0x${string}`,
-        abi: REGISTRY_ABI,
-        functionName: "deleteConfig",
-        args: [configId],
-      });
+      const contract = new ethers.Contract(
+        PAYROLL_CONFIG_REGISTRY_ADDRESS,
+        REGISTRY_ABI,
+        signer
+      );
+
+      const tx = await contract.deleteConfig(configId);
+      const receipt = await tx.wait();
+      const hash = receipt.hash;
 
       console.log("Delete transaction hash:", hash);
       alert("Configuration deleted successfully!");
