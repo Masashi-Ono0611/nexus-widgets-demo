@@ -166,8 +166,7 @@ export function useConfigRegistry(
         configName,
         configDescription,
         contractWalletGroups,
-        schedule,
-        isPublic
+        schedule
       );
       const receipt = await tx.wait();
       const hash = receipt.hash;

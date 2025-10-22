@@ -68,7 +68,6 @@ export const REGISTRY_ABI = [
           { name: "maxExecutions", type: "uint256" },
         ],
       },
-      { name: "isPublic", type: "bool" },
     ],
     outputs: [],
   },
