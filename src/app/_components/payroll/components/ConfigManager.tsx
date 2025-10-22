@@ -162,7 +162,7 @@ export function ConfigManager({
   const [publicConfigs, setPublicConfigs] = useState<SavedConfig[]>([]);
   const [showPublicConfigs, setShowPublicConfigs] = useState(false);
 
-  const isRegistryConfigured = PAYROLL_CONFIG_REGISTRY_ADDRESS && PAYROLL_CONFIG_REGISTRY_ADDRESS !== "";
+  const isRegistryConfigured = !!PAYROLL_CONFIG_REGISTRY_ADDRESS;
 
   useEffect(() => {
     if (showLoadModal && isRegistryConfigured) {

@@ -7,13 +7,9 @@ const hre = hardhat as unknown as any;
 const ethers = hre.ethers;
 
 // Replace with your deployed contract address
-const REGISTRY_ADDRESS = process.env.PAYROLL_CONFIG_REGISTRY_ADDRESS || "";
+const REGISTRY_ADDRESS = "0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7";
 
 async function main() {
-  if (!REGISTRY_ADDRESS) {
-    console.error("❌ Please set PAYROLL_CONFIG_REGISTRY_ADDRESS in .env");
-    process.exit(1);
-  }
 
   const network = process.env.HARDHAT_NETWORK || "arbitrumSepolia";
   console.log(`\n🧪 Testing PayrollConfigRegistry on ${network}...`);
@@ -135,7 +131,7 @@ async function main() {
         "UNISWAP_V2_SWAP",
       ];
       console.log(
-        `       ${strategyNames[strategy.strategy]}: ${strategy.subPercent / 100}%`
+        `       ${strategyNames[strategy.strategy]}: ${Number(strategy.subPercent) / 100}%`
       );
     }
   }
