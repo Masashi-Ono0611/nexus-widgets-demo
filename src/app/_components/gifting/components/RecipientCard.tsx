@@ -28,6 +28,7 @@ export function RecipientCard({
 }: RecipientCardProps) {
   const strategiesSum = sumPercent(recipient.strategies.map((s) => s.subPercent));
   const recipientSharePercent = parseFloat(recipient.sharePercent) || 0;
+  const strategiesSummaryColor = Math.abs(strategiesSum - 100) < 0.01 ? "#2e7d32" : "#d84315";
 
   return (
     <div style={{ border: "1px solid #ddd", padding: "0.75rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
@@ -68,12 +69,16 @@ export function RecipientCard({
         />
       </label>
 
-      <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>
-        Total Recipient Share: {recipientSharePercent.toFixed(2)}%
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.35rem" }}>
+        <span style={{ fontSize: "0.9rem", color: "#555" }}>Recipient Share</span>
+        <span style={{ fontSize: "0.9rem", fontWeight: 600 }}>{recipientSharePercent.toFixed(2)}%</span>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.25rem 0" }}>
-        <strong>Strategies</strong>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0.35rem 0" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <strong>Strategies</strong>
+          <span style={{ fontSize: "0.8rem", color: strategiesSummaryColor }}>Total {strategiesSum.toFixed(2)}%</span>
+        </div>
         <div style={{ display: "flex", gap: "0.25rem" }}>
           <button className="btn" style={{ fontSize: "0.75rem", padding: "0.25rem 0.4rem" }} onClick={onPresetEvenSplit}>
             Even

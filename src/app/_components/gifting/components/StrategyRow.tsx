@@ -10,10 +10,12 @@ interface StrategyRowProps {
 export function StrategyRow({ strategy, recipientSharePercent, onUpdate }: StrategyRowProps) {
   const sub = parseFloat(strategy.subPercent) || 0;
   const overall = (recipientSharePercent * sub) / 100;
+  const overallLabel = overall.toFixed(2);
+  const subLabel = sub.toFixed(2);
 
   return (
-    <div style={{ border: "1px solid #eee", padding: "0.5rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
+    <div style={{ border: "1px solid #eee", padding: "0.6rem", marginBottom: "0.5rem", borderRadius: "4px" }}>
+      <div style={{ display: "flex", gap: "0.5rem", alignItems: "stretch" }}>
         <div className="field" style={{ flex: 1 }}>
           <span>Strategy</span>
           <div className="input" style={{ display: "flex", alignItems: "center", height: "36px", gap: 8 }}>
@@ -30,7 +32,7 @@ export function StrategyRow({ strategy, recipientSharePercent, onUpdate }: Strat
           </div>
         </div>
 
-        <label className="field" style={{ width: "200px" }}>
+        <label className="field" style={{ width: "180px" }}>
           <span>Sub Percentage (%)</span>
           <input
             type="number"
@@ -42,10 +44,15 @@ export function StrategyRow({ strategy, recipientSharePercent, onUpdate }: Strat
             className="input"
           />
         </label>
+
+        <div style={{ minWidth: "140px", display: "flex", flexDirection: "column", justifyContent: "center", gap: 4 }}>
+          <span style={{ fontSize: "0.75rem", color: "#777" }}>Overall Share</span>
+          <span style={{ fontSize: "0.95rem", fontWeight: 600 }}>{overallLabel}%</span>
+        </div>
       </div>
 
-      <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
-        Overall: {overall.toFixed(2)}% of total
+      <div style={{ fontSize: "0.75rem", color: "#888", marginTop: "0.25rem" }}>
+        Sub allocation {subLabel}% × Recipient share {recipientSharePercent.toFixed(2)}% = Overall {overallLabel}%
       </div>
     </div>
   );
