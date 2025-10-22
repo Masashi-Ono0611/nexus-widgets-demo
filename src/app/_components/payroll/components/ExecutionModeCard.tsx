@@ -21,8 +21,8 @@ export function ExecutionModeCard({
     <div
       style={{
         margin: "1.25rem 0",
-        border: "1px solid #e0e0e0",
-        borderRadius: "6px",
+        border: "1px solid #ddd",
+        borderRadius: "4px",
         padding: "0.75rem",
         background: "#ffffff",
       }}
@@ -35,8 +35,8 @@ export function ExecutionModeCard({
             fontWeight: 600,
             padding: "0.2rem 0.6rem",
             borderRadius: "999px",
-            background: scheduleEnabled ? "#E3F2FD" : "#E8F5E9",
-            color: scheduleEnabled ? "#0D47A1" : "#1B5E20",
+            background: "#f5f5f5",
+            color: "#333",
           }}
         >
           {scheduleEnabled ? "Recurring Schedule" : "Immediate Transfer"}
@@ -46,13 +46,14 @@ export function ExecutionModeCard({
         <button
           type="button"
           onClick={() => setScheduleEnabled(false)}
+          className="btn"
           style={{
             flex: 1,
             padding: "0.5rem 0.75rem",
             borderRadius: "0.5rem",
-            border: "1px solid #1565C0",
-            background: scheduleEnabled ? "#ffffff" : "#1565C0",
-            color: scheduleEnabled ? "#1565C0" : "#ffffff",
+            border: "1px solid #ddd",
+            background: scheduleEnabled ? "#f5f5f5" : "#333",
+            color: scheduleEnabled ? "#333" : "#ffffff",
             fontWeight: 600,
             cursor: "pointer",
             transition: "all 0.2s ease",
@@ -63,13 +64,14 @@ export function ExecutionModeCard({
         <button
           type="button"
           onClick={() => setScheduleEnabled(true)}
+          className="btn"
           style={{
             flex: 1,
             padding: "0.5rem 0.75rem",
             borderRadius: "0.5rem",
-            border: "1px solid #1565C0",
-            background: scheduleEnabled ? "#1565C0" : "#ffffff",
-            color: scheduleEnabled ? "#ffffff" : "#1565C0",
+            border: "1px solid #ddd",
+            background: scheduleEnabled ? "#333" : "#f5f5f5",
+            color: scheduleEnabled ? "#ffffff" : "#333",
             fontWeight: 600,
             cursor: "pointer",
             transition: "all 0.2s ease",
