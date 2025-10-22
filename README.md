@@ -145,14 +145,14 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **Contract**: `AaveSupplySplitter.sol`
 - **Description**: Bridge USDC and split supply to AAVE between two addresses on Arbitrum Sepolia.
 
-### 8. Morpho Supply (Base)
-- **UI**: `MorphoSupplyBaseCard.tsx`
-- **Description**: Bridge USDC and supply to Morpho Vault on Base Sepolia.
+### 8. Morpho Supply (Arbitrum)
+- **UI**: `MorphoSupplyArbitrumCard.tsx`
+- **Description**: Bridge USDC and supply to Morpho Vault on Arbitrum Sepolia.
 
-### 9. Morpho Deposit Splitter (Base)
-- **UI**: `MorphoSplitDepositBaseCard.tsx`
-- **Contract**: `MorphoDepositSplitter.sol` (`0x104A5ED0a02e95b23D0C29543Ab8Bed5Dd4010eD`)
-- **Description**: Bridge USDC and split deposit to Morpho Vault between two addresses on Base Sepolia.
+### 9. Morpho Deposit Splitter (Arbitrum)
+- **UI**: `MorphoSplitDepositArbitrumCard.tsx`
+- **Contract**: `MorphoDepositSplitter.sol` (`0x9E1fe96bE747aac67aCd3Da9A4131c6A57a0698B`)
+- **Description**: Bridge USDC and split deposit to Morpho Vault between two addresses on Arbitrum Sepolia.
 
 ### 10. Delayed Transfer (Base)
 - **UI**: `DelayedTransferBaseCard.tsx`
@@ -171,10 +171,11 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
 - **Features**:
   - Dynamic recipient configuration (add/remove recipients)
   - Individual share percentage for each recipient (0-100%)
-  - Three DeFi strategies per recipient:
+  - Four DeFi strategies per recipient:
     - **Direct Transfer**: Send tokens directly to recipient wallet
     - **AAVE Supply**: Supply tokens to AAVE on behalf of recipient
     - **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
+    - **Uniswap V2 Swap (USDC→WETH)**: Swap on Arbitrum Sepolia (only network with supported pool)
 
 ### 12. Recurring Token Splitter (Arbitrum)
 - **UI**: `RecurringSplitterArbitrumCard.tsx`
@@ -185,7 +186,7 @@ Features are listed in the order they appear on the UI (`src/app/page.tsx`):
   - Gelato Automate integration for automatic execution
   - Multiple recipients (up to 20) with individual DeFi strategies
   - Configurable max executions (or unlimited with 0)
-  - Each recipient can choose: Direct Transfer, AAVE Supply, or Morpho Deposit
+  - Each recipient can choose: Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap (USDC→WETH)
   - Schedule management (create, execute, cancel)
 - **Management Commands**:
   - `pnpm run test:recurring-splitter` - Create a new schedule

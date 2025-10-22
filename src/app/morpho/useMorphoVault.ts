@@ -9,7 +9,7 @@ import {
   formatUnits,
   parseUnits,
 } from "viem";
-import { baseSepolia } from "viem/chains";
+import { arbitrumSepolia } from "viem/chains";
 import {
   CONTRACT_ADDRESS,
   DEFAULT_ASSET,
@@ -157,11 +157,11 @@ export function useMorphoVault() {
       throw new Error("Unable to determine network. Please try again.");
     }
     const currentChainId = Number.parseInt(chainIdHex, 16);
-    if (currentChainId !== baseSepolia.id) {
+    if (currentChainId !== arbitrumSepolia.id) {
       try {
         await eth.request({
           method: "wallet_switchEthereumChain",
-          params: [{ chainId: `0x${baseSepolia.id.toString(16)}` }],
+          params: [{ chainId: `0x${arbitrumSepolia.id.toString(16)}` }],
         });
       } catch (switchError: any) {
         if (switchError?.code === 4902) {
@@ -169,11 +169,11 @@ export function useMorphoVault() {
             method: "wallet_addEthereumChain",
             params: [
               {
-                chainId: `0x${baseSepolia.id.toString(16)}`,
-                chainName: "Base Sepolia",
-                nativeCurrency: { name: "Base Sepolia Ether", symbol: "ETH", decimals: 18 },
+                chainId: `0x${arbitrumSepolia.id.toString(16)}`,
+                chainName: "Arbitrum Sepolia",
+                nativeCurrency: { name: "Arbitrum Sepolia Ether", symbol: "ETH", decimals: 18 },
                 rpcUrls: [RPC_URL],
-                blockExplorerUrls: ["https://sepolia.basescan.org"],
+                blockExplorerUrls: ["https://sepolia.arbiscan.io"],
               },
             ],
           });
@@ -185,7 +185,7 @@ export function useMorphoVault() {
 
     const client = createWalletClient({
       account: selectedAccount,
-      chain: baseSepolia,
+      chain: arbitrumSepolia,
       transport: custom(eth),
     });
     setAccount(selectedAccount);
@@ -222,7 +222,7 @@ export function useMorphoVault() {
       const parsedAmount = parseUnits(depositAmount, decimals);
       const hash = await client.writeContract({
         account: userAccount,
-        chain: baseSepolia,
+        chain: arbitrumSepolia,
         address: token,
         abi: erc20Abi,
         functionName: "approve",
@@ -250,7 +250,7 @@ export function useMorphoVault() {
       const parsedAmount = parseUnits(depositAmount, decimals);
       const txHash = await client.writeContract({
         account: userAccount,
-        chain: baseSepolia,
+        chain: arbitrumSepolia,
         address: CONTRACT_ADDRESS,
         abi: vaultAbi,
         functionName: "deposit",
@@ -278,7 +278,7 @@ export function useMorphoVault() {
       const parsedAmount = parseUnits(withdrawAmount, decimals);
       const txHash = await client.writeContract({
         account: userAccount,
-        chain: baseSepolia,
+        chain: arbitrumSepolia,
         address: CONTRACT_ADDRESS,
         abi: vaultAbi,
         functionName: "withdraw",

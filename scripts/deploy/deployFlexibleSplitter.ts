@@ -114,7 +114,7 @@ async function main() {
 
   // Next steps
   console.log("\n📝 Next Steps:");
-  console.log("1. Update FlexibleSplitterCard.tsx:");
+  console.log("1. Update FlexibleSplitterArbitrumCard.tsx:");
   console.log(`   const FLEXIBLE_SPLITTER_ADDRESS = "${contractAddress}";`);
   console.log("\n2. Update .env file:");
   console.log(`   FLEXIBLE_SPLITTER_ADDRESS=${contractAddress}`);

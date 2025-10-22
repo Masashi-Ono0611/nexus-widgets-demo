@@ -5,8 +5,8 @@ import { BridgeCard } from "./_components/common/BridgeCard";
 import { TransferCard } from "./_components/transfer/TransferCard";
 import { SupplyArbitrumCard } from "./_components/aave/SupplyArbitrumCard";
 import { SplitSupplyArbitrumCard } from "./_components/aave/SplitSupplyArbitrumCard";
-import { MorphoSupplyBaseCard } from "./_components/morpho/MorphoSupplyBaseCard";
-import { MorphoSplitDepositBaseCard } from "./_components/morpho/MorphoSplitDepositBaseCard";
+import { MorphoSupplyArbitrumCard } from "./_components/morpho/MorphoSupplyArbitrumCard";
+import { MorphoSplitDepositArbitrumCard } from "./_components/morpho/MorphoSplitDepositArbitrumCard";
 import { TransferBaseCard } from "./_components/transfer/TransferBaseCard";
 import { TransferSplitBaseCard } from "./_components/splitter/TransferSplitBaseCard";
 import { DelayedTransferBaseCard } from "./_components/scheduled/DelayedTransferBaseCard";
@@ -75,8 +75,8 @@ export default function Home() {
         <TransferSplitBaseCard />
         <SupplyArbitrumCard />
         <SplitSupplyArbitrumCard />
-        <MorphoSupplyBaseCard />
-        <MorphoSplitDepositBaseCard />
+        <MorphoSupplyArbitrumCard />
+        <MorphoSplitDepositArbitrumCard />
         <DelayedTransferBaseCard />
         <FlexibleSplitterArbitrumCard />
         <RecurringSplitterArbitrumCard />
