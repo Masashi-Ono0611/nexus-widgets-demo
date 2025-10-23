@@ -1,11 +1,12 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 import { ConfigManagerProps } from "./configManager/types";
 import { useWallet } from "./configManager/useWallet";
 import { useConfigRegistry } from "./configManager/useConfigRegistry";
 import { SaveConfigModal } from "./configManager/SaveConfigModal";
 import { LoadConfigModal } from "./configManager/LoadConfigModal";
 import { useToast } from "../../common/ToastProvider";
+import { isValidAddress, sumPercent, buildFlatRecipientsFromGroups, totalShare } from "../utils";
 
 function ConfigManagerComponent({
   walletGroups,
@@ -106,11 +107,49 @@ function ConfigManagerComponent({
     }
   };
 
+  const hasLoadedConfig = loadedConfigId !== null;
+
+  const totalAmountComputed = useMemo(
+    () => walletGroups.reduce((s, g) => s + (parseFloat(g.walletAmount) || 0), 0),
+    [walletGroups]
+  );
+  const totalWalletPercent = useMemo(() => {
+    return totalAmountComputed > 0
+      ? walletGroups.reduce((s, g) => s + ((parseFloat(g.walletAmount) || 0) / totalAmountComputed) * 100, 0)
+      : 0;
+  }, [walletGroups, totalAmountComputed]);
+  const flatRecipients = useMemo(
+    () => buildFlatRecipientsFromGroups(walletGroups, totalAmountComputed),
+    [walletGroups, totalAmountComputed]
+  );
+  const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
+
+  const configRecipientsValid = useMemo(() => {
+    const recipientsOk = walletGroups.every((g) => isValidAddress(g.wallet));
+    const shareOk = Math.abs(totalShareValue - 100) < 0.01;
+    const walletsTotalOk = Math.abs(totalWalletPercent - 100) < 0.01;
+    const eachWalletOk = walletGroups.every(
+      (g) => Math.abs(sumPercent(g.strategies.map((s) => s.subPercent)) - 100) < 0.01
+    );
+    const recipientCountOk = flatRecipients.length <= 20;
+    return recipientsOk && shareOk && walletsTotalOk && eachWalletOk && recipientCountOk;
+  }, [walletGroups, totalShareValue, totalWalletPercent, flatRecipients]);
+
+  const scheduleValid = useMemo(() => {
+    if (!scheduleEnabled) return true;
+    const interval = parseInt(intervalMinutes);
+    const maxExec = parseInt(maxExecutions);
+    const validInterval = interval >= 1 && interval <= 525600;
+    const validMaxExecutions = maxExec >= 0 && maxExec <= 1000;
+    return validInterval && validMaxExecutions;
+  }, [scheduleEnabled, intervalMinutes, maxExecutions]);
+
+  const canOpenNewSave = configRecipientsValid && scheduleValid;
+  const canOpenUpdateSave = hasLoadedConfig && configRecipientsValid && scheduleValid;
+
   if (!mounted) {
     return null;
   }
-
-  const hasLoadedConfig = loadedConfigId !== null;
 
   return (
     <div style={{ marginBottom: "1rem" }}>
@@ -125,7 +164,14 @@ function ConfigManagerComponent({
         <button
           onClick={() => setShowNewSaveModal(true)}
           className="btn"
-          style={{ flex: 1, background: "#4CAF50" }}
+          disabled={!canOpenNewSave}
+          style={{
+            flex: 1,
+            background: "#4CAF50",
+            opacity: canOpenNewSave ? 1 : 0.6,
+            cursor: canOpenNewSave ? "pointer" : "not-allowed",
+          }}
+          title={canOpenNewSave ? "Save a new configuration" : "Fix wallets/percentages or schedule first"}
         >
           💾 New Save
         </button>
@@ -134,14 +180,16 @@ function ConfigManagerComponent({
           className="btn"
           style={{
             flex: 1,
-            background: hasLoadedConfig ? "#FF9800" : "#ccc",
-            cursor: hasLoadedConfig ? "pointer" : "not-allowed",
+            background: canOpenUpdateSave ? "#FF9800" : "#ccc",
+            cursor: canOpenUpdateSave ? "pointer" : "not-allowed",
           }}
-          disabled={!hasLoadedConfig}
+          disabled={!canOpenUpdateSave}
           title={
-            hasLoadedConfig
+            canOpenUpdateSave
               ? "Update the loaded configuration"
-              : "Load a configuration first to enable update"
+              : hasLoadedConfig
+                ? "Fix wallets/percentages or schedule first"
+                : "Load a configuration first to enable update"
           }
         >
           ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
