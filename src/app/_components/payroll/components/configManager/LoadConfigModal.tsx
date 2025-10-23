@@ -72,7 +72,7 @@ export function LoadConfigModal({
                     marginBottom: "0.5rem",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ flex: 1 }}>
                       <h4 style={{ margin: "0 0 0.5rem 0" }}>
                         {config.name}
@@ -88,8 +88,7 @@ export function LoadConfigModal({
                         </p>
                       )}
                       <p style={{ margin: 0, fontSize: "0.85em", color: "#999" }}>
-                        {Number(config.walletGroupCount)} wallet group(s) • Owner: {config.owner.slice(0, 6)}...
-                        {config.owner.slice(-4)}
+                        Owner: {config.owner.slice(0, 6)}...{config.owner.slice(-4)}
                       </p>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>

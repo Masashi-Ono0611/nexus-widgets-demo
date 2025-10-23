@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { SavedConfig } from "./types";
+ 
 
 interface LoadConfigModalProps {
   isOpen: boolean;
@@ -72,7 +73,7 @@ export function LoadConfigModal({
                     marginBottom: "0.5rem",
                   }}
                 >
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                     <div style={{ flex: 1 }}>
                       <h4 style={{ margin: "0 0 0.5rem 0" }}>
                         {config.name}
@@ -88,8 +89,7 @@ export function LoadConfigModal({
                         </p>
                       )}
                       <p style={{ margin: 0, fontSize: "0.85em", color: "#999" }}>
-                        {Number(config.recipientCount)} recipient(s) • Owner: {config.owner.slice(0, 6)}...
-                        {config.owner.slice(-4)}
+                        Owner: {config.owner.slice(0, 6)}...{config.owner.slice(-4)}
                       </p>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
@@ -99,6 +99,19 @@ export function LoadConfigModal({
                         style={{ background: "#4CAF50", padding: "0.5rem 1rem" }}
                       >
                         Load
+                      </button>
+                      <button
+                        onClick={() =>
+                          window.open(
+                            `${window.location.origin}/gifting/${config.id.toString()}/receive/qr`,
+                            "_blank",
+                            "noopener,noreferrer"
+                          )
+                        }
+                        className="btn"
+                        style={{ background: "#2196F3", padding: "0.5rem 1rem" }}
+                      >
+                        Open QR
                       </button>
                       {userAddress?.toLowerCase() === config.owner.toLowerCase() && (
                         <button

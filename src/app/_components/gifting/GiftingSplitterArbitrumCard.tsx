@@ -1,77 +1,36 @@
 "use client";
-import React, { useMemo, useState } from "react";
-import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from "@avail-project/nexus-widgets";
-import { parseUnits } from "viem";
-import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation, FLEXIBLE_SPLITTER_ADDRESS } from "./types";
-import { isValidAddress, toContractRecipients, totalShare, sumPercent, buildFlatRecipientsFromGroups } from "./utils";
+import React, { useMemo } from "react";
+import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation } from "./types";
 import { RecipientCard } from "./components/RecipientCard";
 import { TotalsSummary } from "./components/TotalsSummary";
 import { ValidationMessages } from "./components/ValidationMessages";
 import { ConfigManager } from "./components/ConfigManager";
 import { ToastProvider } from "../common/ToastProvider";
+import { useToast } from "../common/ToastProvider";
+import { useGiftingConfig } from "./hooks/useGiftingConfig";
+import { GiftingExecuteButton } from "./components/GiftingExecuteButton";
 
-const FLEXIBLE_SPLITTER_ABI = [
-  {
-    inputs: [
-      { name: "asset", type: "address" },
-      { name: "amount", type: "uint256" },
-      {
-        name: "recipients",
-        type: "tuple[]",
-        components: [
-          { name: "wallet", type: "address" },
-          { name: "sharePercent", type: "uint16" },
-          { name: "strategy", type: "uint8" },
-        ],
-      },
-    ],
-    name: "distributeTokens",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-] as const;
+type CardModeProps = { executeOnly?: boolean };
 
-function GiftingSplitterArbitrumCardInner() {
-  const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([]);
+function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
+  const { showSuccess } = useToast();
+  const {
+    recipientGroups,
+    setRecipientGroups,
+    flatRecipients,
+    validationMessages,
+    isValid,
+    prefillConfig,
+    buildFunctionParams,
+    onLoadConfig,
+    currentId,
+    isLoadingConfig,
+    notFound,
+  } = useGiftingConfig();
 
-  const handleLoadConfig = (loadedRecipients: Recipient[]) => {
-    // Convert flat recipients to RecipientGroups
-    const groups: RecipientGroup[] = [];
-    const walletMap = new Map<string, { sharePercent: number; strategies: Map<DeFiStrategy, number> }>();
-    
-    loadedRecipients.forEach(r => {
-      const pct = parseFloat(r.sharePercent) || 0;
-      if (!walletMap.has(r.wallet)) {
-        walletMap.set(r.wallet, { sharePercent: 0, strategies: new Map() });
-      }
-      const entry = walletMap.get(r.wallet)!;
-      entry.sharePercent += pct;
-      entry.strategies.set(r.strategy, (entry.strategies.get(r.strategy) || 0) + pct);
-    });
-    
-    walletMap.forEach((data, wallet) => {
-      const strategies: StrategyAllocation[] = [
-        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "0" },
-        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
-        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "0" },
-        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
-      ];
-      
-      data.strategies.forEach((pct, strategy) => {
-        const subPct = data.sharePercent > 0 ? (pct / data.sharePercent) * 100 : 0;
-        const idx = strategies.findIndex(s => s.strategy === strategy);
-        if (idx >= 0) strategies[idx].subPercent = subPct.toString();
-      });
-      
-      groups.push({ wallet, sharePercent: data.sharePercent.toString(), strategies });
-    });
-    
-    setRecipientGroups(groups.length > 0 ? groups : []);
-  };
+  const handleLoadConfig = (loadedRecipients: Recipient[]) => onLoadConfig(loadedRecipients);
 
   const addRecipientGroup = () => {
-    const flatRecipients = buildFlatRecipientsFromGroups(recipientGroups);
     if (recipientGroups.length >= 5 || flatRecipients.length >= 20) {
       alert("Maximum 5 recipient groups or 20 total recipients");
       return;
@@ -158,122 +117,74 @@ function GiftingSplitterArbitrumCardInner() {
     setRecipientGroups(updated);
   };
 
-  const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(recipientGroups), [recipientGroups]);
-  const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
-  const totalRecipientPercent = useMemo(() => {
-    return recipientGroups.reduce((s, g) => s + (parseFloat(g.sharePercent) || 0), 0);
-  }, [recipientGroups]);
-
-  const validationMessages = useMemo(() => {
-    const msgs: string[] = [];
-    if (recipientGroups.length > 0 && Math.abs(totalRecipientPercent - 100) >= 0.01) msgs.push("Recipients Total must be 100%");
-    recipientGroups.forEach((g, i) => {
-      const s = sumPercent(g.strategies.map((x) => x.subPercent));
-      if (Math.abs(s - 100) >= 0.01) msgs.push(`Recipient ${i + 1}: Strategies Total must be 100%`);
-      if (!isValidAddress(g.wallet)) msgs.push(`Recipient ${i + 1}: Invalid address`);
-    });
-    if (flatRecipients.length > 20) msgs.push("Recipients exceed 20");
-    return msgs;
-  }, [recipientGroups, totalRecipientPercent, flatRecipients]);
-
-  const isValid = validationMessages.length === 0;
-
-  const prefillConfig = useMemo(() => ({ toChainId: 421614 as const, token: "USDC" as const }), []);
-
-  const buildFunctionParams = (token: string, amount: string, chainId: number, userAddress?: string) => {
-    const decimals = TOKEN_METADATA[token].decimals;
-    const amountWei = parseUnits(amount, decimals);
-    const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
-    const contractRecipients = toContractRecipients(flatRecipients);
-    return {
-      functionParams: [tokenAddress, amountWei, contractRecipients] as const,
-    };
-  };
-
   return (
     <div className="card">
-      <h3>Gifting Splitter (Arbitrum Sepolia)</h3>
+      {!executeOnly && <h3>Gifting Splitter (Arbitrum Sepolia)</h3>}
 
-      <TotalsSummary recipientGroups={recipientGroups} />
+      {executeOnly && isLoadingConfig && (
+        <div style={{ marginBottom: "0.5rem", color: "#666" }}>Loading configuration...</div>
+      )}
+      {executeOnly && !isLoadingConfig && notFound && (
+        <div style={{ marginBottom: "0.5rem", color: "#c62828" }}>Configuration not found{currentId ? ` (ID: ${currentId})` : ""}</div>
+      )}
 
-      <div style={{ marginBottom: "1rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-          <strong>Recipients ({recipientGroups.length}/5)</strong>
+      {!executeOnly && <TotalsSummary recipientGroups={recipientGroups} />}
+
+      {!executeOnly && (
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+            <strong>Recipients ({recipientGroups.length}/5)</strong>
+          </div>
+
+          {recipientGroups.map((recipient, index) => (
+            <RecipientCard
+              key={index}
+              recipient={recipient}
+              index={index}
+              canRemove={recipientGroups.length > 1}
+              onRemove={() => removeRecipientGroup(index)}
+              onUpdateRecipient={(field, value) => updateRecipientField(index, field, value)}
+              onUpdateStrategy={(si, field, value) => updateStrategyField(index, si, field, value)}
+              onPresetEvenSplit={() => presetEvenSplit(index)}
+              onPreset_60_30_10_0={() => preset_60_30_10_0(index)}
+              onNormalize={() => normalizeStrategies(index)}
+            />
+          ))}
+
+          <button
+            onClick={addRecipientGroup}
+            disabled={recipientGroups.length >= 5 || flatRecipients.length >= 20}
+            className="btn"
+            style={{
+              width: "100%",
+              marginTop: "0.5rem",
+              background: "#4CAF50",
+              opacity: recipientGroups.length >= 5 || flatRecipients.length >= 20 ? 0.6 : 1,
+            }}
+          >
+            + Add Recipient
+          </button>
         </div>
+      )}
 
-        {recipientGroups.map((recipient, index) => (
-          <RecipientCard
-            key={index}
-            recipient={recipient}
-            index={index}
-            canRemove={recipientGroups.length > 1}
-            onRemove={() => removeRecipientGroup(index)}
-            onUpdateRecipient={(field, value) => updateRecipientField(index, field, value)}
-            onUpdateStrategy={(si, field, value) => updateStrategyField(index, si, field, value)}
-            onPresetEvenSplit={() => presetEvenSplit(index)}
-            onPreset_60_30_10_0={() => preset_60_30_10_0(index)}
-            onNormalize={() => normalizeStrategies(index)}
-          />
-        ))}
-
-        <button
-          onClick={addRecipientGroup}
-          disabled={recipientGroups.length >= 5 || flatRecipients.length >= 20}
-          className="btn"
+      {!executeOnly && (
+        <div
           style={{
-            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "0.5rem",
+            flexWrap: "wrap",
             marginTop: "0.5rem",
-            background: "#4CAF50",
-            opacity: recipientGroups.length >= 5 || flatRecipients.length >= 20 ? 0.6 : 1,
+            marginBottom: "0.5rem",
           }}
         >
-          + Add Recipient
-        </button>
-      </div>
+          <ConfigManager recipients={flatRecipients} onLoadConfig={handleLoadConfig} />
+        </div>
+      )}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "0.5rem",
-          flexWrap: "wrap",
-          marginTop: "0.5rem",
-          marginBottom: "0.5rem",
-        }}
-      >
-        <ConfigManager recipients={flatRecipients} onLoadConfig={handleLoadConfig} />
-      </div>
+      <GiftingExecuteButton isValid={isValid} prefill={prefillConfig} buildFunctionParams={buildFunctionParams} />
 
-      <BridgeAndExecuteButton
-          contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
-          contractAbi={FLEXIBLE_SPLITTER_ABI}
-          functionName="distributeTokens"
-          prefill={prefillConfig}
-          buildFunctionParams={buildFunctionParams}
-        >
-          {({ onClick, isLoading }) => (
-            <button
-              onClick={onClick}
-              disabled={isLoading || !isValid}
-              style={{
-                width: "100%",
-                padding: "1rem",
-                fontSize: "1rem",
-                fontWeight: "bold",
-                opacity: isValid && !isLoading ? 1 : 0.5,
-                cursor: isValid && !isLoading ? "pointer" : "not-allowed",
-                background: "#4CAF50",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-              }}
-            >
-              {isLoading ? "Processing..." : "🎁 Execute Gift Distribution"}
-            </button>
-          )}
-        </BridgeAndExecuteButton>
-
-      <ValidationMessages messages={validationMessages} />
+      {!executeOnly && <ValidationMessages messages={validationMessages} />}
     </div>
   );
 }
@@ -282,6 +193,14 @@ export function GiftingSplitterArbitrumCard() {
   return (
     <ToastProvider>
       <GiftingSplitterArbitrumCardInner />
+    </ToastProvider>
+  );
+}
+
+export function GiftingSplitterArbitrumExecuteOnlyCard() {
+  return (
+    <ToastProvider>
+      <GiftingSplitterArbitrumCardInner executeOnly />
     </ToastProvider>
   );
 }

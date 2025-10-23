@@ -6,6 +6,7 @@ import { useConfigRegistry } from "./configManager/useConfigRegistry";
 import { SaveConfigModal } from "./configManager/SaveConfigModal";
 import { LoadConfigModal } from "./configManager/LoadConfigModal";
 import { useToast } from "../../common/ToastProvider";
+import { isValidAddress, totalShare } from "../utils";
 
 function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps) {
   const { mounted, address, provider, signer } = useWallet();
@@ -37,13 +38,22 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
   }, [showLoadModal]);
 
   const handleNewSave = async () => {
-    const success = await saveConfig(configName, configDescription, recipients, isPublic);
+    const newId = await saveConfig(configName, configDescription, recipients, isPublic);
 
-    if (success) {
+    if (newId !== null) {
       setShowNewSaveModal(false);
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
+
+      const base = typeof window !== "undefined" ? window.location.origin : "";
+      const href = `${base}/gifting/${newId.toString()}/receive/qr`;
+      showSuccess(
+        <span>
+          Configuration saved. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
+        </span>,
+        8000
+      );
     }
   };
 
@@ -60,6 +70,15 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
+
+      const base = typeof window !== "undefined" ? window.location.origin : "";
+      const href = `${base}/gifting/${loadedConfigId.toString()}/receive/qr`;
+      showSuccess(
+        <span>
+          Configuration updated. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
+        </span>,
+        8000
+      );
     }
   };
 
@@ -79,11 +98,29 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     }
   };
 
+  const hasLoadedConfig = loadedConfigId !== null;
+
+  const recipientsAreValid = React.useMemo(() => {
+    if (!recipients || recipients.length === 0) return false;
+    const total = totalShare(recipients);
+    if (Math.abs(total - 100) >= 0.01) return false;
+    if (recipients.length > 20) return false;
+    for (const r of recipients) {
+      if (!isValidAddress(r.wallet)) return false;
+      const pct = parseFloat(r.sharePercent || "0");
+      if (!(pct > 0)) return false;
+    }
+    return true;
+  }, [recipients]);
+
+  const canSaveNew = Boolean(configName.trim()) && recipientsAreValid;
+  const canSaveUpdate = hasLoadedConfig && Boolean(configName.trim()) && recipientsAreValid;
+  const canOpenNewSave = recipientsAreValid;
+  const canOpenUpdateSave = hasLoadedConfig && recipientsAreValid;
+
   if (!mounted) {
     return null;
   }
-
-  const hasLoadedConfig = loadedConfigId !== null;
 
   return (
     <div style={{ marginBottom: "1rem" }}>
@@ -98,7 +135,13 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         <button
           onClick={() => setShowNewSaveModal(true)}
           className="btn"
-          style={{ flex: 1, background: "#4CAF50" }}
+          disabled={!canOpenNewSave}
+          style={{
+            flex: 1,
+            background: "#4CAF50",
+            opacity: canOpenNewSave ? 1 : 0.6,
+            cursor: canOpenNewSave ? "pointer" : "not-allowed",
+          }}
         >
           💾 New Save
         </button>
@@ -107,15 +150,10 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
           className="btn"
           style={{
             flex: 1,
-            background: hasLoadedConfig ? "#FF9800" : "#ccc",
-            cursor: hasLoadedConfig ? "pointer" : "not-allowed",
+            background: canOpenUpdateSave ? "#FF9800" : "#ccc",
+            cursor: canOpenUpdateSave ? "pointer" : "not-allowed",
           }}
-          disabled={!hasLoadedConfig}
-          title={
-            hasLoadedConfig
-              ? "Update the loaded configuration"
-              : "Load a configuration first to enable update"
-          }
+          disabled={!canOpenUpdateSave}
         >
           ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
         </button>
