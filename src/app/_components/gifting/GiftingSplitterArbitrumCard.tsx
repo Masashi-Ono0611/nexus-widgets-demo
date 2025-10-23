@@ -35,7 +35,9 @@ const FLEXIBLE_SPLITTER_ABI = [
   },
 ] as const;
 
-function GiftingSplitterArbitrumCardInner() {
+type CardModeProps = { executeOnly?: boolean };
+
+function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
   const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([]);
   const params = useParams();
   const { provider, signer, address } = useWallet();
@@ -214,57 +216,61 @@ function GiftingSplitterArbitrumCardInner() {
 
   return (
     <div className="card">
-      <h3>Gifting Splitter (Arbitrum Sepolia)</h3>
+      {!executeOnly && <h3>Gifting Splitter (Arbitrum Sepolia)</h3>}
 
-      <TotalsSummary recipientGroups={recipientGroups} />
+      {!executeOnly && <TotalsSummary recipientGroups={recipientGroups} />}
 
-      <div style={{ marginBottom: "1rem" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
-          <strong>Recipients ({recipientGroups.length}/5)</strong>
+      {!executeOnly && (
+        <div style={{ marginBottom: "1rem" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.5rem" }}>
+            <strong>Recipients ({recipientGroups.length}/5)</strong>
+          </div>
+
+          {recipientGroups.map((recipient, index) => (
+            <RecipientCard
+              key={index}
+              recipient={recipient}
+              index={index}
+              canRemove={recipientGroups.length > 1}
+              onRemove={() => removeRecipientGroup(index)}
+              onUpdateRecipient={(field, value) => updateRecipientField(index, field, value)}
+              onUpdateStrategy={(si, field, value) => updateStrategyField(index, si, field, value)}
+              onPresetEvenSplit={() => presetEvenSplit(index)}
+              onPreset_60_30_10_0={() => preset_60_30_10_0(index)}
+              onNormalize={() => normalizeStrategies(index)}
+            />
+          ))}
+
+          <button
+            onClick={addRecipientGroup}
+            disabled={recipientGroups.length >= 5 || flatRecipients.length >= 20}
+            className="btn"
+            style={{
+              width: "100%",
+              marginTop: "0.5rem",
+              background: "#4CAF50",
+              opacity: recipientGroups.length >= 5 || flatRecipients.length >= 20 ? 0.6 : 1,
+            }}
+          >
+            + Add Recipient
+          </button>
         </div>
+      )}
 
-        {recipientGroups.map((recipient, index) => (
-          <RecipientCard
-            key={index}
-            recipient={recipient}
-            index={index}
-            canRemove={recipientGroups.length > 1}
-            onRemove={() => removeRecipientGroup(index)}
-            onUpdateRecipient={(field, value) => updateRecipientField(index, field, value)}
-            onUpdateStrategy={(si, field, value) => updateStrategyField(index, si, field, value)}
-            onPresetEvenSplit={() => presetEvenSplit(index)}
-            onPreset_60_30_10_0={() => preset_60_30_10_0(index)}
-            onNormalize={() => normalizeStrategies(index)}
-          />
-        ))}
-
-        <button
-          onClick={addRecipientGroup}
-          disabled={recipientGroups.length >= 5 || flatRecipients.length >= 20}
-          className="btn"
+      {!executeOnly && (
+        <div
           style={{
-            width: "100%",
+            display: "flex",
+            justifyContent: "flex-end",
+            gap: "0.5rem",
+            flexWrap: "wrap",
             marginTop: "0.5rem",
-            background: "#4CAF50",
-            opacity: recipientGroups.length >= 5 || flatRecipients.length >= 20 ? 0.6 : 1,
+            marginBottom: "0.5rem",
           }}
         >
-          + Add Recipient
-        </button>
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          gap: "0.5rem",
-          flexWrap: "wrap",
-          marginTop: "0.5rem",
-          marginBottom: "0.5rem",
-        }}
-      >
-        <ConfigManager recipients={flatRecipients} onLoadConfig={handleLoadConfig} />
-      </div>
+          <ConfigManager recipients={flatRecipients} onLoadConfig={handleLoadConfig} />
+        </div>
+      )}
 
       <BridgeAndExecuteButton
           contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
@@ -295,7 +301,7 @@ function GiftingSplitterArbitrumCardInner() {
           )}
         </BridgeAndExecuteButton>
 
-      <ValidationMessages messages={validationMessages} />
+      {!executeOnly && <ValidationMessages messages={validationMessages} />}
     </div>
   );
 }
@@ -304,6 +310,14 @@ export function GiftingSplitterArbitrumCard() {
   return (
     <ToastProvider>
       <GiftingSplitterArbitrumCardInner />
+    </ToastProvider>
+  );
+}
+
+export function GiftingSplitterArbitrumExecuteOnlyCard() {
+  return (
+    <ToastProvider>
+      <GiftingSplitterArbitrumCardInner executeOnly />
     </ToastProvider>
   );
 }
