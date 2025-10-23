@@ -182,47 +182,6 @@ function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
         </div>
       )}
 
-      {!executeOnly && currentId && (
-        <div style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: "0.75rem",
-          padding: "0.75rem",
-          border: "1px solid #e0e0e0",
-          borderRadius: 8,
-          marginBottom: "0.75rem",
-        }}>
-          <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontWeight: 600, marginBottom: 4 }}>Share receive link</div>
-            <div style={{ fontSize: 12, color: "#666", wordBreak: "break-all" }}>
-              {typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`}
-            </div>
-            <div style={{ marginTop: 6, display: "flex", gap: 8 }}>
-              <button
-                className="btn"
-                style={{ background: "#2196F3" }}
-                onClick={() => {
-                  const href = typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`;
-                  navigator.clipboard?.writeText(href).then(() => {
-                    showSuccess("Link copied to clipboard");
-                  });
-                }}
-              >
-                Copy link
-              </button>
-            </div>
-          </div>
-          <div style={{ width: 120, height: 120, flex: "0 0 auto" }}>
-            <img
-              alt="QR"
-              style={{ width: 120, height: 120 }}
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`)}`}
-            />
-          </div>
-        </div>
-      )}
-
       <GiftingExecuteButton isValid={isValid} prefill={prefillConfig} buildFunctionParams={buildFunctionParams} />
 
       {!executeOnly && <ValidationMessages messages={validationMessages} />}
