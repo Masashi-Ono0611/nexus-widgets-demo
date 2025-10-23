@@ -57,7 +57,7 @@ export function WalletCard({
           className="input"
         />
       </label>
-
+        <br/>
       <label className="field">
         <span>Wallet Amount (USDC)</span>
         <input
@@ -70,7 +70,7 @@ export function WalletCard({
         />
       </label>
 
-      <div style={{ fontSize: "0.9rem", color: "#555", marginTop: "0.25rem" }}>
+      <div style={{ fontSize: "0.9rem", color: "#faff74", marginTop: "0.25rem" }}>
         Wallet Share: {walletOverallPct.toFixed(2)}%
       </div>
 
