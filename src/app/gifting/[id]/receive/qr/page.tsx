@@ -33,13 +33,6 @@ function QrInner() {
           <div style={{ fontSize: 12, color: "#666", wordBreak: "break-all", textAlign: "center", maxWidth: 640 }}>{receiveUrl}</div>
           <div style={{ display: "flex", gap: 8 }}>
             <a className="btn" style={{ background: "#4CAF50" }} href={receiveUrl} target="_blank" rel="noreferrer">Open receive page</a>
-            <button
-              className="btn"
-              style={{ background: "#2196F3" }}
-              onClick={() => navigator.clipboard?.writeText(receiveUrl).then(() => showSuccess("Link copied to clipboard"))}
-            >
-              Copy link
-            </button>
           </div>
         </>
       )}
