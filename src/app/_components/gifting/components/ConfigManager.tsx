@@ -37,13 +37,22 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
   }, [showLoadModal]);
 
   const handleNewSave = async () => {
-    const success = await saveConfig(configName, configDescription, recipients, isPublic);
+    const newId = await saveConfig(configName, configDescription, recipients, isPublic);
 
-    if (success) {
+    if (newId !== null) {
       setShowNewSaveModal(false);
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
+
+      const base = typeof window !== "undefined" ? window.location.origin : "";
+      const href = `${base}/gifting/${newId.toString()}/receive/qr`;
+      showSuccess(
+        <span>
+          Configuration saved. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
+        </span>,
+        8000
+      );
     }
   };
 
@@ -60,6 +69,15 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setConfigName("");
       setConfigDescription("");
       setIsPublic(false);
+
+      const base = typeof window !== "undefined" ? window.location.origin : "";
+      const href = `${base}/gifting/${loadedConfigId.toString()}/receive/qr`;
+      showSuccess(
+        <span>
+          Configuration updated. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
+        </span>,
+        8000
+      );
     }
   };
 

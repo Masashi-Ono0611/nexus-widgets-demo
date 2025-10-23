@@ -3,12 +3,12 @@ import React, { createContext, useCallback, useContext, useMemo, useState } from
 
 type ToastType = "success" | "error" | "info";
 
-type Toast = { id: number; type: ToastType; message: string };
+type Toast = { id: number; type: ToastType; message: React.ReactNode; durationMs?: number };
 
 type ToastContextValue = {
-  showSuccess: (message: string) => void;
-  showError: (message: string) => void;
-  showInfo: (message: string) => void;
+  showSuccess: (message: React.ReactNode, durationMs?: number) => void;
+  showError: (message: React.ReactNode, durationMs?: number) => void;
+  showInfo: (message: React.ReactNode, durationMs?: number) => void;
 };
 
 const ToastContext = createContext<ToastContextValue | null>(null);
@@ -17,18 +17,19 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [counter, setCounter] = useState(1);
 
-  const enqueue = useCallback((type: ToastType, message: string) => {
-    setToasts((prev) => [...prev, { id: counter, type, message }]);
+  const enqueue = useCallback((type: ToastType, message: React.ReactNode, durationMs?: number) => {
+    const id = counter;
+    setToasts((prev) => [...prev, { id, type, message, durationMs }]);
     setCounter((c) => c + 1);
     setTimeout(() => {
-      setToasts((prev) => prev.slice(1));
-    }, 3500);
+      setToasts((prev) => prev.filter((t) => t.id !== id));
+    }, durationMs ?? 3500);
   }, [counter]);
 
   const value = useMemo<ToastContextValue>(() => ({
-    showSuccess: (m) => enqueue("success", m),
-    showError: (m) => enqueue("error", m),
-    showInfo: (m) => enqueue("info", m),
+    showSuccess: (m, d) => enqueue("success", m, d),
+    showError: (m, d) => enqueue("error", m, d),
+    showInfo: (m, d) => enqueue("info", m, d),
   }), [enqueue]);
 
   return (

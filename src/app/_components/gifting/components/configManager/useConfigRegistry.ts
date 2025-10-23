@@ -76,20 +76,20 @@ export function useConfigRegistry(
     configDescription: string,
     recipients: Recipient[],
     isPublic: boolean
-  ) => {
+  ): Promise<bigint | null> => {
     if (!signer || !address || !provider) {
       showInfo("Please connect your wallet");
-      return false;
+      return null;
     }
 
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) {
       showError("Registry contract not configured");
-      return false;
+      return null;
     }
 
     if (!configName.trim()) {
       showInfo("Please enter a configuration name");
-      return false;
+      return null;
     }
 
     setIsSaving(true);
@@ -116,12 +116,24 @@ export function useConfigRegistry(
       showInfo("Transaction submitted. Waiting for confirmation...");
       await tx.wait();
 
-      showSuccess("Configuration saved successfully!");
-      return true;
+      try {
+        const reader = new ethers.Contract(
+          GIFTING_CONFIG_REGISTRY_ADDRESS,
+          REGISTRY_ABI,
+          provider
+        );
+        const ids: bigint[] = await reader.getUserConfigIds(address);
+        const newId = ids.reduce((m, x) => (m === null || x > m ? x : m), null as bigint | null);
+        showSuccess("Configuration saved successfully!");
+        return newId;
+      } catch (e) {
+        showSuccess("Configuration saved successfully!");
+        return null;
+      }
     } catch (error: any) {
       console.error("Failed to save config:", error);
       showError(error?.message || "Failed to save configuration");
-      return false;
+      return null;
     } finally {
       setIsSaving(false);
     }
