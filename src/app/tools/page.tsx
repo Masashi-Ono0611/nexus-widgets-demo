@@ -13,6 +13,7 @@ import { DelayedTransferBaseCard } from "../_components/scheduled/DelayedTransfe
 import { FlexibleSplitterArbitrumCard } from "../_components/splitter/FlexibleSplitterArbitrumCard";
 import { RecurringSplitterArbitrumCard } from "../_components/scheduled/RecurringSplitterArbitrumCard";
 import { PayrollRecurringSplitterArbitrumCard } from "../_components/payroll/PayrollRecurringSplitterArbitrumCard";
+import { GiftingSplitterArbitrumCard } from "../_components/gifting/GiftingSplitterArbitrumCard";
 
 export default function ToolsPage() {
   const { sdk, isSdkInitialized, initializeSdk } = useNexus();
@@ -76,6 +77,7 @@ export default function ToolsPage() {
         <FlexibleSplitterArbitrumCard />
         <RecurringSplitterArbitrumCard />
         <PayrollRecurringSplitterArbitrumCard />
+        <GiftingSplitterArbitrumCard />
       </section>
     </main>
   );
