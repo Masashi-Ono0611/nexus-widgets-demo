@@ -130,7 +130,9 @@ body {
   margin: 0 auto;
   padding: 40px 24px;
 }
-
+.container1 {
+  margin-top: 15vh;
+}
 /* Main content pushes footer down */
 main {
   flex: 1;
