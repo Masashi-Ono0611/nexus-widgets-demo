@@ -1,101 +1,36 @@
 "use client";
-import React, { useEffect, useMemo, useState } from "react";
-import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from "@avail-project/nexus-widgets";
-import { parseUnits } from "viem";
-import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation, FLEXIBLE_SPLITTER_ADDRESS } from "./types";
-import { isValidAddress, toContractRecipients, totalShare, sumPercent, buildFlatRecipientsFromGroups } from "./utils";
+import React, { useMemo } from "react";
+import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation } from "./types";
 import { RecipientCard } from "./components/RecipientCard";
 import { TotalsSummary } from "./components/TotalsSummary";
 import { ValidationMessages } from "./components/ValidationMessages";
 import { ConfigManager } from "./components/ConfigManager";
 import { ToastProvider } from "../common/ToastProvider";
-import { useParams } from "next/navigation";
-import { useWallet } from "./components/configManager/useWallet";
-import { useConfigRegistry } from "./components/configManager/useConfigRegistry";
-
-const FLEXIBLE_SPLITTER_ABI = [
-  {
-    inputs: [
-      { name: "asset", type: "address" },
-      { name: "amount", type: "uint256" },
-      {
-        name: "recipients",
-        type: "tuple[]",
-        components: [
-          { name: "wallet", type: "address" },
-          { name: "sharePercent", type: "uint16" },
-          { name: "strategy", type: "uint8" },
-        ],
-      },
-    ],
-    name: "distributeTokens",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-] as const;
+import { useToast } from "../common/ToastProvider";
+import { useGiftingConfig } from "./hooks/useGiftingConfig";
+import { GiftingExecuteButton } from "./components/GiftingExecuteButton";
 
 type CardModeProps = { executeOnly?: boolean };
 
 function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
-  const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([]);
-  const params = useParams();
-  const { provider, signer, address } = useWallet();
-  const { loadConfig } = useConfigRegistry(provider, signer, address);
-  const [autoLoadedId, setAutoLoadedId] = useState<string | null>(null);
+  const { showSuccess } = useToast();
+  const {
+    recipientGroups,
+    setRecipientGroups,
+    flatRecipients,
+    validationMessages,
+    isValid,
+    prefillConfig,
+    buildFunctionParams,
+    onLoadConfig,
+    currentId,
+    isLoadingConfig,
+    notFound,
+  } = useGiftingConfig();
 
-  const handleLoadConfig = (loadedRecipients: Recipient[]) => {
-    // Convert flat recipients to RecipientGroups
-    const groups: RecipientGroup[] = [];
-    const walletMap = new Map<string, { sharePercent: number; strategies: Map<DeFiStrategy, number> }>();
-    
-    loadedRecipients.forEach(r => {
-      const pct = parseFloat(r.sharePercent) || 0;
-      if (!walletMap.has(r.wallet)) {
-        walletMap.set(r.wallet, { sharePercent: 0, strategies: new Map() });
-      }
-      const entry = walletMap.get(r.wallet)!;
-      entry.sharePercent += pct;
-      entry.strategies.set(r.strategy, (entry.strategies.get(r.strategy) || 0) + pct);
-    });
-    
-    walletMap.forEach((data, wallet) => {
-      const strategies: StrategyAllocation[] = [
-        { strategy: DeFiStrategy.DIRECT_TRANSFER, subPercent: "0" },
-        { strategy: DeFiStrategy.AAVE_SUPPLY, subPercent: "0" },
-        { strategy: DeFiStrategy.MORPHO_DEPOSIT, subPercent: "0" },
-        { strategy: DeFiStrategy.UNISWAP_V2_SWAP, subPercent: "0" },
-      ];
-      
-      data.strategies.forEach((pct, strategy) => {
-        const subPct = data.sharePercent > 0 ? (pct / data.sharePercent) * 100 : 0;
-        const idx = strategies.findIndex(s => s.strategy === strategy);
-        if (idx >= 0) strategies[idx].subPercent = subPct.toString();
-      });
-      
-      groups.push({ wallet, sharePercent: data.sharePercent.toString(), strategies });
-    });
-    
-    setRecipientGroups(groups.length > 0 ? groups : []);
-  };
-
-  useEffect(() => {
-    const idStr = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params?.id?.[0] : undefined;
-    if (!idStr) return;
-    if (autoLoadedId === idStr) return;
-    try {
-      const id = BigInt(idStr);
-      loadConfig(id).then((cfg) => {
-        if (cfg && cfg.recipients) {
-          handleLoadConfig(cfg.recipients);
-          setAutoLoadedId(idStr);
-        }
-      });
-    } catch {}
-  }, [params, autoLoadedId, loadConfig]);
+  const handleLoadConfig = (loadedRecipients: Recipient[]) => onLoadConfig(loadedRecipients);
 
   const addRecipientGroup = () => {
-    const flatRecipients = buildFlatRecipientsFromGroups(recipientGroups);
     if (recipientGroups.length >= 5 || flatRecipients.length >= 20) {
       alert("Maximum 5 recipient groups or 20 total recipients");
       return;
@@ -182,41 +117,16 @@ function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
     setRecipientGroups(updated);
   };
 
-  const flatRecipients = useMemo(() => buildFlatRecipientsFromGroups(recipientGroups), [recipientGroups]);
-  const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
-  const totalRecipientPercent = useMemo(() => {
-    return recipientGroups.reduce((s, g) => s + (parseFloat(g.sharePercent) || 0), 0);
-  }, [recipientGroups]);
-
-  const validationMessages = useMemo(() => {
-    const msgs: string[] = [];
-    if (recipientGroups.length > 0 && Math.abs(totalRecipientPercent - 100) >= 0.01) msgs.push("Recipients Total must be 100%");
-    recipientGroups.forEach((g, i) => {
-      const s = sumPercent(g.strategies.map((x) => x.subPercent));
-      if (Math.abs(s - 100) >= 0.01) msgs.push(`Recipient ${i + 1}: Strategies Total must be 100%`);
-      if (!isValidAddress(g.wallet)) msgs.push(`Recipient ${i + 1}: Invalid address`);
-    });
-    if (flatRecipients.length > 20) msgs.push("Recipients exceed 20");
-    return msgs;
-  }, [recipientGroups, totalRecipientPercent, flatRecipients]);
-
-  const isValid = validationMessages.length === 0;
-
-  const prefillConfig = useMemo(() => ({ toChainId: 421614 as const, token: "USDC" as const }), []);
-
-  const buildFunctionParams = (token: string, amount: string, chainId: number, userAddress?: string) => {
-    const decimals = TOKEN_METADATA[token].decimals;
-    const amountWei = parseUnits(amount, decimals);
-    const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
-    const contractRecipients = toContractRecipients(flatRecipients);
-    return {
-      functionParams: [tokenAddress, amountWei, contractRecipients] as const,
-    };
-  };
-
   return (
     <div className="card">
       {!executeOnly && <h3>Gifting Splitter (Arbitrum Sepolia)</h3>}
+
+      {executeOnly && isLoadingConfig && (
+        <div style={{ marginBottom: "0.5rem", color: "#666" }}>Loading configuration...</div>
+      )}
+      {executeOnly && !isLoadingConfig && notFound && (
+        <div style={{ marginBottom: "0.5rem", color: "#c62828" }}>Configuration not found{currentId ? ` (ID: ${currentId})` : ""}</div>
+      )}
 
       {!executeOnly && <TotalsSummary recipientGroups={recipientGroups} />}
 
@@ -272,34 +182,48 @@ function GiftingSplitterArbitrumCardInner({ executeOnly }: CardModeProps) {
         </div>
       )}
 
-      <BridgeAndExecuteButton
-          contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
-          contractAbi={FLEXIBLE_SPLITTER_ABI}
-          functionName="distributeTokens"
-          prefill={prefillConfig}
-          buildFunctionParams={buildFunctionParams}
-        >
-          {({ onClick, isLoading }) => (
-            <button
-              onClick={onClick}
-              disabled={isLoading || !isValid}
-              style={{
-                width: "100%",
-                padding: "1rem",
-                fontSize: "1rem",
-                fontWeight: "bold",
-                opacity: isValid && !isLoading ? 1 : 0.5,
-                cursor: isValid && !isLoading ? "pointer" : "not-allowed",
-                background: "#4CAF50",
-                color: "#fff",
-                border: "none",
-                borderRadius: "8px",
-              }}
-            >
-              {isLoading ? "Processing..." : "🎁 Execute Gift Distribution"}
-            </button>
-          )}
-        </BridgeAndExecuteButton>
+      {!executeOnly && currentId && (
+        <div style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: "0.75rem",
+          padding: "0.75rem",
+          border: "1px solid #e0e0e0",
+          borderRadius: 8,
+          marginBottom: "0.75rem",
+        }}>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontWeight: 600, marginBottom: 4 }}>Share receive link</div>
+            <div style={{ fontSize: 12, color: "#666", wordBreak: "break-all" }}>
+              {typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`}
+            </div>
+            <div style={{ marginTop: 6, display: "flex", gap: 8 }}>
+              <button
+                className="btn"
+                style={{ background: "#2196F3" }}
+                onClick={() => {
+                  const href = typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`;
+                  navigator.clipboard?.writeText(href).then(() => {
+                    showSuccess("Link copied to clipboard");
+                  });
+                }}
+              >
+                Copy link
+              </button>
+            </div>
+          </div>
+          <div style={{ width: 120, height: 120, flex: "0 0 auto" }}>
+            <img
+              alt="QR"
+              style={{ width: 120, height: 120 }}
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(typeof window !== "undefined" ? `${window.location.origin}/gifting/${currentId}/receive` : `/gifting/${currentId}/receive`)}`}
+            />
+          </div>
+        </div>
+      )}
+
+      <GiftingExecuteButton isValid={isValid} prefill={prefillConfig} buildFunctionParams={buildFunctionParams} />
 
       {!executeOnly && <ValidationMessages messages={validationMessages} />}
     </div>
