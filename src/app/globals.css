@@ -117,11 +117,28 @@ a {
 }
 
 /* Layout */
+body {
+  min-height: 100vh;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
 .container {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
   padding: 40px 24px;
-  min-height: 100vh;
+}
+
+/* Main content pushes footer down */
+main {
+  flex: 1;
+}
+
+/* Footer stays at bottom */
+footer {
+  margin-top: auto;
 }
 
 .header {
