@@ -257,6 +257,24 @@ footer {
   box-shadow: var(--shadow-sm);
 }
 
+.btn1 {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0 15px;
+  letter-spacing: 0.5px;
+  box-shadow: var(--shadow-sm);
+}
+
 .btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;

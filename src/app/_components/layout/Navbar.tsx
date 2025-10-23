@@ -39,7 +39,7 @@ export function Navbar() {
     <nav className={styles.navbar}>
       <div className={styles.navContent}>
         <div className={styles.logo}>
-          <span className={styles.logoText}>⛓️ Avail Nexus</span>
+          <span className={styles.logoText}><a href="/">⛓️ Avail Nexus</a></span>
         </div>
         <button
           onClick={toggleTheme}
