@@ -46,7 +46,7 @@ export function StrategyRow({ strategy, walletAmount, walletOverallPct, onUpdate
         </label>
       </div>
 
-      <div style={{ fontSize: "0.85rem", color: "#555", marginTop: "0.25rem" }}>
+      <div style={{ fontSize: "0.85rem", color: "#faff74", marginTop: "0.25rem" }}>
         Overall: {overall.toFixed(2)}% of total · Amount: {strategyAmount ? strategyAmount.toFixed(6) : "0"} USDC
       </div>
     </div>
