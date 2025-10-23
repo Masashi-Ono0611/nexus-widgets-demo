@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { SavedConfig } from "./types";
+ 
 
 interface LoadConfigModalProps {
   isOpen: boolean;
@@ -91,6 +92,24 @@ export function LoadConfigModal({
                         {Number(config.recipientCount)} recipient(s) • Owner: {config.owner.slice(0, 6)}...
                         {config.owner.slice(-4)}
                       </p>
+                      <div style={{ marginTop: "0.5rem", display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                        <a
+                          href={`${typeof window !== "undefined" ? window.location.origin : ""}/gifting/${config.id.toString()}/receive`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontSize: "0.85em" }}
+                        >
+                          Open receive page
+                        </a>
+                        <a
+                          href={`${typeof window !== "undefined" ? window.location.origin : ""}/gifting/${config.id.toString()}/receive/qr`}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{ fontSize: "0.85em" }}
+                        >
+                          Open QR page
+                        </a>
+                      </div>
                     </div>
                     <div style={{ display: "flex", gap: "0.5rem", marginLeft: "1rem" }}>
                       <button
