@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from "@avail-project/nexus-widgets";
 import { parseUnits } from "viem";
 import { DeFiStrategy, Recipient, RecipientGroup, StrategyAllocation, FLEXIBLE_SPLITTER_ADDRESS } from "./types";
@@ -9,6 +9,9 @@ import { TotalsSummary } from "./components/TotalsSummary";
 import { ValidationMessages } from "./components/ValidationMessages";
 import { ConfigManager } from "./components/ConfigManager";
 import { ToastProvider } from "../common/ToastProvider";
+import { useParams } from "next/navigation";
+import { useWallet } from "./components/configManager/useWallet";
+import { useConfigRegistry } from "./components/configManager/useConfigRegistry";
 
 const FLEXIBLE_SPLITTER_ABI = [
   {
@@ -34,6 +37,10 @@ const FLEXIBLE_SPLITTER_ABI = [
 
 function GiftingSplitterArbitrumCardInner() {
   const [recipientGroups, setRecipientGroups] = useState<RecipientGroup[]>([]);
+  const params = useParams();
+  const { provider, signer, address } = useWallet();
+  const { loadConfig } = useConfigRegistry(provider, signer, address);
+  const [autoLoadedId, setAutoLoadedId] = useState<string | null>(null);
 
   const handleLoadConfig = (loadedRecipients: Recipient[]) => {
     // Convert flat recipients to RecipientGroups
@@ -69,6 +76,21 @@ function GiftingSplitterArbitrumCardInner() {
     
     setRecipientGroups(groups.length > 0 ? groups : []);
   };
+
+  useEffect(() => {
+    const idStr = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params?.id?.[0] : undefined;
+    if (!idStr) return;
+    if (autoLoadedId === idStr) return;
+    try {
+      const id = BigInt(idStr);
+      loadConfig(id).then((cfg) => {
+        if (cfg && cfg.recipients) {
+          handleLoadConfig(cfg.recipients);
+          setAutoLoadedId(idStr);
+        }
+      });
+    } catch {}
+  }, [params, autoLoadedId, loadConfig]);
 
   const addRecipientGroup = () => {
     const flatRecipients = buildFlatRecipientsFromGroups(recipientGroups);
