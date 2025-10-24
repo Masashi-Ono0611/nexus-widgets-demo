@@ -464,3 +464,26 @@ a {
     color: #e5e7eb;
   }
 }
+
+/* Nexus Widget Modal Animation Fix */
+[data-nexus-modal] {
+  animation: none !important;
+}
+
+[data-nexus-modal] * {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Additional modal animation fixes for various modal libraries */
+.modal,
+.dialog,
+[role="dialog"],
+[role="modal"] {
+  animation: none !important;
+}
+
+.modal * {
+  animation: none !important;
+  transition: none !important;
+}
