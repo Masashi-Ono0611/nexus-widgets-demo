@@ -160,12 +160,6 @@ export const PayrollManager: React.FC = () => {
           onLoadConfig={handleLoadConfig}
         />
       </div>
-
-      {/* Totals Summary */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <TotalsSummary recipientWallets={recipientWallets} />
-      </Card>
-
       {/* Recipient Wallets */}
       <div className="space-y-4">
         {recipientWallets.map((wallet, index) => (
@@ -202,6 +196,11 @@ export const PayrollManager: React.FC = () => {
         onRecurringIntervalChange={setRecurringInterval}
         onMaxExecutionsChange={setMaxExecutions}
       />
+
+      {/* Totals Summary */}
+      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <TotalsSummary recipientWallets={recipientWallets} />
+      </Card>
 
       {/* Execute Button */}
       <Card className="p-6">

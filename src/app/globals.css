@@ -703,6 +703,22 @@ body {
   transform: translate(-50%, -50%) !important;
 }
 
+/* TotalsSummary gradient text fix */
+.total-amount-gradient {
+  background: linear-gradient(to right, #2563eb, #9333ea) !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-size: 200% 200% !important;
+  animation: gradientShift 3s ease infinite !important;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* Custom ConfigDialog overlay styling */
 .config-dialog-overlay-custom {
   position: fixed !important;
