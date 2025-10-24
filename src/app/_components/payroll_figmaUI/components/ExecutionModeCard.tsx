@@ -38,7 +38,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
               mode === 'immediate' ? COLORS.modeActive : COLORS.modeInactive
             }`}
           >
-            <Zap className={`h-5 w-5 ${mode === 'immediate' ? 'text-blue-600' : 'text-gray-400'}`} />
+            <Zap className={`h-5 w-5 ${mode === 'immediate' ? COLORS.brand.secondary.text : COLORS.textTertiary}`} />
             <div className="text-center">
               <div className={`font-medium ${COLORS.textPrimary}`}>Immediate</div>
               <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Execute once</div>
@@ -53,7 +53,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
               mode === 'recurring' ? COLORS.modeRecurringActive : COLORS.modeInactive
             }`}
           >
-            <Clock className={`h-5 w-5 ${mode === 'recurring' ? 'text-purple-600' : 'text-gray-400'}`} />
+            <Clock className={`h-5 w-5 ${mode === 'recurring' ? COLORS.brand.accent.text : COLORS.textTertiary}`} />
             <div className="text-center">
               <div className={`font-medium ${COLORS.textPrimary}`}>Recurring</div>
               <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Scheduled execution</div>
@@ -64,8 +64,8 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
 
       {/* Recurring Settings */}
       {mode === 'recurring' && (
-        <div className={`space-y-3 p-4 bg-purple-50 rounded-lg border border-purple-200`}>
-          <div className="flex items-center gap-2 text-purple-700">
+        <div className={`space-y-3 p-4 ${COLORS.brand.accent.background} rounded-lg ${COLORS.brand.accent.border}`}>
+          <div className={`flex items-center gap-2 ${COLORS.brand.accent.text}`}>
             <Clock className="h-5 w-5" />
             <span className="font-medium">Schedule Configuration</span>
           </div>
@@ -100,7 +100,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             </div>
           </div>
 
-          <div className={`${FONT_SIZES.bodyMedium} text-purple-700 bg-white p-2 rounded border border-purple-200`}>
+          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.accent.text} bg-white p-2 rounded ${COLORS.brand.accent.border}`}>
             <strong>Schedule Preview:</strong> Execute every {recurringInterval} minute{recurringInterval !== 1 ? 's' : ''}{' '}
             {maxExecutions > 0 ? `for ${maxExecutions} execution${maxExecutions !== 1 ? 's' : ''}` : 'indefinitely'}
           </div>

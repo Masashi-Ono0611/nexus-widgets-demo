@@ -72,15 +72,66 @@ export const COLORS = {
   borderSecondary: 'border-gray-300', // Secondary borders
   borderAccent: 'border-gray-400', // Accent borders
 
-  // Status colors
-  success: 'text-green-600',
-  warning: 'text-yellow-600',
-  error: 'text-red-600',
-  info: 'text-blue-600',
+  // Brand colors - Application identity colors
+  brand: {
+    primary: {
+      text: 'text-green-600',
+      background: 'bg-green-50',
+      border: 'border-green-200',
+      hover: 'hover:bg-green-100 hover:border-green-300',
+      active: 'bg-green-100 border-green-300',
+    },
+    secondary: {
+      text: 'text-blue-600',
+      background: 'bg-blue-50',
+      border: 'border-blue-200',
+      hover: 'hover:bg-blue-100 hover:border-blue-300',
+      active: 'bg-blue-100 border-blue-300',
+    },
+    accent: {
+      text: 'text-purple-600',
+      background: 'bg-purple-50',
+      border: 'border-purple-200',
+      hover: 'hover:bg-purple-100 hover:border-purple-300',
+      active: 'bg-purple-100 border-purple-300',
+    },
+  },
+
+  // Status colors - Complete sets for different states
+  status: {
+    success: {
+      text: 'text-green-600',
+      background: 'bg-green-50',
+      border: 'border-green-200',
+      hover: 'hover:bg-green-100 hover:border-green-300',
+    },
+    warning: {
+      text: 'text-yellow-600',
+      background: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      hover: 'hover:bg-yellow-100 hover:border-yellow-300',
+    },
+    error: {
+      text: 'text-red-600',
+      background: 'bg-red-50',
+      border: 'border-red-200',
+      hover: 'hover:bg-red-100 hover:border-red-300',
+    },
+    info: {
+      text: 'text-blue-600',
+      background: 'bg-blue-50',
+      border: 'border-blue-200',
+      hover: 'hover:bg-blue-100 hover:border-blue-300',
+    },
+  },
 
   // Interactive states
-  hover: 'hover:bg-gray-50',
-  focus: 'focus:ring-gray-200',
+  interactive: {
+    hover: 'hover:bg-gray-50',
+    focus: 'focus:ring-gray-200',
+    active: 'active:bg-gray-100',
+    disabled: 'opacity-50 cursor-not-allowed',
+  },
 
   // Mode selection colors
   modeActive: 'bg-blue-100 border-2 border-blue-500 text-blue-600 shadow-md', // Immediate mode active

@@ -32,6 +32,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
+import { COLORS } from './design-tokens';
 
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -216,7 +217,7 @@ export const PayrollManager: React.FC = () => {
           {isValid ? (
             <div></div>
           ) : (
-            <div className="flex items-center gap-2 text-red-600 p-3 bg-red-50 rounded-lg">
+            <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
               <Settings className="h-4 w-4" />
               <span className="font-medium">Configuration incomplete - please fill all fields</span>
             </div>
