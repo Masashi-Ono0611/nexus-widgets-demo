@@ -43,11 +43,11 @@ export const WalletCard: React.FC<WalletCardProps> = ({
   };
 
   return (
-    <Card className="p-6 space-y-4 border-2 transition-all duration-200 hover:shadow-lg" style={{ borderColor: wallet.color }}>
+    <Card className="p-8 space-y-4" style={{ borderColor: wallet.color }}>
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className="h-10 w-10 rounded-full flex items-center justify-center"
+            className="h-12 w-12 rounded-full flex items-center justify-center"
             style={{ backgroundColor: wallet.color + '20' }}
           >
             <Wallet className="h-5 w-5" style={{ color: wallet.color }} />
@@ -72,7 +72,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
       </div>
 
       {/* Wallet Address */}
-      <div className="space-y-1">
+      <div className="space-y-1 mt-[-4px]">
         <label className="text-sm">Wallet Address</label>
         <Input
           placeholder="0x..."

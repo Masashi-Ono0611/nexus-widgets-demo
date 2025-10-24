@@ -7,16 +7,15 @@ import { PayrollManager } from "../_components/payroll_figmaUI/PayrollManager";
 
 export default function PayrollPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-purple-50">
-      <div className="container mx-auto px-4 py-8 max-w-6xl">
+    <div className="min-h-screen">
+      <div className="container mx-auto px-4 py-4 max-w-6xl">
         {/* Header Section */}
-        <div className="text-center mb-12 space-y-4">
-          <h1 className="text-5xl md:text-6xl bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+        <div className="text-center mb-8 space-y-4">
+          <h1 className="text-5xl md:text-6xl text-gray-900 font-bold">
             Payroll Manager
           </h1>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Configure wallet groups with DeFi strategy allocations, execute one-off distributions
-            or schedule recurring payments with cross-chain USDC bridging powered by Nexus Widgets
+            Multi-wallet payroll with DeFi strategies, recurring payments, and cross-chain USDC bridging
           </p>
 
           {/* Info Pills */}

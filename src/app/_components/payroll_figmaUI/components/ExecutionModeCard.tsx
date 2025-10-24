@@ -23,10 +23,10 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
   onMaxExecutionsChange,
 }) => {
   return (
-    <Card className="p-5 gap-4">
+    <Card className="p-8 gap-4">
       {/* Mode Toggle */}
       <div className="space-y-2">
-        <h3 className="text-lg font-medium">Execution Mode</h3>
+        <h3 className="text-lg font-semibold">Execution Mode</h3>
         <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
           <div className="flex items-center gap-3">
             <Zap className={`h-5 w-5 ${mode === 'immediate' ? 'text-blue-600' : 'text-gray-400'}`} />

@@ -149,9 +149,9 @@ export const PayrollManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Configuration Management */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2">
         <ConfigManager
           walletGroups={walletGroups}
           intervalMinutes={String(recurringInterval)}
@@ -161,7 +161,7 @@ export const PayrollManager: React.FC = () => {
         />
       </div>
       {/* Recipient Wallets */}
-      <div className="space-y-4">
+      <div className="space-y-2 mb-4">
         {recipientWallets.map((wallet, index) => (
           <WalletCard
             key={wallet.id}
@@ -197,10 +197,18 @@ export const PayrollManager: React.FC = () => {
         onMaxExecutionsChange={setMaxExecutions}
       />
 
+      {/* Separator Line */}
+      <div className="relative py-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-gray-50 text-gray-500 font-medium">Review & Execute</span>
+        </div>
+      </div>
+
       {/* Totals Summary */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <TotalsSummary recipientWallets={recipientWallets} />
-      </Card>
+      <TotalsSummary recipientWallets={recipientWallets} />
 
       {/* Execute Button */}
       <Card className="p-6">
