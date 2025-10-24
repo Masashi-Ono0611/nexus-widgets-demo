@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
-const ARBITRUM_SEPOLIA_CHAIN_ID = "0x66EEE"; // 421614 in hex
+const ARBITRUM_SEPOLIA_CHAIN_ID = "0x66eee"; // 421614 in hex (lowercase for strict compare)
+const ARBITRUM_SEPOLIA_PARAMS = {
+  chainId: ARBITRUM_SEPOLIA_CHAIN_ID,
+  chainName: 'Arbitrum Sepolia',
+  nativeCurrency: {
+    name: 'Ethereum',
+    symbol: 'ETH',
+    decimals: 18,
+  },
+  rpcUrls: ['https://arbitrum-sepolia.drpc.org'],
+  blockExplorerUrls: ['https://sepolia.arbiscan.io/'],
+};
 
 export function useWallet() {
   const [mounted, setMounted] = useState(false);
@@ -9,6 +20,8 @@ export function useWallet() {
   const [provider, setProvider] = useState<ethers.BrowserProvider | null>(null);
   const [signer, setSigner] = useState<ethers.JsonRpcSigner | null>(null);
   const [networkError, setNetworkError] = useState<string | null>(null);
+  const [isCorrectNetwork, setIsCorrectNetwork] = useState<boolean>(false);
+  const [needsNetworkSwitch, setNeedsNetworkSwitch] = useState<boolean>(false);
 
   useEffect(() => {
     setMounted(true);
@@ -21,51 +34,18 @@ export function useWallet() {
 
           // Check current network
           const network = await ethProvider.getNetwork();
-          const currentChainId = network.chainId.toString(16).toUpperCase();
+          const currentChainIdHex = ("0x" + network.chainId.toString(16)).toLowerCase();
 
-          if (currentChainId !== ARBITRUM_SEPOLIA_CHAIN_ID.substring(2)) {
-            console.log(`🌐 Wrong network detected: ${network.name} (${currentChainId})`);
-            console.log(`🔄 Switching to Arbitrum Sepolia...`);
-
-            try {
-              await (window as any).ethereum.request({
-                method: 'wallet_switchEthereumChain',
-                params: [{ chainId: ARBITRUM_SEPOLIA_CHAIN_ID }],
-              });
-              console.log("✅ Successfully switched to Arbitrum Sepolia");
-              setNetworkError(null);
-            } catch (switchError: any) {
-              // This error code indicates that the chain has not been added to MetaMask
-              if (switchError.code === 4902) {
-                console.log("🔗 Adding Arbitrum Sepolia network to wallet...");
-                try {
-                  await (window as any).ethereum.request({
-                    method: 'wallet_addEthereumChain',
-                    params: [{
-                      chainId: ARBITRUM_SEPOLIA_CHAIN_ID,
-                      chainName: 'Arbitrum Sepolia',
-                      nativeCurrency: {
-                        name: 'Ethereum',
-                        symbol: 'ETH',
-                        decimals: 18,
-                      },
-                      rpcUrls: ['https://arbitrum-sepolia.drpc.org'],
-                      blockExplorerUrls: ['https://sepolia.arbiscan.io/'],
-                    }],
-                  });
-                  console.log("✅ Arbitrum Sepolia network added successfully");
-                  setNetworkError(null);
-                } catch (addError) {
-                  console.error("Failed to add network:", addError);
-                  setNetworkError("Failed to add Arbitrum Sepolia network. Please add it manually in your wallet.");
-                }
-              } else {
-                console.error("Failed to switch network:", switchError);
-                setNetworkError(`Please switch to Arbitrum Sepolia network manually. Current: ${network.name}`);
-              }
-            }
+          if (currentChainIdHex !== ARBITRUM_SEPOLIA_CHAIN_ID) {
+            console.log(`🌐 Wrong network detected: ${network.name} (${currentChainIdHex})`);
+            console.log(`🔄 Please switch to Arbitrum Sepolia...`);
+            setIsCorrectNetwork(false);
+            setNeedsNetworkSwitch(true);
+            setNetworkError(`Please switch to Arbitrum Sepolia network. Current: ${network.name}`);
           } else {
             console.log("✅ Connected to Arbitrum Sepolia");
+            setIsCorrectNetwork(true);
+            setNeedsNetworkSwitch(false);
             setNetworkError(null);
           }
 
@@ -113,5 +93,38 @@ export function useWallet() {
     }
   }, []);
 
-  return { mounted, address, provider, signer, networkError };
+  const promptSwitchNetwork = async () => {
+    if (!(typeof window !== "undefined" && (window as any).ethereum)) return;
+    try {
+      // Ensure account connection before requesting chain switch
+      if (!address) {
+        await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+      }
+      await (window as any).ethereum.request({
+        method: 'wallet_switchEthereumChain',
+        params: [{ chainId: ARBITRUM_SEPOLIA_CHAIN_ID }],
+      });
+      setIsCorrectNetwork(true);
+      setNeedsNetworkSwitch(false);
+      setNetworkError(null);
+    } catch (switchError: any) {
+      if (switchError?.code === 4902) {
+        try {
+          await (window as any).ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [ARBITRUM_SEPOLIA_PARAMS],
+          });
+          setIsCorrectNetwork(true);
+          setNeedsNetworkSwitch(false);
+          setNetworkError(null);
+        } catch (addError) {
+          setNetworkError("Please add Arbitrum Sepolia network manually in your wallet.");
+        }
+      } else {
+        setNetworkError("Network switch was cancelled or failed.");
+      }
+    }
+  };
+
+  return { mounted, address, provider, signer, networkError, isCorrectNetwork, needsNetworkSwitch, promptSwitchNetwork };
 }

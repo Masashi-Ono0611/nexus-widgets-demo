@@ -16,7 +16,7 @@ function ConfigManagerComponent({
   scheduleEnabled,
   onLoadConfig,
 }: ConfigManagerProps) {
-  const { mounted, address, provider, signer, networkError } = useWallet();
+  const { mounted, address, provider, signer, networkError, needsNetworkSwitch, promptSwitchNetwork } = useWallet();
 
   const {
     configs,
@@ -161,17 +161,26 @@ function ConfigManagerComponent({
     return null;
   }
 
+  const guardNetworkThen = async (fn: () => void) => {
+    if (needsNetworkSwitch) {
+      toast.info("Switching to Arbitrum Sepolia...");
+      await promptSwitchNetwork();
+      return;
+    }
+    fn();
+  };
+
   return (
     <div className="flex gap-2">
       <Button
-        onClick={() => setShowLoadModal(true)}
+        onClick={() => guardNetworkThen(() => setShowLoadModal(true))}
         variant="outline"
         size="sm"
       >
         📂 Load
       </Button>
       <Button
-        onClick={() => setShowNewSaveModal(true)}
+        onClick={() => guardNetworkThen(() => setShowNewSaveModal(true))}
         disabled={!canOpenNewSave}
         variant="outline"
         size="sm"
@@ -180,7 +189,7 @@ function ConfigManagerComponent({
         💾 New Save
       </Button>
       <Button
-        onClick={() => setShowUpdateSaveModal(true)}
+        onClick={() => guardNetworkThen(() => setShowUpdateSaveModal(true))}
         disabled={!canOpenUpdateSave}
         variant="outline"
         size="sm"
@@ -192,7 +201,7 @@ function ConfigManagerComponent({
               : "Load a configuration first to enable update"
         }
       >
-        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
+        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""}
       </Button>
 
       <SaveConfigModal
