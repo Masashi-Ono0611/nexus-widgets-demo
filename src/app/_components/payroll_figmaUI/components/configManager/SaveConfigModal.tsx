@@ -44,7 +44,7 @@ export function SaveConfigModal({
 }: SaveConfigModalProps) {
   return (
     <ConfigDialog open={isOpen} onOpenChange={onClose}>
-      <ConfigDialogContent className="w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <ConfigDialogContent className="w-full max-w-2lg max-h-[80vh] overflow-y-auto">
         <ConfigDialogHeader>
           <ConfigDialogTitle>{title}</ConfigDialogTitle>
         </ConfigDialogHeader>

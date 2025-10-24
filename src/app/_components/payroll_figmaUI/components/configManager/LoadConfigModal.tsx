@@ -32,7 +32,7 @@ export function LoadConfigModal({
 }: LoadConfigModalProps) {
   return (
     <ConfigDialog open={isOpen} onOpenChange={onClose}>
-      <ConfigDialogContent className="w-full max-w-lg max-h-[80vh] overflow-y-auto">
+      <ConfigDialogContent className="w-full max-w-2xlg max-h-[80vh] overflow-y-auto">
         <ConfigDialogHeader>
           <ConfigDialogTitle>Load Configuration</ConfigDialogTitle>
         </ConfigDialogHeader>
@@ -54,14 +54,14 @@ export function LoadConfigModal({
                   className="p-4 cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300"
                   onClick={() => onLoad(config.id)}
                 >
-                  <div className="flex justify-between items-start gap-4">
+                  <div className="flex justify-between items-start gap-3">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-2">
                         <h4 className="font-semibold text-lg truncate">
                           {config.name}
                         </h4>
                         {config.isPublic && (
-                          <Badge variant="secondary" className="shrink-0">
+                          <Badge variant="secondary" className="shrink-0 text-xs">
                             🌐 Public
                           </Badge>
                         )}
@@ -71,8 +71,8 @@ export function LoadConfigModal({
                           {config.description}
                         </p>
                       )}
-                      <p className="text-xs text-gray-400">
-                        Owner: {config.owner.slice(0, 6)}...{config.owner.slice(-4)}
+                      <p className="text-xs text-gray-400 truncate">
+                        Owner: {config.owner.slice(0, 4)}...{config.owner.slice(-4)}
                       </p>
                     </div>
                     {userAddress?.toLowerCase() === config.owner.toLowerCase() && (
@@ -94,10 +94,6 @@ export function LoadConfigModal({
             )}
           </div>
         )}
-
-        <Button onClick={onClose} variant="outline" className="w-full mt-4">
-          Close
-        </Button>
       </ConfigDialogContent>
     </ConfigDialog>
   );
