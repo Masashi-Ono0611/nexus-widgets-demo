@@ -140,33 +140,6 @@ video {
   --chart-5: 27 87% 67%;
 }
 
-.dark {
-  --background: 222.2 84% 4.9%;
-  --foreground: 210 40% 98%;
-  --card: 222.2 84% 4.9%;
-  --card-foreground: 210 40% 98%;
-  --popover: 222.2 84% 4.9%;
-  --popover-foreground: 210 40% 98%;
-  --primary: 217.2 91.2% 59.8%;
-  --primary-foreground: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --secondary-foreground: 210 40% 98%;
-  --muted: 217.2 32.6% 17.5%;
-  --muted-foreground: 215 20.2% 65.1%;
-  --accent: 217.2 32.6% 17.5%;
-  --accent-foreground: 210 40% 98%;
-  --destructive: 0 62.8% 30.6%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 217.2 32.6% 17.5%;
-  --input: 217.2 32.6% 17.5%;
-  --ring: 224.3 76.3% 94.1%;
-  --chart-1: 220 70% 50%;
-  --chart-2: 160 60% 45%;
-  --chart-3: 30 80% 55%;
-  --chart-4: 280 65% 60%;
-  --chart-5: 340 75% 55%;
-}
-
 /* Shared helpers */
 .action-bar {
   display: flex;
@@ -198,12 +171,6 @@ video {
   line-height: 1.5;
 }
 
-@media (prefers-color-scheme: dark) {
-  .subheader {
-    color: #d1d5db;
-  }
-}
-
 /* Additional global styles (extends the minimal reset above) */
 html,
 body {
@@ -217,12 +184,6 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
 }
 
 /* Layout */
@@ -325,12 +286,6 @@ body {
   text-decoration: underline;
 }
 
-@media (prefers-color-scheme: dark) {
-  .card {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.9) 100%);
-  }
-}
-
 /* Buttons */
 .btn {
   appearance: none;
@@ -397,14 +352,6 @@ body {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  .pre {
-    background: #111827; /* slate-900 */
-    color: #e5e7eb; /* slate-200 */
-    border-color: #374151; /* slate-700 */
-  }
-}
-
 /* User Page */
 .userpage-layout {
   display: grid;
@@ -463,24 +410,6 @@ body {
   border: 1px solid #fca5a5;
 }
 
-@media (prefers-color-scheme: dark) {
-  .form-input,
-  .form-select {
-    border-color: #374151;
-  }
-
-  .form-input:focus,
-  .form-select:focus {
-    border-color: #fff;
-  }
-
-  .form-error {
-    background: #7f1d1d;
-    border-color: #991b1b;
-    color: #fca5a5;
-  }
-}
-
 /* QR Code Display */
 .qr-container {
   display: flex;
@@ -531,27 +460,6 @@ body {
 
 .button-group .btn {
   flex: 1;
-}
-
-@media (prefers-color-scheme: dark) {
-  .qr-container {
-    border-color: #374151;
-    background: rgba(0,0,0,0.3);
-  }
-
-  .qr-code-wrapper {
-    background: white;
-    border-color: #374151;
-  }
-
-  .url-display {
-    background: #111827;
-    border-color: #374151;
-  }
-
-  .url-text {
-    color: #e5e7eb;
-  }
 }
 
 /* ========================================
