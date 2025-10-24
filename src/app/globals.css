@@ -558,55 +558,22 @@ body {
    Nexus Widget Modal Positioning Fixes
    ======================================== */
 
-/* 
+/*
   CRITICAL: Nexus Widget uses Radix UI Dialog which gets affected by Tailwind's base styles.
   These rules ensure modals are properly centered regardless of global CSS resets.
+
+  IMPORTANT: shadcn/ui Dialog uses data-slot="dialog-content" - don't override that!
+  Only target Nexus Widget specific selectors.
 */
 
-/* 1. Radix UI Portal Container - ensure it's positioned correctly */
-[data-radix-portal] {
-  position: fixed !important;
-  z-index: 9999 !important;
-  pointer-events: none !important;
-}
-
-[data-radix-portal] > * {
-  pointer-events: auto !important;
-}
-
-/* 2. Radix Dialog Overlay - MUST cover full viewport */
-[data-radix-dialog-overlay] {
-  position: fixed !important;
-  inset: 0 !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  transform: none !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-/* 3. Radix Dialog Content - MUST be centered */
-[data-radix-dialog-content] {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  margin: 0 !important;
-  max-height: 85vh !important;
-  overflow: auto !important;
-}
-
-/* 4. Generic Nexus Widget modal selectors */
+/* 1. Generic Nexus Widget modal selectors (PRIMARY FIX) */
 [data-nexus-modal] {
   position: fixed !important;
   top: 50% !important;
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   margin: 0 !important;
+  z-index: 9999 !important;
 }
 
 [data-nexus-overlay] {
@@ -618,11 +585,11 @@ body {
   bottom: 0 !important;
   transform: none !important;
   margin: 0 !important;
+  z-index: 9998 !important;
 }
 
-/* 5. Fallback for any fixed position dialog */
-div[role="dialog"][style*="position: fixed"],
-div[role="dialog"][style*="position:fixed"] {
+/* 2. Fallback for Nexus Widget's Radix dialogs (if they use standard Radix attributes) */
+div[role="dialog"][data-state="open"] {
   position: fixed !important;
   top: 50% !important;
   left: 50% !important;
@@ -630,21 +597,60 @@ div[role="dialog"][style*="position:fixed"] {
   margin: 0 !important;
 }
 
-/* 6. Ensure proper box-sizing for all modal content */
-[data-radix-portal] *,
+/* 3. Ensure proper box-sizing for all modal content */
 [data-nexus-modal] *,
+[data-nexus-overlay] *,
 [role="dialog"] *,
 [role="modal"] * {
   box-sizing: border-box !important;
 }
 
-/* 7. Disable animations that might interfere with positioning */
-[data-radix-dialog-overlay],
-[data-radix-dialog-content],
+/* 4. Disable animations that might interfere with positioning */
 [data-nexus-modal],
 [data-nexus-overlay] {
   animation: none !important;
   transition: none !important;
+}
+
+/* 5. Ensure Tailwind transform utilities work properly */
+[data-slot="dialog-content"] {
+  /* shadcn/ui Dialog already has proper transform classes, but ensure they work */
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 6. Additional fallback for any modal that might be affected */
+div[class*="translate-x-[-50%]"][class*="translate-y-[-50%]"] {
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 7. Fix for any modal with transform issues */
+div[style*="translateX(-50%)"][style*="translateY(-50%)"],
+div[style*="-50%) translateX"][style*="-50%) translateY"] {
+  transform: translate(-50%, -50%) !important;
+}
+
+/* 8. COMPREHENSIVE FALLBACK: Force center any modal that looks like it should be centered */
+div[role="dialog"]:not([data-nexus-modal]),
+div[class*="dialog"]:not([data-nexus-modal]),
+div[class*="modal"]:not([data-nexus-modal]) {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  margin: 0 !important;
+}
+
+/* 9. Ensure modal overlays are full screen */
+div[role="dialog"]:not([data-nexus-modal]) ~ div[style*="position: fixed"],
+div[class*="dialog"]:not([data-nexus-modal]) ~ div[style*="position: fixed"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  inset: 0 !important;
+  transform: none !important;
+  margin: 0 !important;
 }
 
 /* Additional modal animation fixes for various modal libraries */
