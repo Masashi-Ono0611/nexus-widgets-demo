@@ -168,7 +168,7 @@ export const PayrollManager: React.FC = () => {
               <span className="font-medium">Ready to execute</span>
             </div>
           ) : (
-            <div className="flex items-center gap-2 text-orange-600 p-3 bg-orange-50 rounded-lg">
+            <div className="flex items-center gap-2 text-red-600 p-3 bg-red-50 rounded-lg">
               <Settings className="h-4 w-4" />
               <span className="font-medium">Configuration incomplete - please fill all fields</span>
             </div>
@@ -177,21 +177,11 @@ export const PayrollManager: React.FC = () => {
           <Button
             onClick={handleExecute}
             disabled={!isValid}
-            className="w-full h-16 text-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transition-all"
+            className="w-full h-16 text-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <Play className="h-6 w-6 mr-3" />
             {executionMode === 'immediate' ? 'Execute Payroll Now' : 'Schedule Recurring Payroll'}
           </Button>
-
-          {isValid && (
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-900">
-                <strong>Next step:</strong> Nexus Widget will open to approve the transaction.
-                Funds will be distributed across {recipientWallets.length} {recipientWallets.length === 1 ? 'recipient' : 'recipients'} with
-                their configured DeFi strategies via FlexibleSplitter contract.
-              </p>
-            </div>
-          )}
         </div>
       </Card>
 

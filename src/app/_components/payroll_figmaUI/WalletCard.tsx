@@ -61,10 +61,10 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         </div>
         {canRemove && (
           <Button
-            variant="ghost"
+            variant="outline"
             size="sm"
             onClick={onRemove}
-            className="text-red-500 hover:text-red-700 hover:bg-red-50"
+            className="text-red-500 hover:text-red-700 hover:bg-red-50 hover:border-red-200 border-red-200"
           >
             <Trash2 className="h-4 w-4" />
           </Button>
