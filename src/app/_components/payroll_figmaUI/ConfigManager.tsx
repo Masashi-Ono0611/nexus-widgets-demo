@@ -102,7 +102,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
             Load
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+        <DialogContent className="w-[500px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Load Configuration</DialogTitle>
             <DialogDescription>
@@ -151,7 +151,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
             Save
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="w-[500px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Save Configuration</DialogTitle>
             <DialogDescription>
@@ -211,7 +211,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
             Update
           </Button>
         </DialogTrigger>
-        <DialogContent>
+        <DialogContent className="w-[500px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Update Configuration</DialogTitle>
             <DialogDescription>

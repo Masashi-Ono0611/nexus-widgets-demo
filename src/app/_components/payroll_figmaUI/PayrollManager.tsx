@@ -83,6 +83,37 @@ export const PayrollManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Configuration Management */}
+      <ConfigManager
+          currentConfig={{
+            id: currentConfigId,
+            name: currentConfigName,
+            description: '',
+            isPublic: false,
+            recipientWallets,
+            executionMode,
+            recurringInterval,
+            maxExecutions,
+          }}
+          onLoad={(config) => {
+            if (config.recipientWallets.length > 0) {
+              setRecipientWallets(config.recipientWallets);
+            }
+            setExecutionMode(config.executionMode);
+            setRecurringInterval(config.recurringInterval || 60);
+            setMaxExecutions(config.maxExecutions || 0);
+            setCurrentConfigId(config.id);
+            setCurrentConfigName(config.name);
+          }}
+          onSave={(config) => {
+            setCurrentConfigId(config.id);
+            setCurrentConfigName(config.name);
+            toast.success('Configuration saved successfully');
+          }}
+          onUpdate={(config) => {
+            toast.success('Configuration updated successfully');
+          }}
+        />
 
       {/* Totals Summary */}
       <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
@@ -162,48 +193,7 @@ export const PayrollManager: React.FC = () => {
         </div>
       </Card>
 
-      {/* Configuration Management */}
-      <Card className="p-6">
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <Settings className="h-5 w-5 text-gray-600" />
-            <h3 className="text-lg font-semibold">Configuration Management</h3>
-          </div>
-          <p className="text-sm text-gray-600">
-            Save your payroll configuration on-chain for future use or load existing configurations
-          </p>
-          <ConfigManager
-            currentConfig={{
-              id: currentConfigId,
-              name: currentConfigName,
-              description: '',
-              isPublic: false,
-              recipientWallets,
-              executionMode,
-              recurringInterval,
-              maxExecutions,
-            }}
-            onLoad={(config) => {
-              if (config.recipientWallets.length > 0) {
-                setRecipientWallets(config.recipientWallets);
-              }
-              setExecutionMode(config.executionMode);
-              setRecurringInterval(config.recurringInterval || 60);
-              setMaxExecutions(config.maxExecutions || 0);
-              setCurrentConfigId(config.id);
-              setCurrentConfigName(config.name);
-            }}
-            onSave={(config) => {
-              setCurrentConfigId(config.id);
-              setCurrentConfigName(config.name);
-              toast.success('Configuration saved successfully');
-            }}
-            onUpdate={(config) => {
-              toast.success('Configuration updated successfully');
-            }}
-          />
-        </div>
-      </Card>
+     
     </div>
   );
 };
