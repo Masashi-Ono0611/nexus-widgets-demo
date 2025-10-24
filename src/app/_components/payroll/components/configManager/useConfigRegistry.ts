@@ -15,16 +15,119 @@ export function useConfigRegistry(
   const [isSaving, setIsSaving] = useState(false);
   const { showSuccess, showError, showInfo } = useToast();
 
+  // Helper functions
+  const checkPrerequisites = (requireSigner = false): boolean => {
+    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
+      if (!provider) showInfo("Please connect your wallet");
+      if (!PAYROLL_CONFIG_REGISTRY_ADDRESS) showError("Registry contract not configured");
+      return false;
+    }
+
+    if (requireSigner && (!signer || !address)) {
+      showInfo("Please connect your wallet");
+      return false;
+    }
+
+    return true;
+  };
+
+  const createSchedule = (scheduleEnabled: boolean, intervalMinutes: string, maxExecutions: string) => ({
+    enabled: scheduleEnabled,
+    intervalMinutes: BigInt(intervalMinutes || "0"),
+    maxExecutions: BigInt(maxExecutions || "0"),
+  });
+
+  const checkNetwork = async (provider: ethers.BrowserProvider): Promise<boolean> => {
+    try {
+      const network = await provider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        console.log(`Wrong network: ${network.name} (${network.chainId}), expected Arbitrum Sepolia (421614)`);
+        showError("Please switch to Arbitrum Sepolia network");
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
+      return false;
+    }
+  };
+
+  const createContract = (useSigner = false) => {
+    return new ethers.Contract(
+      PAYROLL_CONFIG_REGISTRY_ADDRESS,
+      REGISTRY_ABI,
+      useSigner ? signer! : provider!
+    );
+  };
+
+  const validateWalletGroups = (walletGroups: WalletGroup[]): boolean => {
+    if (walletGroups.length === 0) {
+      showInfo("At least one wallet group required");
+      return false;
+    }
+    if (walletGroups.length > 5) {
+      showInfo("Maximum 5 wallet groups allowed");
+      return false;
+    }
+
+    for (let i = 0; i < walletGroups.length; i++) {
+      const group = walletGroups[i];
+
+      // Validate wallet address
+      if (!group.wallet || !ethers.isAddress(group.wallet)) {
+        showInfo(`Invalid wallet address in group ${i + 1}`);
+        return false;
+      }
+
+      // Validate wallet amount
+      const amount = parseFloat(group.walletAmount || "0");
+      if (amount <= 0) {
+        showInfo(`Invalid wallet amount in group ${i + 1}`);
+        return false;
+      }
+
+      // Validate strategies
+      if (group.strategies.length === 0) {
+        showInfo(`At least one strategy required in group ${i + 1}`);
+        return false;
+      }
+      if (group.strategies.length > 4) {
+        showInfo(`Maximum 4 strategies allowed in group ${i + 1}`);
+        return false;
+      }
+
+      // Validate strategy percentages
+      const totalPercent = group.strategies.reduce((sum, s) => sum + parseFloat(s.subPercent || "0"), 0);
+      if (Math.abs(totalPercent - 100) > 0.01) {
+        showInfo(`Strategy percentages must total 100% in group ${i + 1}`);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  const transformWalletGroups = (walletGroups: WalletGroup[]) => {
+    return walletGroups.map((group) => ({
+      wallet: group.wallet,
+      walletAmount: ethers.parseUnits(group.walletAmount || "0", 6),
+      strategies: group.strategies.map((s) => ({
+        strategy: s.strategy,
+        subPercent: Math.round(parseFloat(s.subPercent) * 100),
+      })),
+    }));
+  };
+
   const loadConfigList = async () => {
-    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return;
+    if (!checkPrerequisites()) return;
+
+    // Check network
+    if (!(await checkNetwork(provider!))) return;
 
     setIsLoading(true);
     try {
-      const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
-        REGISTRY_ABI,
-        provider
-      );
+      const contract = createContract();
 
       const publicIds: bigint[] = await contract.getPublicConfigIds();
       let userIds: bigint[] = [];
@@ -65,7 +168,7 @@ export function useConfigRegistry(
       setConfigs(loadedConfigs);
     } catch (error) {
       console.error("Failed to load configs:", error);
-      showError("Failed to load configurations");
+      showError("Failed to load configurations. Please check your network connection and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -80,43 +183,24 @@ export function useConfigRegistry(
     maxExecutions: string,
     isPublic: boolean
   ) => {
-    if (!signer || !address || !provider) {
-      showInfo("Please connect your wallet");
-      return;
-    }
-
-    if (!PAYROLL_CONFIG_REGISTRY_ADDRESS) {
-      showError("Registry contract not configured");
-      return;
-    }
+    if (!checkPrerequisites(true)) return; // requireSigner = true
 
     if (!configName.trim()) {
       showInfo("Please enter a configuration name");
       return;
     }
 
+    if (!validateWalletGroups(walletGroups)) return;
+
+    // Check network
+    if (!(await checkNetwork(provider!))) return;
+
     setIsSaving(true);
     try {
-      const contractWalletGroups = walletGroups.map((group) => ({
-        wallet: group.wallet,
-        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6),
-        strategies: group.strategies.map((s) => ({
-          strategy: s.strategy,
-          subPercent: Math.round(parseFloat(s.subPercent) * 100),
-        })),
-      }));
+      const contractWalletGroups = transformWalletGroups(walletGroups);
+      const schedule = createSchedule(scheduleEnabled, intervalMinutes, maxExecutions);
 
-      const schedule = {
-        enabled: scheduleEnabled,
-        intervalMinutes: BigInt(intervalMinutes || "0"),
-        maxExecutions: BigInt(maxExecutions || "0"),
-      };
-
-      const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
-        REGISTRY_ABI,
-        signer
-      );
+      const contract = createContract(true); // useSigner = true
 
       const tx = await contract.saveConfig(
         configName,
@@ -126,9 +210,8 @@ export function useConfigRegistry(
         isPublic
       );
       const receipt = await tx.wait();
-      const hash = receipt.hash;
 
-      console.log("Transaction hash:", hash);
+      console.log("Transaction hash:", receipt.hash);
       showSuccess("Configuration saved successfully");
       return true;
     } catch (error: any) {
@@ -149,38 +232,24 @@ export function useConfigRegistry(
     intervalMinutes: string,
     maxExecutions: string
   ) => {
-    if (!signer || !address || !provider) {
-      showInfo("Please connect your wallet");
-      return;
-    }
+    if (!checkPrerequisites(true)) return; // requireSigner = true
 
     if (!configName.trim()) {
       showInfo("Please enter a configuration name");
       return;
     }
 
+    if (!validateWalletGroups(walletGroups)) return;
+
+    // Check network
+    if (!(await checkNetwork(provider!))) return;
+
     setIsSaving(true);
     try {
-      const contractWalletGroups = walletGroups.map((group) => ({
-        wallet: group.wallet,
-        walletAmount: ethers.parseUnits(group.walletAmount || "0", 6),
-        strategies: group.strategies.map((s) => ({
-          strategy: s.strategy,
-          subPercent: Math.round(parseFloat(s.subPercent) * 100),
-        })),
-      }));
+      const contractWalletGroups = transformWalletGroups(walletGroups);
+      const schedule = createSchedule(scheduleEnabled, intervalMinutes, maxExecutions);
 
-      const schedule = {
-        enabled: scheduleEnabled,
-        intervalMinutes: BigInt(intervalMinutes || "0"),
-        maxExecutions: BigInt(maxExecutions || "0"),
-      };
-
-      const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
-        REGISTRY_ABI,
-        signer
-      );
+      const contract = createContract(true); // useSigner = true
 
       const tx = await contract.updateConfig(
         configId,
@@ -190,9 +259,8 @@ export function useConfigRegistry(
         schedule
       );
       const receipt = await tx.wait();
-      const hash = receipt.hash;
 
-      console.log("Transaction hash:", hash);
+      console.log("Transaction hash:", receipt.hash);
       showSuccess("Configuration updated successfully");
       return true;
     } catch (error: any) {
@@ -205,15 +273,14 @@ export function useConfigRegistry(
   };
 
   const loadConfig = async (configId: bigint) => {
-    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return null;
+    if (!checkPrerequisites()) return null;
+
+    // Check network
+    if (!(await checkNetwork(provider!))) return null;
 
     setIsLoading(true);
     try {
-      const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
-        REGISTRY_ABI,
-        provider
-      );
+      const contract = createContract();
 
       const config = await contract.getConfig(configId);
 
@@ -266,25 +333,18 @@ export function useConfigRegistry(
   };
 
   const deleteConfig = async (configId: bigint) => {
-    if (!signer || !address || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
-      showInfo("Please connect your wallet");
-      return;
-    }
+    if (!checkPrerequisites(true)) return; // requireSigner = true
 
-    // confirmはUI側に任せる想定。ここではそのまま実行。
+    // Check network
+    if (!(await checkNetwork(provider!))) return;
 
     try {
-      const contract = new ethers.Contract(
-        PAYROLL_CONFIG_REGISTRY_ADDRESS,
-        REGISTRY_ABI,
-        signer
-      );
+      const contract = createContract(true); // useSigner = true
 
       const tx = await contract.deleteConfig(configId);
       const receipt = await tx.wait();
-      const hash = receipt.hash;
 
-      console.log("Delete transaction hash:", hash);
+      console.log("Delete transaction hash:", receipt.hash);
       showSuccess("Configuration deleted successfully");
       loadConfigList();
     } catch (error: any) {
