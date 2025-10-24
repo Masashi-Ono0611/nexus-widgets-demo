@@ -15,13 +15,6 @@ import { Plus, Trash2, Users, Settings, Play } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 import { toast } from 'sonner';
 
-const DEFI_STRATEGIES = [
-  { id: 'direct', name: 'Direct Transfer', color: 'bg-green-100 text-green-800', icon: '💰' },
-  { id: 'aave', name: 'AAVE Supply', color: 'bg-blue-100 text-blue-800', icon: '🏦' },
-  { id: 'morpho', name: 'Morpho Deposit', color: 'bg-purple-100 text-purple-800', icon: '🏛️' },
-  { id: 'uniswap', name: 'Uniswap Swap', color: 'bg-orange-100 text-orange-800', icon: '🔄' },
-];
-
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
     {
@@ -114,58 +107,15 @@ export const PayrollManager: React.FC = () => {
         </div>
 
         {recipientWallets.map((wallet, index) => (
-          <Card key={wallet.id} className="p-6 hover:shadow-md transition-shadow">
-            <div className="flex items-start gap-4">
-              <div className={`w-4 h-4 rounded-full ${wallet.color} mt-2`}></div>
-              <div className="flex-1 space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor={`address-${wallet.id}`}>Wallet Address</Label>
-                    <Input
-                      id={`address-${wallet.id}`}
-                      placeholder="0x..."
-                      value={wallet.address}
-                      onChange={(e) => handleWalletChange(wallet.id, { ...wallet, address: e.target.value })}
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor={`amount-${wallet.id}`}>Amount (USDC)</Label>
-                    <Input
-                      id={`amount-${wallet.id}`}
-                      type="number"
-                      placeholder="0.00"
-                      value={wallet.amount || ''}
-                      onChange={(e) => handleWalletChange(wallet.id, { ...wallet, amount: parseFloat(e.target.value) || 0 })}
-                    />
-                  </div>
-                </div>
-
-                {/* DeFi Strategies */}
-                <div className="space-y-3">
-                  <Label>Strategy Allocation</Label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                    {DEFI_STRATEGIES.map((strategy) => (
-                      <div key={strategy.id} className="flex items-center gap-2 p-2 bg-gray-50 rounded-lg">
-                        <span className="text-lg">{strategy.icon}</span>
-                        <span className="text-sm font-medium">{strategy.name}</span>
-                        <span className="text-xs text-gray-500 ml-auto">25%</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              {recipientWallets.length > 1 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleRemoveWallet(wallet.id)}
-                  className="text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-          </Card>
+          <WalletCard
+            key={wallet.id}
+            wallet={wallet}
+            index={index}
+            onChange={(updatedWallet) => handleWalletChange(wallet.id, updatedWallet)}
+            onRemove={() => handleRemoveWallet(wallet.id)}
+            errors={errors}
+            canRemove={recipientWallets.length > 1}
+          />
         ))}
 
         {/* Add Wallet Button */}
