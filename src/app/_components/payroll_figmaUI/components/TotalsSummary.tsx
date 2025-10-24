@@ -14,7 +14,7 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-lg">Total Distribution</h3>
-        <div className="text-2xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+        <div className="text-2xl total-amount-gradient font-bold">
           {formatUSDC(totalAmount)}
         </div>
       </div>
