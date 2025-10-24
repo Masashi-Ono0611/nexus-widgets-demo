@@ -11,7 +11,7 @@ import { ExecutionModeCard } from './ExecutionModeCard';
 import { ConfigManager } from './ConfigManager';
 import { RecipientWallet, PayrollConfig, STRATEGY_TEMPLATES, WALLET_COLORS } from './types';
 import { validateRecipientWallets, calculateTotalAmount } from './utils';
-import { Plus, Trash2, Users, Settings, Play } from 'lucide-react';
+import { Plus, Trash2, Settings, Play } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 import { toast } from 'sonner';
 
@@ -83,14 +83,6 @@ export const PayrollManager: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="text-center space-y-2">
-        <div className="flex items-center justify-center gap-2">
-          <Users className="h-6 w-6 text-blue-600" />
-          <h2 className="text-2xl font-semibold text-gray-900">Configure Payroll Distribution</h2>
-        </div>
-        <p className="text-gray-600">Set up multi-wallet distributions with DeFi strategy allocations</p>
-      </div>
 
       {/* Totals Summary */}
       <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
@@ -99,13 +91,6 @@ export const PayrollManager: React.FC = () => {
 
       {/* Recipient Wallets */}
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-semibold">Recipient Wallets</h3>
-          <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-            {recipientWallets.length}/5 Wallets
-          </Badge>
-        </div>
-
         {recipientWallets.map((wallet, index) => (
           <WalletCard
             key={wallet.id}
