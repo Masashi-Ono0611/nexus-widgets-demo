@@ -7,6 +7,7 @@ import { StrategyRow } from './StrategyRow';
 import { applyPreset, formatAddress } from '../utils';
 import { Trash2, Wallet } from 'lucide-react';
 import { Badge } from '../../ui/badge';
+import { COLORS, FONT_SIZES } from '../design-tokens';
 
 interface WalletCardProps {
   wallet: RecipientWallet;
@@ -43,11 +44,11 @@ export const WalletCard: React.FC<WalletCardProps> = ({
   };
 
   return (
-    <Card className="p-6 space-y-4 border-2 transition-all duration-200 hover:shadow-lg" style={{ borderColor: wallet.color }}>
+    <Card className="p-8 space-y-4" style={{ borderColor: wallet.color }}>
       <div className="flex items-start justify-between">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <div
-            className="h-10 w-10 rounded-full flex items-center justify-center"
+            className="h-12 w-12 rounded-full flex items-center justify-center"
             style={{ backgroundColor: wallet.color + '20' }}
           >
             <Wallet className="h-5 w-5" style={{ color: wallet.color }} />
@@ -55,7 +56,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <h3 className="font-semibold">Recipient Wallet {index + 1}</h3>
             {wallet.address && (
-              <p className="text-sm text-gray-500">{formatAddress(wallet.address)}</p>
+              <p className={`${FONT_SIZES.bodyMedium} ${COLORS.textSecondary}`}>{formatAddress(wallet.address)}</p>
             )}
           </div>
         </div>
@@ -64,7 +65,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
             variant="outline"
             size="sm"
             onClick={onRemove}
-            className="text-red-500 hover:text-red-700 hover:bg-red-50 hover:border-red-200 border-red-200"
+            className={`${COLORS.status.error.text} ${COLORS.status.error.hover.replace('hover:', 'hover:')} ${COLORS.status.error.background.replace('bg-', 'hover:bg-')} ${COLORS.status.error.border.replace('border-', 'hover:border-')} ${COLORS.status.error.border}`}
           >
             <Trash2 className="h-4 w-4" />
           </Button>
@@ -72,13 +73,13 @@ export const WalletCard: React.FC<WalletCardProps> = ({
       </div>
 
       {/* Wallet Address */}
-      <div className="space-y-1">
+      <div className="space-y-1 mt-[-4px]">
         <label className="text-sm">Wallet Address</label>
         <Input
           placeholder="0x..."
           value={wallet.address}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, address: e.target.value })}
-          className={walletErrors.some((e) => e.field === 'address') ? 'border-red-500' : ''}
+          className={walletErrors.some((e) => e.field === 'address') ? COLORS.status.error.border : ''}
         />
       </div>
 
@@ -92,7 +93,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
           step="0.01"
           value={wallet.amount || ''}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, amount: parseFloat(e.target.value) || 0 })}
-          className={walletErrors.some((e) => e.field === 'amount') ? 'border-red-500' : ''}
+          className={walletErrors.some((e) => e.field === 'amount') ? COLORS.status.error.border : ''}
         />
       </div>
 
@@ -106,7 +107,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               variant="outline"
               size="sm"
               onClick={() => handlePreset('normalize')}
-              className="text-xs px-3 py-1.5"
+              className="text-sm px-3 py-1.5"
             >
               Normalize
             </Button>
@@ -165,7 +166,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
           {walletErrors.map((error, idx) => (
             <div
               key={idx}
-              className="text-sm text-red-600 bg-red-50 p-2 rounded"
+              className={`${COLORS.status.error.text} ${COLORS.status.error.background} p-2 rounded`}
             >
               {error.message}
             </div>

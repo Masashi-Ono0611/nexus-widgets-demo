@@ -81,9 +81,9 @@ export function SaveConfigModal({
                 id="is-public"
                 checked={isPublic}
                 onChange={(e) => setIsPublic(e.target.checked)}
-                className="h-4 w-4 rounded border-gray-300"
+                className="h-4 w-4 rounded border-gray-200"
               />
-              <Label htmlFor="is-public" className="font-normal cursor-pointer">
+              <Label htmlFor="is-public" className="font-medium cursor-pointer">
                 Make this configuration public (others can view and copy)
               </Label>
             </div>

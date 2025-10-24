@@ -71,7 +71,7 @@ export function LoadConfigModal({
                           {config.description}
                         </p>
                       )}
-                      <p className="text-xs text-gray-400 truncate">
+                      <p className="text-sm text-gray-500 truncate">
                         Owner: {config.owner.slice(0, 4)}...{config.owner.slice(-4)}
                       </p>
                     </div>

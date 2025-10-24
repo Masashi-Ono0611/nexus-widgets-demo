@@ -32,6 +32,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
+import { COLORS } from './design-tokens';
 
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -149,9 +150,9 @@ export const PayrollManager: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {/* Configuration Management */}
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2">
         <ConfigManager
           walletGroups={walletGroups}
           intervalMinutes={String(recurringInterval)}
@@ -161,7 +162,7 @@ export const PayrollManager: React.FC = () => {
         />
       </div>
       {/* Recipient Wallets */}
-      <div className="space-y-4">
+      <div className="space-y-2 mb-4">
         {recipientWallets.map((wallet, index) => (
           <WalletCard
             key={wallet.id}
@@ -197,10 +198,18 @@ export const PayrollManager: React.FC = () => {
         onMaxExecutionsChange={setMaxExecutions}
       />
 
+      {/* Separator Line */}
+      <div className="relative py-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-gray-50 text-gray-600 font-medium">Review & Execute</span>
+        </div>
+      </div>
+
       {/* Totals Summary */}
-      <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-        <TotalsSummary recipientWallets={recipientWallets} />
-      </Card>
+      <TotalsSummary recipientWallets={recipientWallets} />
 
       {/* Execute Button */}
       <Card className="p-6">
@@ -208,7 +217,7 @@ export const PayrollManager: React.FC = () => {
           {isValid ? (
             <div></div>
           ) : (
-            <div className="flex items-center gap-2 text-red-600 p-3 bg-red-50 rounded-lg">
+            <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
               <Settings className="h-4 w-4" />
               <span className="font-medium">Configuration incomplete - please fill all fields</span>
             </div>
@@ -296,7 +305,7 @@ export const PayrollManager: React.FC = () => {
                   await onClick();
                 }}
                 disabled={isLoading || !isValid}
-                className="w-full h-16 text-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full h-16 text-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <Play className="h-6 w-6 mr-3" />
                 {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}

@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card } from '../../ui/card';
-import { Switch } from '../../ui/switch';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Clock, Zap } from 'lucide-react';
+import { FONT_SIZES, COLORS } from '../design-tokens';
 
 interface ExecutionModeCardProps {
   mode: 'immediate' | 'recurring';
@@ -23,44 +23,54 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
   onMaxExecutionsChange,
 }) => {
   return (
-    <Card className="p-5 gap-4">
-      {/* Mode Toggle */}
-      <div className="space-y-2">
-        <h3 className="text-lg font-medium">Execution Mode</h3>
-        <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-          <div className="flex items-center gap-3">
-            <Zap className={`h-5 w-5 ${mode === 'immediate' ? 'text-blue-600' : 'text-gray-400'}`} />
-            <div>
-              <Label className="cursor-pointer font-medium">
-                {mode === 'immediate' ? 'Immediate Execution' : 'Recurring Schedule'}
-              </Label>
-              <p className="text-xs text-gray-500">
-                {mode === 'immediate'
-                  ? 'Execute once via FlexibleSplitter'
-                  : 'Schedule recurring via RecurringSplitter + Gelato'}
-              </p>
+    <Card className="p-8 gap-4">
+      {/* Mode Selection */}
+      <div className="space-y-4">
+        <h3 className={FONT_SIZES.sectionHeading}>Execution Mode</h3>
+
+        {/* Mode Toggle */}
+        <div className={`grid grid-cols-2 gap-4 p-4 ${COLORS.backgroundSecondary} rounded-lg`}>
+          {/* Immediate Mode */}
+          <button
+            type="button"
+            onClick={() => onModeChange('immediate')}
+            className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg transition-all w-full ${
+              mode === 'immediate' ? COLORS.modeActive : COLORS.modeInactive
+            }`}
+          >
+            <Zap className={`h-5 w-5 ${mode === 'immediate' ? COLORS.brand.secondary.text : COLORS.textTertiary}`} />
+            <div className="text-center">
+              <div className={`font-medium ${COLORS.textPrimary}`}>Immediate</div>
+              <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Execute once</div>
             </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Immediate</span>
-            <Switch
-              checked={mode === 'recurring'}
-              onCheckedChange={(checked: boolean) => onModeChange(checked ? 'recurring' : 'immediate')}
-            />
-            <span className="text-sm text-gray-600">Recurring</span>
-          </div>
+          </button>
+
+          {/* Recurring Mode */}
+          <button
+            type="button"
+            onClick={() => onModeChange('recurring')}
+            className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg transition-all w-full ${
+              mode === 'recurring' ? COLORS.modeRecurringActive : COLORS.modeInactive
+            }`}
+          >
+            <Clock className={`h-5 w-5 ${mode === 'recurring' ? COLORS.brand.accent.text : COLORS.textTertiary}`} />
+            <div className="text-center">
+              <div className={`font-medium ${COLORS.textPrimary}`}>Recurring</div>
+              <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Scheduled execution</div>
+            </div>
+          </button>
         </div>
       </div>
 
       {/* Recurring Settings */}
       {mode === 'recurring' && (
-        <div className="space-y-2 p-3 bg-purple-50 rounded-lg border border-purple-200">
-          <div className="flex items-center gap-2 text-purple-700">
+        <div className={`space-y-3 p-4 ${COLORS.brand.accent.background} rounded-lg ${COLORS.brand.accent.border}`}>
+          <div className={`flex items-center gap-2 ${COLORS.brand.accent.text}`}>
             <Clock className="h-5 w-5" />
-            <span className="font-medium">Recurring Schedule Settings</span>
+            <span className="font-medium">Schedule Configuration</span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1">
               <Label htmlFor="interval" className="text-sm">Interval (minutes)</Label>
               <Input
@@ -72,7 +82,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onRecurringIntervalChange(parseInt(e.target.value) || 1)}
                 placeholder="e.g., 60"
               />
-              <p className="text-xs text-gray-500">Between 1 minute and 1 year</p>
+              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Between 1 minute and 1 year</p>
             </div>
 
             <div className="space-y-1">
@@ -86,11 +96,11 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => onMaxExecutionsChange(parseInt(e.target.value) || 0)}
                 placeholder="e.g., 12"
               />
-              <p className="text-xs text-gray-500">0 = unlimited</p>
+              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>0 = unlimited</p>
             </div>
           </div>
 
-          <div className="text-sm text-purple-700 bg-white p-2 rounded border border-purple-200">
+          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.accent.text} bg-white p-2 rounded ${COLORS.brand.accent.border}`}>
             <strong>Schedule Preview:</strong> Execute every {recurringInterval} minute{recurringInterval !== 1 ? 's' : ''}{' '}
             {maxExecutions > 0 ? `for ${maxExecutions} execution${maxExecutions !== 1 ? 's' : ''}` : 'indefinitely'}
           </div>
