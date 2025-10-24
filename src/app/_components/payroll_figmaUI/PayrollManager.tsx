@@ -206,10 +206,7 @@ export const PayrollManager: React.FC = () => {
       <Card className="p-6">
         <div className="space-y-4">
           {isValid ? (
-            <div className="flex items-center gap-2 text-green-600 p-3 bg-green-50 rounded-lg">
-              <div className="h-2 w-2 rounded-full bg-green-600 animate-pulse" />
-              <span className="font-medium">Ready to execute</span>
-            </div>
+            <div></div>
           ) : (
             <div className="flex items-center gap-2 text-red-600 p-3 bg-red-50 rounded-lg">
               <Settings className="h-4 w-4" />

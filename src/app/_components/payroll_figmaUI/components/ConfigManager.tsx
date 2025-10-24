@@ -171,7 +171,7 @@ function ConfigManagerComponent({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex gap-2">
       <Button
         onClick={() => guardNetworkThen(() => setShowLoadModal(true))}
         variant="outline"
@@ -201,7 +201,7 @@ function ConfigManagerComponent({
               : "Load a configuration first to enable update"
         }
       >
-        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
+        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""}
       </Button>
 
       <SaveConfigModal
