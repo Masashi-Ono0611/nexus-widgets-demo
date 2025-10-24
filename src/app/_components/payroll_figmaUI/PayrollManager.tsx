@@ -1,18 +1,36 @@
+"use client";
 import React, { useState, useMemo } from 'react';
+import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from "@avail-project/nexus-widgets";
+import { parseUnits } from "viem";
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Badge } from '../ui/badge';
 import { TotalsSummary } from './components/TotalsSummary';
 import { WalletCard } from './components/WalletCard';
 import { ExecutionModeCard } from './components/ExecutionModeCard';
 import { ConfigManager } from './components/ConfigManager';
-import { RecipientWallet, PayrollConfig, STRATEGY_TEMPLATES, WALLET_COLORS } from './types';
-import { validateRecipientWallets, calculateTotalAmount } from './utils';
-import { Plus, Trash2, Settings, Play } from 'lucide-react';
-import { Alert, AlertDescription } from '../ui/alert';
+import { 
+  RecipientWallet, 
+  PayrollConfig, 
+  STRATEGY_TEMPLATES, 
+  WALLET_COLORS,
+  RECURRING_SPLITTER_ADDRESS,
+  FLEXIBLE_SPLITTER_ADDRESS,
+  WalletGroup,
+  STRATEGY_LABELS,
+  STRATEGY_COLORS,
+  DeFiStrategy,
+} from './types';
+import { 
+  validateRecipientWallets, 
+  calculateTotalAmount,
+  convertToWalletGroups,
+  buildFlatRecipientsFromWallets,
+  toContractRecipients,
+  totalShare,
+  sumPercent,
+} from './utils';
+import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
 
 export const PayrollManager: React.FC = () => {
@@ -29,19 +47,38 @@ export const PayrollManager: React.FC = () => {
   const [executionMode, setExecutionMode] = useState<'immediate' | 'recurring'>('immediate');
   const [recurringInterval, setRecurringInterval] = useState(60);
   const [maxExecutions, setMaxExecutions] = useState(0);
-  const [currentConfigId, setCurrentConfigId] = useState<string | undefined>();
-  const [currentConfigName, setCurrentConfigName] = useState('');
-  const [currentConfigDescription, setCurrentConfigDescription] = useState('');
-  const [userAddress] = useState('0x1234567890123456789012345678901234567890'); // Mock user address
-
-  const handleDeleteConfig = (configId: string) => {
-    toast.success(`Configuration ${configId} deleted`);
-    // In a real implementation, this would call the smart contract to delete the config
-  };
 
   const errors = useMemo(() => validateRecipientWallets(recipientWallets), [recipientWallets]);
   const totalAmount = useMemo(() => calculateTotalAmount(recipientWallets), [recipientWallets]);
-  const isValid = errors.length === 0 && totalAmount > 0;
+  
+  // Convert to contract-compatible format
+  const walletGroups = useMemo(() => convertToWalletGroups(recipientWallets), [recipientWallets]);
+  const flatRecipients = useMemo(() => buildFlatRecipientsFromWallets(recipientWallets), [recipientWallets]);
+  const totalShareValue = useMemo(() => totalShare(flatRecipients), [flatRecipients]);
+  
+  // Validation
+  const isValid = useMemo(() => {
+    const recipientsOk = recipientWallets.every((w) => w.address && w.address.startsWith('0x') && w.address.length === 42);
+    const shareOk = Math.abs(totalShareValue - 100) < 0.01;
+    const recipientCountOk = flatRecipients.length <= 20;
+    const amountOk = totalAmount > 0;
+    
+    if (!executionMode || executionMode === 'immediate') {
+      return recipientsOk && shareOk && recipientCountOk && amountOk;
+    }
+    
+    const validInterval = recurringInterval >= 1 && recurringInterval <= 525600;
+    const validMaxExecutions = maxExecutions >= 0 && maxExecutions <= 1000;
+    return recipientsOk && shareOk && recipientCountOk && amountOk && validInterval && validMaxExecutions;
+  }, [recipientWallets, totalShareValue, flatRecipients, totalAmount, executionMode, recurringInterval, maxExecutions]);
+  
+  const prefillConfig = useMemo(() => {
+    const base = { toChainId: 421614 as const, token: "USDC" as const };
+    if (totalAmount && totalAmount > 0) {
+      return { ...base, amount: String(totalAmount) };
+    }
+    return base;
+  }, [totalAmount]);
 
   const handleAddWallet = () => {
     if (recipientWallets.length >= 5) {
@@ -54,7 +91,7 @@ export const PayrollManager: React.FC = () => {
       address: '',
       amount: 0,
       color: WALLET_COLORS[recipientWallets.length % WALLET_COLORS.length],
-      strategies: STRATEGY_TEMPLATES.map(s => ({ ...s, percentage: 25 })),
+      strategies: STRATEGY_TEMPLATES.map(s => ({ ...s })),
     };
 
     setRecipientWallets([...recipientWallets, newWallet]);
@@ -75,17 +112,40 @@ export const PayrollManager: React.FC = () => {
     setRecipientWallets(recipientWallets.map(w => (w.id === id ? updatedWallet : w)));
   };
 
-  const handleExecute = () => {
-    if (!isValid) {
-      toast.error('Please fix validation errors before executing');
-      return;
-    }
+  const handleLoadConfig = (
+    loadedWalletGroups: WalletGroup[],
+    loadedIntervalMinutes: string,
+    loadedMaxExecutions: string,
+    loadedScheduleEnabled: boolean
+  ) => {
+    // Convert WalletGroup[] back to RecipientWallet[]
+    const loadedRecipients: RecipientWallet[] = loadedWalletGroups.map((group, index) => ({
+      id: Date.now().toString() + index,
+      address: group.wallet,
+      amount: parseFloat(group.walletAmount),
+      color: WALLET_COLORS[index % WALLET_COLORS.length],
+      strategies: group.strategies.map((s) => {
+        // Convert strategy enum to number if it's BigInt
+        const strategyNum = typeof s.strategy === 'bigint' ? Number(s.strategy) : Number(s.strategy);
 
-    toast.success(
-      executionMode === 'immediate'
-        ? 'Executing payroll distribution...'
-        : 'Setting up recurring payroll schedule...'
-    );
+        // Use STRATEGY_LABELS and STRATEGY_COLORS for direct mapping
+        const strategyName = STRATEGY_LABELS[strategyNum] || 'Unknown';
+        const strategyColor = STRATEGY_COLORS[strategyNum] || '#999';
+
+        return {
+          name: strategyName,
+          percentage: parseFloat(s.subPercent),
+          color: strategyColor,
+          address: '0x0', // Not needed for loaded configs
+          strategyEnum: strategyNum as DeFiStrategy,
+        };
+      }),
+    }));
+
+    setRecipientWallets(loadedRecipients);
+    setRecurringInterval(parseInt(loadedIntervalMinutes) || 60);
+    setMaxExecutions(parseInt(loadedMaxExecutions) || 0);
+    setExecutionMode(loadedScheduleEnabled ? 'recurring' : 'immediate');
   };
 
   return (
@@ -93,37 +153,11 @@ export const PayrollManager: React.FC = () => {
       {/* Configuration Management */}
       <div className="flex justify-end">
         <ConfigManager
-          currentConfig={{
-            id: currentConfigId,
-            name: currentConfigName,
-            description: currentConfigDescription,
-            isPublic: false,
-            recipientWallets,
-            executionMode,
-            recurringInterval,
-            maxExecutions,
-          }}
-          onLoad={(config: PayrollConfig) => {
-            if (config.recipientWallets.length > 0) {
-              setRecipientWallets(config.recipientWallets);
-            }
-            setExecutionMode(config.executionMode);
-            setRecurringInterval(config.recurringInterval || 60);
-            setMaxExecutions(config.maxExecutions || 0);
-            setCurrentConfigId(config.id);
-            setCurrentConfigName(config.name);
-            setCurrentConfigDescription(config.description || '');
-          }}
-          onSave={(config: PayrollConfig) => {
-            setCurrentConfigId(config.id);
-            setCurrentConfigName(config.name);
-            toast.success('Configuration saved successfully');
-          }}
-          onUpdate={(config: PayrollConfig) => {
-            toast.success('Configuration updated successfully');
-          }}
-          userAddress={userAddress}
-          onDelete={handleDeleteConfig}
+          walletGroups={walletGroups}
+          intervalMinutes={String(recurringInterval)}
+          maxExecutions={String(maxExecutions)}
+          scheduleEnabled={executionMode === 'recurring'}
+          onLoadConfig={handleLoadConfig}
         />
       </div>
 
@@ -184,18 +218,97 @@ export const PayrollManager: React.FC = () => {
             </div>
           )}
 
-          <Button
-            onClick={handleExecute}
-            disabled={!isValid}
-            className="w-full h-16 text-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+          <BridgeAndExecuteButton
+            contractAddress={executionMode === 'recurring' ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}
+            contractAbi={
+              executionMode === 'recurring'
+                ? ([
+                    {
+                      name: "createSchedule",
+                      type: "function",
+                      stateMutability: "nonpayable",
+                      inputs: [
+                        { name: "asset", type: "address" },
+                        { name: "amountPerExecution", type: "uint256" },
+                        {
+                          name: "recipients",
+                          type: "tuple[]",
+                          components: [
+                            { name: "wallet", type: "address" },
+                            { name: "sharePercent", type: "uint16" },
+                            { name: "strategy", type: "uint8" },
+                          ],
+                        },
+                        { name: "intervalSeconds", type: "uint256" },
+                        { name: "maxExecutions", type: "uint256" },
+                      ],
+                      outputs: [{ name: "scheduleId", type: "uint256" }],
+                    },
+                  ] as const)
+                : ([
+                    {
+                      name: "distributeTokens",
+                      type: "function",
+                      stateMutability: "nonpayable",
+                      inputs: [
+                        { name: "asset", type: "address" },
+                        { name: "amount", type: "uint256" },
+                        {
+                          name: "recipients",
+                          type: "tuple[]",
+                          components: [
+                            { name: "wallet", type: "address" },
+                            { name: "sharePercent", type: "uint16" },
+                            { name: "strategy", type: "uint8" },
+                          ],
+                        },
+                      ],
+                      outputs: [],
+                    },
+                  ] as const)
+            }
+            functionName={executionMode === 'recurring' ? "createSchedule" : "distributeTokens"}
+            prefill={prefillConfig}
+            buildFunctionParams={(token, amount, chainId, userAddress) => {
+              const decimals = TOKEN_METADATA[token].decimals;
+              const totalAmountWei = parseUnits(amount, decimals);
+              const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
+
+              const contractRecipients = toContractRecipients(flatRecipients);
+
+              if (executionMode !== 'recurring') {
+                return {
+                  functionParams: [tokenAddress, totalAmountWei, contractRecipients],
+                };
+              }
+
+              const maxExec = maxExecutions;
+              const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
+              const intervalSeconds = recurringInterval * 60;
+              return {
+                functionParams: [tokenAddress, amountPerExecution, contractRecipients, intervalSeconds, maxExec],
+              };
+            }}
           >
-            <Play className="h-6 w-6 mr-3" />
-            {executionMode === 'immediate' ? 'Execute Payroll Now' : 'Schedule Recurring Payroll'}
-          </Button>
+            {({ onClick, isLoading }) => (
+              <Button
+                onClick={async () => {
+                  if (!isValid) {
+                    toast.error('Please ensure all addresses are valid and total share is 100%');
+                    return;
+                  }
+                  await onClick();
+                }}
+                disabled={isLoading || !isValid}
+                className="w-full h-16 text-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+              >
+                <Play className="h-6 w-6 mr-3" />
+                {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}
+              </Button>
+            )}
+          </BridgeAndExecuteButton>
         </div>
       </Card>
-
-     
     </div>
   );
 };

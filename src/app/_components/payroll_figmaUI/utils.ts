@@ -1,8 +1,8 @@
 // Utility functions for Payroll Manager
-import { RecipientWallet, ValidationError, Strategy } from './types';
+import { RecipientWallet, ValidationError, Strategy, Recipient, WalletGroup } from './types';
 
 export const isValidAddress = (address: string): boolean => {
-  return address.startsWith('0x') && address.length === 42;
+  return !!address && address.startsWith('0x') && address.length === 42;
 };
 
 export const validateRecipientWallets = (recipientWallets: RecipientWallet[]): ValidationError[] => {
@@ -116,3 +116,61 @@ export const formatUSDC = (amount: number): string => {
     maximumFractionDigits: 2,
   }).format(amount);
 };
+
+// Contract integration utilities
+export function toContractRecipients(recipients: Recipient[]) {
+  return recipients.map((r) => ({
+    wallet: r.wallet as `0x${string}`,
+    sharePercent: Math.round(parseFloat(r.sharePercent || "0") * 100),
+    strategy: r.strategy,
+  }));
+}
+
+export function totalShare(recipients: Recipient[]): number {
+  return recipients.reduce((sum, r) => sum + (parseFloat(r.sharePercent) || 0), 0);
+}
+
+export function sumPercent(values: string[]): number {
+  return values.reduce((s, v) => s + (parseFloat(v) || 0), 0);
+}
+
+// Convert RecipientWallet[] to WalletGroup[] for contract compatibility
+export function convertToWalletGroups(recipientWallets: RecipientWallet[]): WalletGroup[] {
+  return recipientWallets.map((wallet) => ({
+    wallet: wallet.address,
+    walletAmount: wallet.amount.toString(),
+    strategies: wallet.strategies.map((s) => ({
+      strategy: s.strategyEnum,
+      subPercent: s.percentage.toString(),
+    })),
+  }));
+}
+
+// Build flat recipients from wallet groups for contract
+export function buildFlatRecipientsFromGroups(groups: WalletGroup[], totalAmount: number): Recipient[] {
+  const result: Recipient[] = [];
+  if (!totalAmount || totalAmount <= 0) return result;
+  for (const g of groups) {
+    const walletAmt = parseFloat(g.walletAmount) || 0;
+    const walletPct = (walletAmt / totalAmount) * 100; // wallet share in %
+    for (const s of g.strategies) {
+      const sub = parseFloat(s.subPercent) || 0;
+      const overallPercent = (walletPct * sub) / 100; // overall % of total
+      if (overallPercent > 0) {
+        result.push({
+          wallet: g.wallet,
+          sharePercent: overallPercent.toString(),
+          strategy: s.strategy,
+        });
+      }
+    }
+  }
+  return result;
+}
+
+// Build flat recipients from RecipientWallet[] directly
+export function buildFlatRecipientsFromWallets(recipientWallets: RecipientWallet[]): Recipient[] {
+  const totalAmount = calculateTotalAmount(recipientWallets);
+  const walletGroups = convertToWalletGroups(recipientWallets);
+  return buildFlatRecipientsFromGroups(walletGroups, totalAmount);
+}
