@@ -55,7 +55,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
           <div>
             <h3 className="font-semibold">Recipient Wallet {index + 1}</h3>
             {wallet.address && (
-              <p className="text-sm text-gray-500">{formatAddress(wallet.address)}</p>
+              <p className="text-sm text-gray-600">{formatAddress(wallet.address)}</p>
             )}
           </div>
         </div>
@@ -106,7 +106,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               variant="outline"
               size="sm"
               onClick={() => handlePreset('normalize')}
-              className="text-xs px-3 py-1.5"
+              className="text-sm px-3 py-1.5"
             >
               Normalize
             </Button>

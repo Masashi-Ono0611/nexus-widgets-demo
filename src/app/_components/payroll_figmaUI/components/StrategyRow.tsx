@@ -29,7 +29,7 @@ export const StrategyRow: React.FC<StrategyRowProps> = ({ strategy, onChange }) 
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(parseFloat(e.target.value) || 0)}
             className="w-20 h-8 text-right"
           />
-          <span className="text-sm text-gray-500 w-4">%</span>
+          <span className="text-sm text-gray-600 w-4">%</span>
         </div>
       </div>
       <Slider

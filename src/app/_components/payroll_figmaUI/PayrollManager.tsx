@@ -203,7 +203,7 @@ export const PayrollManager: React.FC = () => {
           <div className="w-full border-t border-gray-200"></div>
         </div>
         <div className="relative flex justify-center text-sm">
-          <span className="px-4 bg-gray-50 text-gray-500 font-medium">Review & Execute</span>
+          <span className="px-4 bg-gray-50 text-gray-600 font-medium">Review & Execute</span>
         </div>
       </div>
 
@@ -304,7 +304,7 @@ export const PayrollManager: React.FC = () => {
                   await onClick();
                 }}
                 disabled={isLoading || !isValid}
-                className="w-full h-16 text-xl hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className="w-full h-16 text-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
               >
                 <Play className="h-6 w-6 mr-3" />
                 {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}
