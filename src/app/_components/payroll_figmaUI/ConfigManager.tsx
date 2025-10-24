@@ -6,8 +6,7 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Switch } from '../ui/switch';
 import { PayrollConfig } from './types';
-import { FolderOpen, Save, Edit, CheckCircle } from 'lucide-react';
-import { Card } from '../ui/card';
+import { FolderOpen, Save, Edit, Trash2 } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { toast } from 'sonner';
 
@@ -16,6 +15,8 @@ interface ConfigManagerProps {
   onLoad: (config: PayrollConfig) => void;
   onSave: (config: PayrollConfig) => void;
   onUpdate: (config: PayrollConfig) => void;
+  userAddress?: string;
+  onDelete?: (configId: string) => void;
 }
 
 // Mock saved configurations
@@ -25,6 +26,7 @@ const MOCK_CONFIGS: PayrollConfig[] = [
     name: 'Monthly Team Payroll',
     description: 'Standard monthly distribution to team members',
     isPublic: true,
+    owner: '0x1234567890123456789012345678901234567890', // Current user
     recipientWallets: [],
     executionMode: 'recurring',
     recurringInterval: 43200,
@@ -35,6 +37,7 @@ const MOCK_CONFIGS: PayrollConfig[] = [
     name: 'Quarterly Bonuses',
     description: 'Performance-based quarterly bonus distribution',
     isPublic: false,
+    owner: '0x0987654321098765432109876543210987654321',
     recipientWallets: [],
     executionMode: 'immediate',
   },
@@ -43,6 +46,7 @@ const MOCK_CONFIGS: PayrollConfig[] = [
     name: 'Contractor Payments',
     description: 'Weekly payments to contractors',
     isPublic: true,
+    owner: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
     recipientWallets: [],
     executionMode: 'recurring',
     recurringInterval: 10080,
@@ -55,7 +59,21 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
   onLoad,
   onSave,
   onUpdate,
+  userAddress,
+  onDelete,
 }) => {
+  const [configs, setConfigs] = useState(MOCK_CONFIGS);
+
+  const handleDelete = (configId: string) => {
+    if (onDelete) {
+      onDelete(configId);
+    } else {
+      // Fallback: remove from mock data
+      setConfigs(prev => prev.filter(config => config.id !== configId));
+    }
+    toast.success('Configuration deleted successfully');
+  };
+
   const [loadOpen, setLoadOpen] = useState(false);
   const [saveOpen, setSaveOpen] = useState(false);
   const [updateOpen, setUpdateOpen] = useState(false);
@@ -63,6 +81,8 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
   const [saveName, setSaveName] = useState('');
   const [saveDescription, setSaveDescription] = useState('');
   const [saveIsPublic, setSaveIsPublic] = useState(false);
+  const [updateName, setUpdateName] = useState('');
+  const [updateDescription, setUpdateDescription] = useState('');
 
   const handleLoad = (config: PayrollConfig) => {
     onLoad(config);
@@ -76,6 +96,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
       name: saveName,
       description: saveDescription,
       isPublic: saveIsPublic,
+      owner: userAddress,
       id: Date.now().toString(),
     };
     onSave(newConfig);
@@ -86,9 +107,24 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
     toast.success(`Configuration "${saveName}" saved successfully`);
   };
 
+  const handleUpdateDialogOpen = (open: boolean) => {
+    setUpdateOpen(open);
+    if (open) {
+      setUpdateName(currentConfig.name || '');
+      setUpdateDescription(currentConfig.description || '');
+    }
+  };
+
   const handleUpdate = () => {
-    onUpdate(currentConfig);
+    const updatedConfig: PayrollConfig = {
+      ...currentConfig,
+      name: updateName,
+      description: updateDescription,
+    };
+    onUpdate(updatedConfig);
     setUpdateOpen(false);
+    setUpdateName('');
+    setUpdateDescription('');
     toast.success('Configuration updated successfully');
   };
 
@@ -110,34 +146,43 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3">
-            {MOCK_CONFIGS.map((config) => (
-              <Card
-                key={config.id}
-                className="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={() => handleLoad(config)}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h4 className="font-semibold">{config.name}</h4>
-                      <Badge variant={config.isPublic ? 'default' : 'secondary'}>
-                        {config.isPublic ? 'Public' : 'Private'}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-gray-600 mb-2">{config.description}</p>
-                    <div className="flex gap-4 text-xs text-gray-500">
-                      <span>Mode: {config.executionMode}</span>
-                      {config.executionMode === 'recurring' && (
-                        <>
-                          <span>Interval: {config.recurringInterval}min</span>
-                          <span>Max: {config.maxExecutions || '∞'}</span>
-                        </>
+            {configs.map((config) => (
+                <div
+                  key={config.id}
+                  className="border border-gray-200 rounded-lg p-4 mb-3 cursor-pointer hover:bg-gray-50 transition-colors"
+                  onClick={() => handleLoad(config)}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        <h4 className="font-semibold text-lg">{config.name}</h4>
+                        {config.isPublic && (
+                          <Badge variant="default" className="text-xs">
+                            Public
+                          </Badge>
+                        )}
+                      </div>
+                      {config.description && (
+                        <p className="text-sm text-gray-600 mb-2">{config.description}</p>
                       )}
+                      <p className="text-xs text-gray-500">
+                        Owner: {config.owner ? `${config.owner.slice(0, 6)}...${config.owner.slice(-4)}` : 'Unknown'}
+                      </p>
                     </div>
+                    {userAddress?.toLowerCase() === config.owner?.toLowerCase() && (
+                      <Button
+                        size="sm"
+                        variant="destructive"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(config.id!);
+                        }}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </div>
-                  <CheckCircle className="h-5 w-5 text-green-600" />
                 </div>
-              </Card>
             ))}
           </div>
         </DialogContent>
@@ -197,14 +242,14 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
               disabled={!saveName.trim()}
               className="w-full"
             >
-              Save to Blockchain
+              Save
             </Button>
           </div>
         </DialogContent>
       </Dialog>
 
       {/* Update Configuration */}
-      <Dialog open={updateOpen} onOpenChange={setUpdateOpen}>
+      <Dialog open={updateOpen} onOpenChange={handleUpdateDialogOpen}>
         <DialogTrigger asChild>
           <Button variant="outline" className="flex-1 sm:flex-none" disabled={!currentConfig.id}>
             <Edit className="h-4 w-4 mr-2" />
@@ -219,17 +264,33 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4">
-            <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-sm text-blue-700">
-                <strong>Current Configuration:</strong> {currentConfig.name || 'Unnamed'}
-              </p>
-              <p className="text-xs text-blue-600 mt-1">
-                This will update the existing configuration with your current settings.
-              </p>
+            <div className="space-y-2">
+              <Label htmlFor="update-name">Configuration Name</Label>
+              <Input
+                id="update-name"
+                placeholder="e.g., Monthly Team Payroll"
+                value={updateName}
+                onChange={(e) => setUpdateName(e.target.value)}
+              />
             </div>
 
-            <Button onClick={handleUpdate} className="w-full">
-              Confirm Update
+            <div className="space-y-2">
+              <Label htmlFor="update-description">Description</Label>
+              <Textarea
+                id="update-description"
+                placeholder="Describe this payroll configuration..."
+                value={updateDescription}
+                onChange={(e) => setUpdateDescription(e.target.value)}
+                rows={3}
+              />
+            </div>
+
+            <Button
+              onClick={handleUpdate}
+              disabled={!updateName.trim()}
+              className="w-full"
+            >
+              Update
             </Button>
           </div>
         </DialogContent>

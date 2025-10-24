@@ -20,6 +20,7 @@ export interface PayrollConfig {
   name: string;
   description: string;
   isPublic: boolean;
+  owner?: string;
   recipientWallets: RecipientWallet[];
   executionMode: 'immediate' | 'recurring';
   recurringInterval?: number;

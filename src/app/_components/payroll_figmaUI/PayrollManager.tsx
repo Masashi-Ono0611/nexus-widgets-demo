@@ -31,6 +31,13 @@ export const PayrollManager: React.FC = () => {
   const [maxExecutions, setMaxExecutions] = useState(0);
   const [currentConfigId, setCurrentConfigId] = useState<string | undefined>();
   const [currentConfigName, setCurrentConfigName] = useState('');
+  const [currentConfigDescription, setCurrentConfigDescription] = useState('');
+  const [userAddress] = useState('0x1234567890123456789012345678901234567890'); // Mock user address
+
+  const handleDeleteConfig = (configId: string) => {
+    toast.success(`Configuration ${configId} deleted`);
+    // In a real implementation, this would call the smart contract to delete the config
+  };
 
   const errors = useMemo(() => validateRecipientWallets(recipientWallets), [recipientWallets]);
   const totalAmount = useMemo(() => calculateTotalAmount(recipientWallets), [recipientWallets]);
@@ -89,7 +96,7 @@ export const PayrollManager: React.FC = () => {
           currentConfig={{
             id: currentConfigId,
             name: currentConfigName,
-            description: '',
+            description: currentConfigDescription,
             isPublic: false,
             recipientWallets,
             executionMode,
@@ -105,6 +112,7 @@ export const PayrollManager: React.FC = () => {
             setMaxExecutions(config.maxExecutions || 0);
             setCurrentConfigId(config.id);
             setCurrentConfigName(config.name);
+            setCurrentConfigDescription(config.description || '');
           }}
           onSave={(config) => {
             setCurrentConfigId(config.id);
@@ -114,6 +122,8 @@ export const PayrollManager: React.FC = () => {
           onUpdate={(config) => {
             toast.success('Configuration updated successfully');
           }}
+          userAddress={userAddress}
+          onDelete={handleDeleteConfig}
         />
       </div>
 
