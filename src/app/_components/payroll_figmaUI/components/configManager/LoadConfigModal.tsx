@@ -1,11 +1,11 @@
 import React from "react";
 import { SavedConfig } from "./types";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../../ui/dialog";
+  ConfigDialog,
+  ConfigDialogContent,
+  ConfigDialogHeader,
+  ConfigDialogTitle,
+} from "./ConfigDialog";
 import { Button } from "../../../ui/button";
 import { Card } from "../../../ui/card";
 import { Badge } from "../../../ui/badge";
@@ -31,11 +31,11 @@ export function LoadConfigModal({
   userAddress,
 }: LoadConfigModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>Load Configuration</DialogTitle>
-        </DialogHeader>
+    <ConfigDialog open={isOpen} onOpenChange={onClose}>
+      <ConfigDialogContent className="w-full max-w-lg max-h-[80vh] overflow-y-auto">
+        <ConfigDialogHeader>
+          <ConfigDialogTitle>Load Configuration</ConfigDialogTitle>
+        </ConfigDialogHeader>
 
         {isLoading ? (
           <div className="flex items-center justify-center py-8">
@@ -98,7 +98,7 @@ export function LoadConfigModal({
         <Button onClick={onClose} variant="outline" className="w-full mt-4">
           Close
         </Button>
-      </DialogContent>
-    </Dialog>
+      </ConfigDialogContent>
+    </ConfigDialog>
   );
 }

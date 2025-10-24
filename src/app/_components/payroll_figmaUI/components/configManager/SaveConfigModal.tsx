@@ -1,10 +1,10 @@
 import React from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "../../../ui/dialog";
+  ConfigDialog,
+  ConfigDialogContent,
+  ConfigDialogHeader,
+  ConfigDialogTitle,
+} from "./ConfigDialog";
 import { Button } from "../../../ui/button";
 import { Input } from "../../../ui/input";
 import { Label } from "../../../ui/label";
@@ -43,11 +43,11 @@ export function SaveConfigModal({
   showPublicToggle = true,
 }: SaveConfigModalProps) {
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-md">
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-        </DialogHeader>
+    <ConfigDialog open={isOpen} onOpenChange={onClose}>
+      <ConfigDialogContent className="w-full max-w-lg max-h-[80vh] overflow-y-auto">
+        <ConfigDialogHeader>
+          <ConfigDialogTitle>{title}</ConfigDialogTitle>
+        </ConfigDialogHeader>
 
         <div className="space-y-4">
           <div>
@@ -103,7 +103,7 @@ export function SaveConfigModal({
             </Button>
           </div>
         </div>
-      </DialogContent>
-    </Dialog>
+      </ConfigDialogContent>
+    </ConfigDialog>
   );
 }
