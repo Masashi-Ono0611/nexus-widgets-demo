@@ -15,7 +15,7 @@ function ConfigManagerComponent({
   scheduleEnabled,
   onLoadConfig,
 }: ConfigManagerProps) {
-  const { mounted, address, provider, signer } = useWallet();
+  const { mounted, address, provider, signer, networkError } = useWallet();
   const { showInfo, showSuccess } = useToast();
 
   const {
@@ -39,9 +39,20 @@ function ConfigManagerComponent({
 
   useEffect(() => {
     if (showLoadModal) {
+      if (networkError) {
+        showInfo(networkError);
+      } else {
+        loadConfigList();
+      }
+    }
+  }, [showLoadModal, networkError]);
+
+  // Auto-reload when network error is resolved
+  useEffect(() => {
+    if (!networkError && showLoadModal) {
       loadConfigList();
     }
-  }, [showLoadModal]);
+  }, [networkError]);
 
   const handleNewSave = async () => {
     const success = await saveConfig(

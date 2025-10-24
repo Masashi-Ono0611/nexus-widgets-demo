@@ -16,14 +16,32 @@ export function useConfigRegistry(
   const { showSuccess, showError, showInfo } = useToast();
 
   const loadConfigList = async () => {
-    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return;
+    if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
+      console.log("Provider or contract address not available");
+      return;
+    }
+
+    // Check network
+    const currentProvider = provider!; // Non-null assertion since we checked above
+    try {
+      const network = await currentProvider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        console.log(`Wrong network: ${network.name} (${network.chainId}), expected Arbitrum Sepolia (421614)`);
+        showError("Please switch to Arbitrum Sepolia network");
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
+      return;
+    }
 
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
         PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
-        provider
+        currentProvider
       );
 
       const publicIds: bigint[] = await contract.getPublicConfigIds();
@@ -65,7 +83,7 @@ export function useConfigRegistry(
       setConfigs(loadedConfigs);
     } catch (error) {
       console.error("Failed to load configs:", error);
-      showError("Failed to load configurations");
+      showError("Failed to load configurations. Please check your network connection and try again.");
     } finally {
       setIsLoading(false);
     }
@@ -87,6 +105,19 @@ export function useConfigRegistry(
 
     if (!PAYROLL_CONFIG_REGISTRY_ADDRESS) {
       showError("Registry contract not configured");
+      return;
+    }
+
+    // Check network
+    try {
+      const network = await provider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        showError("Please switch to Arbitrum Sepolia network");
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
       return;
     }
 
@@ -159,6 +190,20 @@ export function useConfigRegistry(
       return;
     }
 
+    // Check network
+    const currentProvider = provider!; // Non-null assertion since we checked above
+    try {
+      const network = await currentProvider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        showError("Please switch to Arbitrum Sepolia network");
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
+      return;
+    }
+
     setIsSaving(true);
     try {
       const contractWalletGroups = walletGroups.map((group) => ({
@@ -207,12 +252,26 @@ export function useConfigRegistry(
   const loadConfig = async (configId: bigint) => {
     if (!provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) return null;
 
+    // Check network
+    const currentProvider = provider!; // Non-null assertion since we checked above
+    try {
+      const network = await currentProvider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        showError("Please switch to Arbitrum Sepolia network");
+        return null;
+      }
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
+      return null;
+    }
+
     setIsLoading(true);
     try {
       const contract = new ethers.Contract(
         PAYROLL_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
-        provider
+        currentProvider
       );
 
       const config = await contract.getConfig(configId);
@@ -266,8 +325,22 @@ export function useConfigRegistry(
   };
 
   const deleteConfig = async (configId: bigint) => {
-    if (!signer || !address || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
+    if (!signer || !address || !provider || !PAYROLL_CONFIG_REGISTRY_ADDRESS) {
       showInfo("Please connect your wallet");
+      return;
+    }
+
+    // Check network
+    const currentProvider = provider!; // Non-null assertion since we checked above
+    try {
+      const network = await currentProvider.getNetwork();
+      if (network.chainId !== BigInt(421614)) {
+        showError("Please switch to Arbitrum Sepolia network");
+        return;
+      }
+    } catch (error) {
+      console.error("Failed to get network:", error);
+      showError("Failed to detect network");
       return;
     }
 
