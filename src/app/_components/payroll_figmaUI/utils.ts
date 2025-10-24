@@ -109,12 +109,7 @@ export const formatAddress = (address: string): string => {
 };
 
 export const formatUSDC = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
+  return `${amount.toFixed(2)} USDC`;
 };
 
 // Contract integration utilities
