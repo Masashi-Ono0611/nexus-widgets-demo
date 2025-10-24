@@ -2,7 +2,7 @@
 import type { ReactNode } from "react";
 import React from "react";
 import { WagmiProvider } from "wagmi";
-import { sepolia, baseSepolia, arbitrumSepolia, optimismSepolia } from "wagmi/chains";
+import { sepolia, baseSepolia, arbitrumSepolia, optimismSepolia, mainnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RainbowKitProvider, getDefaultConfig } from "@rainbow-me/rainbowkit";
 import "@rainbow-me/rainbowkit/styles.css";
@@ -12,7 +12,7 @@ import { NexusProvider, useNexus } from "@avail-project/nexus-widgets";
 const config = getDefaultConfig({
   appName: "Avail Nexus - Cross-Chain DeFi Hub",
   projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || "demo-project-id",
-  chains: [sepolia, baseSepolia, arbitrumSepolia, optimismSepolia],
+  chains: [mainnet, sepolia, baseSepolia, arbitrumSepolia, optimismSepolia],
   ssr: true,
 });
 
