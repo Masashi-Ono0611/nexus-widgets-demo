@@ -5,10 +5,10 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Badge } from '../ui/badge';
-import { TotalsSummary } from './TotalsSummary';
-import { WalletCard } from './WalletCard';
-import { ExecutionModeCard } from './ExecutionModeCard';
-import { ConfigManager } from './ConfigManager';
+import { TotalsSummary } from './components/TotalsSummary';
+import { WalletCard } from './components/WalletCard';
+import { ExecutionModeCard } from './components/ExecutionModeCard';
+import { ConfigManager } from './components/ConfigManager';
 import { RecipientWallet, PayrollConfig, STRATEGY_TEMPLATES, WALLET_COLORS } from './types';
 import { validateRecipientWallets, calculateTotalAmount } from './utils';
 import { Plus, Trash2, Settings, Play } from 'lucide-react';
@@ -103,7 +103,7 @@ export const PayrollManager: React.FC = () => {
             recurringInterval,
             maxExecutions,
           }}
-          onLoad={(config) => {
+          onLoad={(config: PayrollConfig) => {
             if (config.recipientWallets.length > 0) {
               setRecipientWallets(config.recipientWallets);
             }
@@ -114,12 +114,12 @@ export const PayrollManager: React.FC = () => {
             setCurrentConfigName(config.name);
             setCurrentConfigDescription(config.description || '');
           }}
-          onSave={(config) => {
+          onSave={(config: PayrollConfig) => {
             setCurrentConfigId(config.id);
             setCurrentConfigName(config.name);
             toast.success('Configuration saved successfully');
           }}
-          onUpdate={(config) => {
+          onUpdate={(config: PayrollConfig) => {
             toast.success('Configuration updated successfully');
           }}
           userAddress={userAddress}
@@ -139,7 +139,7 @@ export const PayrollManager: React.FC = () => {
             key={wallet.id}
             wallet={wallet}
             index={index}
-            onChange={(updatedWallet) => handleWalletChange(wallet.id, updatedWallet)}
+            onChange={(updatedWallet: RecipientWallet) => handleWalletChange(wallet.id, updatedWallet)}
             onRemove={() => handleRemoveWallet(wallet.id)}
             errors={errors}
             canRemove={recipientWallets.length > 1}

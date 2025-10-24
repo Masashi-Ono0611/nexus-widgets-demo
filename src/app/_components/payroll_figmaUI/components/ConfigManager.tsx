@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
-import { Switch } from '../ui/switch';
-import { PayrollConfig } from './types';
+import { Button } from '../../ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '../../ui/dialog';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
+import { Textarea } from '../../ui/textarea';
+import { Switch } from '../../ui/switch';
+import { PayrollConfig } from '../types';
 import { FolderOpen, Save, Edit, Trash2 } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 import { toast } from 'sonner';
 
 interface ConfigManagerProps {
@@ -173,7 +173,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
                       <Button
                         size="sm"
                         variant="destructive"
-                        onClick={(e) => {
+                        onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                           e.stopPropagation();
                           handleDelete(config.id!);
                         }}
@@ -210,7 +210,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
                 id="name"
                 placeholder="e.g., Monthly Team Payroll"
                 value={saveName}
-                onChange={(e) => setSaveName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSaveName(e.target.value)}
               />
             </div>
 
@@ -220,7 +220,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
                 id="description"
                 placeholder="Describe this payroll configuration..."
                 value={saveDescription}
-                onChange={(e) => setSaveDescription(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setSaveDescription(e.target.value)}
                 rows={3}
               />
             </div>
@@ -270,7 +270,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
                 id="update-name"
                 placeholder="e.g., Monthly Team Payroll"
                 value={updateName}
-                onChange={(e) => setUpdateName(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUpdateName(e.target.value)}
               />
             </div>
 
@@ -280,7 +280,7 @@ export const ConfigManager: React.FC<ConfigManagerProps> = ({
                 id="update-description"
                 placeholder="Describe this payroll configuration..."
                 value={updateDescription}
-                onChange={(e) => setUpdateDescription(e.target.value)}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setUpdateDescription(e.target.value)}
                 rows={3}
               />
             </div>

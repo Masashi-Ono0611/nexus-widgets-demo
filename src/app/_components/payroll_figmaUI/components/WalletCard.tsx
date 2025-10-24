@@ -1,12 +1,12 @@
 import React from 'react';
-import { RecipientWallet, ValidationError } from './types';
-import { Card } from '../ui/card';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { RecipientWallet, ValidationError } from '../types';
+import { Card } from '../../ui/card';
+import { Input } from '../../ui/input';
+import { Button } from '../../ui/button';
 import { StrategyRow } from './StrategyRow';
-import { applyPreset, formatAddress } from './utils';
+import { applyPreset, formatAddress } from '../utils';
 import { Trash2, Wallet } from 'lucide-react';
-import { Badge } from '../ui/badge';
+import { Badge } from '../../ui/badge';
 
 interface WalletCardProps {
   wallet: RecipientWallet;
@@ -77,7 +77,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         <Input
           placeholder="0x..."
           value={wallet.address}
-          onChange={(e) => onChange({ ...wallet, address: e.target.value })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, address: e.target.value })}
           className={walletErrors.some((e) => e.field === 'address') ? 'border-red-500' : ''}
         />
       </div>
@@ -91,7 +91,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
           min="0"
           step="0.01"
           value={wallet.amount || ''}
-          onChange={(e) => onChange({ ...wallet, amount: parseFloat(e.target.value) || 0 })}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, amount: parseFloat(e.target.value) || 0 })}
           className={walletErrors.some((e) => e.field === 'amount') ? 'border-red-500' : ''}
         />
       </div>

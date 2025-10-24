@@ -1,7 +1,7 @@
 import React from 'react';
-import { Strategy } from './types';
-import { Slider } from '../ui/slider';
-import { Input } from '../ui/input';
+import { Strategy } from '../types';
+import { Slider } from '../../ui/slider';
+import { Input } from '../../ui/input';
 
 interface StrategyRowProps {
   strategy: Strategy;
@@ -26,7 +26,7 @@ export const StrategyRow: React.FC<StrategyRowProps> = ({ strategy, onChange }) 
             max="100"
             step="0.1"
             value={strategy.percentage}
-            onChange={(e) => onChange(parseFloat(e.target.value) || 0)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(parseFloat(e.target.value) || 0)}
             className="w-20 h-8 text-right"
           />
           <span className="text-sm text-gray-500 w-4">%</span>

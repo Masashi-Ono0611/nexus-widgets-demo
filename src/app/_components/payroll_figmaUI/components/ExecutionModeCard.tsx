@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card } from '../ui/card';
-import { Switch } from '../ui/switch';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
+import { Card } from '../../ui/card';
+import { Switch } from '../../ui/switch';
+import { Input } from '../../ui/input';
+import { Label } from '../../ui/label';
 import { Clock, Zap } from 'lucide-react';
 
 interface ExecutionModeCardProps {
@@ -45,7 +45,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             <span className="text-sm text-gray-600">Immediate</span>
             <Switch
               checked={mode === 'recurring'}
-              onCheckedChange={(checked) => onModeChange(checked ? 'recurring' : 'immediate')}
+              onCheckedChange={(checked: boolean) => onModeChange(checked ? 'recurring' : 'immediate')}
             />
             <span className="text-sm text-gray-600">Recurring</span>
           </div>
@@ -69,7 +69,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
                 min="1"
                 max="525600"
                 value={recurringInterval}
-                onChange={(e) => onRecurringIntervalChange(parseInt(e.target.value) || 1)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onRecurringIntervalChange(parseInt(e.target.value) || 1)}
                 placeholder="e.g., 60"
               />
               <p className="text-xs text-gray-500">Between 1 minute and 1 year</p>
@@ -83,7 +83,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
                 min="0"
                 max="1000"
                 value={maxExecutions}
-                onChange={(e) => onMaxExecutionsChange(parseInt(e.target.value) || 0)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onMaxExecutionsChange(parseInt(e.target.value) || 0)}
                 placeholder="e.g., 12"
               />
               <p className="text-xs text-gray-500">0 = unlimited</p>

@@ -1,6 +1,6 @@
 import React from 'react';
-import { RecipientWallet } from './types';
-import { calculateTotalAmount, calculateWalletPercentages, formatUSDC } from './utils';
+import { RecipientWallet } from '../types';
+import { calculateTotalAmount, calculateWalletPercentages, formatUSDC } from '../utils';
 
 interface TotalsSummaryProps {
   recipientWallets: RecipientWallet[];
