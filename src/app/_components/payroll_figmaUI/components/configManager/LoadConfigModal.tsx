@@ -32,7 +32,7 @@ export function LoadConfigModal({
 }: LoadConfigModalProps) {
   return (
     <ConfigDialog open={isOpen} onOpenChange={onClose}>
-      <ConfigDialogContent className="w-full max-w-2xlg max-h-[80vh] overflow-y-auto">
+      <ConfigDialogContent className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <ConfigDialogHeader>
           <ConfigDialogTitle>Load Configuration</ConfigDialogTitle>
         </ConfigDialogHeader>
