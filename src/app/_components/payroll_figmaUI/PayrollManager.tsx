@@ -84,7 +84,8 @@ export const PayrollManager: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Configuration Management */}
-      <ConfigManager
+      <div className="flex justify-end">
+        <ConfigManager
           currentConfig={{
             id: currentConfigId,
             name: currentConfigName,
@@ -114,6 +115,7 @@ export const PayrollManager: React.FC = () => {
             toast.success('Configuration updated successfully');
           }}
         />
+      </div>
 
       {/* Totals Summary */}
       <Card className="p-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
