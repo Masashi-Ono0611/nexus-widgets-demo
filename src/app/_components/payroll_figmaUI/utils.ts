@@ -82,14 +82,19 @@ export const normalizeStrategies = (strategies: Strategy[]): Strategy[] => {
   }));
 };
 
-export const applyPreset = (strategies: Strategy[], preset: 'even' | '60-30-10' | 'normalize'): Strategy[] => {
+export const applyPreset = (strategies: Strategy[], preset: 'equal-split' | 'defi-focused' | 'direct-only' | 'normalize'): Strategy[] => {
   switch (preset) {
-    case 'even':
+    case 'equal-split':
       return strategies.map(s => ({ ...s, percentage: 25 }));
-    case '60-30-10':
+    case 'defi-focused':
       return strategies.map((s, i) => ({
         ...s,
-        percentage: [60, 30, 10, 0][i] || 0,
+        percentage: [10, 20, 30, 40][i] || 0,
+      }));
+    case 'direct-only':
+      return strategies.map((s, i) => ({
+        ...s,
+        percentage: i === 0 ? 100 : 0,
       }));
     case 'normalize':
       return normalizeStrategies(strategies);

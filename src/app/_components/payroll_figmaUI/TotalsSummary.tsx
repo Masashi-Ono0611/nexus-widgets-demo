@@ -51,7 +51,7 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                   style={{ backgroundColor: wallet.color }}
                 />
                 <span className="text-sm text-gray-600">
-                  Recipient {index + 1}: {percentage.toFixed(1)}% ({formatUSDC(wallet.amount)})
+                  Recipient {index + 1}: {wallet.amount.toFixed(1)} USDC ({percentage.toFixed(0)}%)
                 </span>
               </div>
             );

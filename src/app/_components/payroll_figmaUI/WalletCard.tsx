@@ -37,7 +37,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
     onChange({ ...wallet, strategies: newStrategies });
   };
 
-  const handlePreset = (preset: 'even' | '60-30-10' | 'normalize') => {
+  const handlePreset = (preset: 'equal-split' | 'defi-focused' | 'direct-only' | 'normalize') => {
     const newStrategies = applyPreset(wallet.strategies, preset);
     onChange({ ...wallet, strategies: newStrategies });
   };
@@ -100,9 +100,20 @@ export const WalletCard: React.FC<WalletCardProps> = ({
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <label className="text-sm">Strategy Allocation</label>
-          <Badge variant={isStrategyValid ? 'default' : 'destructive'}>
-            {totalStrategyPercentage.toFixed(1)}%
-          </Badge>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handlePreset('normalize')}
+              className="text-xs px-3 py-1.5"
+            >
+              Normalize
+            </Button>
+            <Badge variant={isStrategyValid ? 'default' : 'destructive'}>
+              {totalStrategyPercentage.toFixed(1)}%
+            </Badge>
+          </div>
         </div>
 
         {/* Preset Buttons */}
@@ -111,33 +122,33 @@ export const WalletCard: React.FC<WalletCardProps> = ({
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handlePreset('even')}
+            onClick={() => handlePreset('equal-split')}
             className="flex-1"
           >
-            Even
+            Equal Split
           </Button>
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handlePreset('60-30-10')}
+            onClick={() => handlePreset('defi-focused')}
             className="flex-1"
           >
-            60/30/10
+            DeFi Focused
           </Button>
           <Button
             type="button"
             variant="outline"
             size="sm"
-            onClick={() => handlePreset('normalize')}
+            onClick={() => handlePreset('direct-only')}
             className="flex-1"
           >
-            Normalize
+            Direct Only
           </Button>
         </div>
 
-        {/* Strategy Rows */}
-        <div className="space-y-4 pt-2">
+        {/* Strategy Configuration */}
+        <div className="space-y-4">
           {wallet.strategies.map((strategy, idx) => (
             <StrategyRow
               key={idx}
@@ -145,24 +156,6 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               onChange={(percentage) => handleStrategyChange(idx, percentage)}
             />
           ))}
-        </div>
-
-        {/* Strategy Visualization Bar */}
-        <div className="flex h-6 w-full overflow-hidden rounded-md">
-          {wallet.strategies.map((strategy, idx) => {
-            if (strategy.percentage === 0) return null;
-            return (
-              <div
-                key={idx}
-                style={{
-                  width: `${strategy.percentage}%`,
-                  backgroundColor: strategy.color,
-                }}
-                className="transition-all duration-300"
-                title={`${strategy.name}: ${strategy.percentage.toFixed(1)}%`}
-              />
-            );
-          })}
         </div>
       </div>
 
