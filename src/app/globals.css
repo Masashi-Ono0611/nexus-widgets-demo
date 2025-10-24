@@ -776,6 +776,7 @@ body {
   margin: 0 !important;
   max-height: 85vh !important;
   overflow: auto !important;
+  z-index: 10000 !important;
 }
 
 /* 4. Generic Nexus Widget modal selectors */
@@ -785,6 +786,7 @@ body {
   left: 50% !important;
   transform: translate(-50%, -50%) !important;
   margin: 0 !important;
+  z-index: 10000 !important;
 }
 
 [data-nexus-overlay] {
@@ -796,6 +798,7 @@ body {
   bottom: 0 !important;
   transform: none !important;
   margin: 0 !important;
+  z-index: 10000 !important;
 }
 
 /* 5. Fallback for any fixed position dialog */
