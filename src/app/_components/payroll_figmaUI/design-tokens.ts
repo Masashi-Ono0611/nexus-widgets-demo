@@ -151,12 +151,28 @@ export const COLORS = {
     strategies: 'grid-cols-1 md:grid-cols-2 gap-1',
   },
 
-  // Strategy indicator colors (darker for better contrast)
-  indicators: {
-    direct: 'bg-green-700',
-    aave: 'bg-blue-700',
-    morpho: 'bg-purple-700',
-    uniswap: 'bg-yellow-700',
+  // Unified strategy colors (background and text variants)
+  strategy: {
+    direct: {
+      background: 'bg-green-50',
+      border: 'border-green-200',
+      text: 'text-green-600',
+    },
+    aave: {
+      background: 'bg-blue-50',
+      border: 'border-blue-200',
+      text: 'text-blue-600',
+    },
+    morpho: {
+      background: 'bg-purple-50',
+      border: 'border-purple-200',
+      text: 'text-purple-600',
+    },
+    uniswap: {
+      background: 'bg-yellow-50',
+      border: 'border-yellow-200',
+      text: 'text-yellow-600',
+    },
   },
 } as const;
 

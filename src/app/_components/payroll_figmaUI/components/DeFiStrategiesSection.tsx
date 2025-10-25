@@ -5,10 +5,9 @@ import { CopyButton } from './CopyButton';
 export const DeFiStrategiesSection: React.FC = () => {
   return (
     <div className={`grid ${COLORS.grid.strategies}`}>
-      <div className={`p-4 ${COLORS.status.success.background} ${COLORS.status.success.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.strategy.direct.background} ${COLORS.strategy.direct.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className={`w-3 h-3 rounded-full ${COLORS.indicators.direct}`}></div>
-          <span className={`${COLORS.status.success.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${COLORS.strategy.direct.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Direct Transfer
           </span>
         </div>
@@ -20,10 +19,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </p>
       </div>
 
-      <div className={`p-4 ${COLORS.status.info.background} ${COLORS.status.info.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.strategy.aave.background} ${COLORS.strategy.aave.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className={`w-3 h-3 rounded-full ${COLORS.indicators.aave}`}></div>
-          <span className={`${COLORS.status.info.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${COLORS.strategy.aave.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             AAVE Supply
           </span>
         </div>
@@ -41,10 +39,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.brand.accent.background} ${COLORS.brand.accent.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.strategy.morpho.background} ${COLORS.strategy.morpho.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className={`w-3 h-3 rounded-full ${COLORS.indicators.morpho}`}></div>
-          <span className={`${COLORS.brand.accent.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${COLORS.strategy.morpho.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Morpho Deposit
           </span>
         </div>
@@ -62,10 +59,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.status.warning.background} ${COLORS.status.warning.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.strategy.uniswap.background} ${COLORS.strategy.uniswap.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className={`w-3 h-3 rounded-full ${COLORS.indicators.uniswap}`}></div>
-          <span className={`${COLORS.status.warning.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${COLORS.strategy.uniswap.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Uniswap V2 Swap
           </span>
         </div>

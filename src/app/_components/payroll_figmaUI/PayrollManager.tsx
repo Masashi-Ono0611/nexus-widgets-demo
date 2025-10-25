@@ -220,7 +220,7 @@ export const PayrollManager: React.FC = () => {
           ) : (
             <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
               <Settings className="h-4 w-4" />
-              <span className="font-medium">Configuration incomplete - please fill all fields</span>
+              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
             </div>
           )}
 
