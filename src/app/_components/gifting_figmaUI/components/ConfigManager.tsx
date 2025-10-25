@@ -8,6 +8,7 @@ import { SaveConfigModal } from "./configManager/SaveConfigModal";
 import { LoadConfigModal } from "./configManager/LoadConfigModal";
 import { toast } from 'sonner';
 import { isValidAddress, totalShare } from "../utils";
+import { COLORS } from "../design-tokens";
 
 function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps) {
   const { mounted, address, provider, signer, networkError, needsNetworkSwitch, promptSwitchNetwork } = useWallet();
@@ -59,9 +60,27 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       const base = typeof window !== "undefined" ? window.location.origin : "";
       const href = `${base}/gifting_figmaUI/${newId.toString()}/receive/qr`;
       toast.success(
-        <span>
-          Configuration saved. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
-        </span>
+        <div className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">✅</span>
+            <span className="font-semibold">Configuration Saved!</span>
+          </div>
+          <div className="text-sm opacity-90 mb-2">
+            Share this QR code link with recipients:
+          </div>
+          <div className="text-xs font-mono bg-gray-100 px-2 py-1 rounded mb-2 break-all">
+            {href}
+          </div>
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
+          >
+            📱 Open QR Code
+          </a>
+        </div>,
+        { duration: 10000 }
       );
     }
   };
@@ -83,9 +102,27 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       const base = typeof window !== "undefined" ? window.location.origin : "";
       const href = `${base}/gifting_figmaUI/${loadedConfigId.toString()}/receive/qr`;
       toast.success(
-        <span>
-          Configuration updated. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
-        </span>
+        <div className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">🔄</span>
+            <span className="font-semibold">Configuration Updated!</span>
+          </div>
+          <div className="text-sm opacity-90 mb-2">
+            Updated configuration. Share this QR code link with recipients:
+          </div>
+          <div className="text-xs font-mono bg-gray-100 px-2 py-1 rounded mb-2 break-all">
+            {href}
+          </div>
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
+          >
+            📱 Open QR Code
+          </a>
+        </div>,
+        { duration: 10000 }
       );
     }
   };

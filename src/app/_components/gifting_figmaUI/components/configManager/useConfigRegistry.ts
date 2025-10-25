@@ -123,10 +123,10 @@ export function useConfigRegistry(
         );
         const ids: bigint[] = await reader.getUserConfigIds(address);
         const newId = ids.reduce((m, x) => (m === null || x > m ? x : m), null as bigint | null);
-        toast.success("Configuration saved successfully!");
+        // Don't show success message here - let ConfigManager handle it with QR code link
         return newId;
       } catch (e) {
-        toast.success("Configuration saved successfully!");
+        // Don't show success message here - let ConfigManager handle it with QR code link
         return null;
       }
     } catch (error: any) {
@@ -183,7 +183,7 @@ export function useConfigRegistry(
       toast.info("Transaction submitted. Waiting for confirmation...");
       await tx.wait();
 
-      toast.success("Configuration updated successfully!");
+      // Don't show success message here - let ConfigManager handle it with QR code link
       return true;
     } catch (error: any) {
       console.error("Failed to update config:", error);

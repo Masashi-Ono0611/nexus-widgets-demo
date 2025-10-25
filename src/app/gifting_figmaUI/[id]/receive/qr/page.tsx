@@ -49,7 +49,12 @@ function QrInner() {
 export default function GiftingReceiveQrPage() {
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        closeButton={true}
+        richColors={true}
+        duration={10000}
+      />
       <QrInner />
     </>
   );

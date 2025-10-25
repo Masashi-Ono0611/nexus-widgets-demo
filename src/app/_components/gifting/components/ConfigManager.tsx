@@ -49,10 +49,46 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       const base = typeof window !== "undefined" ? window.location.origin : "";
       const href = `${base}/gifting/${newId.toString()}/receive/qr`;
       showSuccess(
-        <span>
-          Configuration saved. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
-        </span>,
-        8000
+        <div style={{ padding: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '1.125rem' }}>✅</span>
+            <span style={{ fontWeight: '600' }}>Configuration Saved!</span>
+          </div>
+          <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem' }}>
+            Share this QR code link with recipients:
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            fontFamily: 'monospace',
+            background: '#f3f4f6',
+            padding: '0.5rem',
+            borderRadius: '4px',
+            marginBottom: '0.5rem',
+            wordBreak: 'break-all'
+          }}>
+            {href}
+          </div>
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              fontSize: '0.875rem',
+              background: '#3B82F6',
+              color: '#fff',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              transition: 'background 0.2s'
+            }}
+          >
+            📱 Open QR Code
+          </a>
+        </div>,
+        10000 // 10 seconds
       );
     }
   };
@@ -74,10 +110,46 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       const base = typeof window !== "undefined" ? window.location.origin : "";
       const href = `${base}/gifting/${loadedConfigId.toString()}/receive/qr`;
       showSuccess(
-        <span>
-          Configuration updated. Open QR: <a href={href} target="_blank" rel="noreferrer">{href}</a>
-        </span>,
-        8000
+        <div style={{ padding: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+            <span style={{ fontSize: '1.125rem' }}>🔄</span>
+            <span style={{ fontWeight: '600' }}>Configuration Updated!</span>
+          </div>
+          <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem' }}>
+            Updated configuration. Share this QR code link with recipients:
+          </div>
+          <div style={{
+            fontSize: '0.75rem',
+            fontFamily: 'monospace',
+            background: '#f3f4f6',
+            padding: '0.5rem',
+            borderRadius: '4px',
+            marginBottom: '0.5rem',
+            wordBreak: 'break-all'
+          }}>
+            {href}
+          </div>
+          <a
+            href={href}
+            target="_blank"
+            rel="noreferrer"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.25rem',
+              fontSize: '0.875rem',
+              background: '#3B82F6',
+              color: '#fff',
+              padding: '0.25rem 0.75rem',
+              borderRadius: '4px',
+              textDecoration: 'none',
+              transition: 'background 0.2s'
+            }}
+          >
+            📱 Open QR Code
+          </a>
+        </div>,
+        10000 // 10 seconds
       );
     }
   };

@@ -254,7 +254,12 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
 export const GiftingManager: React.FC = () => {
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        closeButton={true}
+        richColors={true}
+        duration={10000}
+      />
       <GiftingManagerInner />
     </>
   );
@@ -263,7 +268,12 @@ export const GiftingManager: React.FC = () => {
 export const GiftingManagerExecuteOnly: React.FC = () => {
   return (
     <>
-      <Toaster position="top-right" />
+      <Toaster
+        position="top-right"
+        closeButton={true}
+        richColors={true}
+        duration={10000}
+      />
       <GiftingManagerInner executeOnly />
     </>
   );
