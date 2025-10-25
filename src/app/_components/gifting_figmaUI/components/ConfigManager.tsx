@@ -170,6 +170,11 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     if (needsNetworkSwitch) {
       toast.info("Switching to Arbitrum Sepolia...");
       await promptSwitchNetwork();
+      // After network switch, reload the page to ensure clean provider state
+      toast.info("Reloading page to complete network switch...");
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
       return;
     }
     fn();

@@ -80,7 +80,8 @@ export function useWallet() {
 
       const handleChainChanged = () => {
         console.log("🔄 Chain changed, reinitializing...");
-        initProvider();
+        // Force page reload to ensure clean provider state
+        window.location.reload();
       };
 
       (window as any).ethereum.on("accountsChanged", handleAccountsChanged);
