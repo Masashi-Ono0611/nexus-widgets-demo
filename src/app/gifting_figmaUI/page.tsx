@@ -1,6 +1,5 @@
 "use client";
 import React from "react";
-import { Toaster } from "sonner";
 import { GiftingManager } from "../_components/gifting_figmaUI/GiftingManager";
 import { COLORS } from "../_components/gifting_figmaUI/design-tokens";
 
@@ -37,8 +36,6 @@ export default function GiftingPage() {
         {/* Main Gifting Manager */}
         <GiftingManager />
       </div>
-      {/* Toast Notifications */}
-      <Toaster position="top-right" />
     </div>
   );
 }

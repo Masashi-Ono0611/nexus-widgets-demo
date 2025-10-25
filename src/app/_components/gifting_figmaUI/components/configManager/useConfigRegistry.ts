@@ -195,13 +195,16 @@ export function useConfigRegistry(
   };
 
   const loadConfig = async (configId: bigint) => {
-    if (!provider || !GIFTING_CONFIG_REGISTRY_ADDRESS) return null;
+    if (!GIFTING_CONFIG_REGISTRY_ADDRESS) return null;
 
     try {
+      // Use provided provider or create a read-only provider for Arbitrum Sepolia
+      let readProvider: ethers.Provider = provider || new ethers.JsonRpcProvider("https://sepolia-rollup.arbitrum.io/rpc");
+
       const contract = new ethers.Contract(
         GIFTING_CONFIG_REGISTRY_ADDRESS,
         REGISTRY_ABI,
-        provider
+        readProvider
       );
 
       const config = await contract.getConfig(configId);
