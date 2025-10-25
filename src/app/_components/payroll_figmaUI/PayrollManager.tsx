@@ -32,7 +32,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS, getStrategyColor } from './design-tokens';
+import { COLORS } from './design-tokens';
 
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -129,9 +129,9 @@ export const PayrollManager: React.FC = () => {
         // Convert strategy enum to number if it's BigInt
         const strategyNum = typeof s.strategy === 'bigint' ? Number(s.strategy) : Number(s.strategy);
 
-        // Use STRATEGY_LABELS and getStrategyColor for direct mapping
+        // Use STRATEGY_LABELS and brand secondary color for direct mapping
         const strategyName = STRATEGY_LABELS[strategyNum] || 'Unknown';
-        const strategyColor = getStrategyColor(strategyNum);
+        const strategyColor = COLORS.brand.secondary.text;
 
         return {
           name: strategyName,

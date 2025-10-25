@@ -26,7 +26,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS, getStrategyColor } from './design-tokens';
+import { COLORS } from './design-tokens';
 
 export const GiftingManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -119,7 +119,7 @@ export const GiftingManager: React.FC = () => {
         return {
           name: STRATEGY_LABELS[tpl.strategyEnum],
           percentage: pct,
-          color: getStrategyColor(tpl.strategyEnum),
+          color: COLORS.brand.secondary.text,
           address: '0x0000000000000000000000000000000000000001',
           strategyEnum: tpl.strategyEnum,
         };

@@ -150,27 +150,7 @@ export const COLORS = {
   grid: {
     strategies: 'grid-cols-1 md:grid-cols-2 gap-1',
   },
-
-  // Unified recipient-based colors (background and text variants)
-  recipient: {
-    primary: {
-      background: 'bg-blue-50',
-      border: 'border-blue-200',
-      text: 'text-blue-600',
-    },
-  },
 } as const;
-
-// Helper functions for recipient-based colors
-export function getRecipientBasedColor(type: 'background' | 'border' | 'text') {
-  const recipientColor = '#1565C0'; // WALLET_COLORS[0] - Recipient 1 color
-  const colors = {
-    background: `bg-blue-50`, // Light background based on recipient color
-    border: `border-blue-200`, // Light border based on recipient color
-    text: `text-blue-600`,    // Text color based on recipient color
-  };
-  return colors[type];
-}
 
 // Helper functions for strategy shades based on recipient color
 export function hexToRgb(hex: string) {
@@ -194,11 +174,6 @@ export function getStrategyShade(baseHex: string, strategyIndex: number) {
   const factors = [0.15, 0.35, 0.55, 0.75];
   const idx = Math.max(0, Math.min(factors.length - 1, strategyIndex));
   return lighten(baseHex, factors[idx]);
-}
-
-export function getStrategyColor(strategyIndex: number) {
-  // All strategies now use the same recipient-based color
-  return COLORS.recipient.primary.text;
 }
 
 export type FontSizeKey = keyof typeof FONT_SIZES;
