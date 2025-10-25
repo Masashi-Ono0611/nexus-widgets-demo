@@ -4,12 +4,12 @@ import { CopyButton } from '../../ui/copy-button';
 
 export const DeFiStrategiesSection: React.FC = () => {
   return (
-    <div className={`grid ${COLORS.grid.strategies}`}>
+    <div className="space-y-3">
       <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.brand.secondary.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+        <div className="mb-2">
+          <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Direct Transfer
-          </span>
+          </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Send USDC directly to recipient wallets
@@ -20,10 +20,10 @@ export const DeFiStrategiesSection: React.FC = () => {
       </div>
 
       <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.brand.secondary.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+        <div className="mb-2">
+          <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             AAVE Supply
-          </span>
+          </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Supply USDC to AAVE protocol to earn interest
@@ -31,7 +31,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
           Connected to: AAVE Pool
         </p>
-        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
           <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
             0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff
           </code>
@@ -40,10 +40,10 @@ export const DeFiStrategiesSection: React.FC = () => {
       </div>
 
       <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.brand.secondary.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+        <div className="mb-2">
+          <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Morpho Deposit
-          </span>
+          </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Deposit USDC to Morpho Vault for optimized yield
@@ -51,7 +51,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
           Connected to: Morpho Vault v2
         </p>
-        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
           <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
             0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6
           </code>
@@ -60,10 +60,10 @@ export const DeFiStrategiesSection: React.FC = () => {
       </div>
 
       <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
-        <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.brand.secondary.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+        <div className="mb-2">
+          <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Uniswap V2 Swap
-          </span>
+          </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Swap USDC to WETH via Uniswap V2
@@ -71,7 +71,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
           Connected to: Uniswap V2 Pair (USDC/WETH)
         </p>
-        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
           <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
             0x4F7392b66ADB7D09EdAe3C877714c5992Aeb4671
           </code>
@@ -81,3 +81,4 @@ export const DeFiStrategiesSection: React.FC = () => {
     </div>
   );
 };
+
