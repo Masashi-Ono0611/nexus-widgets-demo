@@ -15,8 +15,27 @@ export function useConfigRegistry(
   const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  const checkNetwork = async (provider: ethers.BrowserProvider): Promise<boolean> => {
+    try {
+      const network = await provider.getNetwork();
+      
+      if (network.chainId !== BigInt(421614)) {
+        toast.error("Please switch to Arbitrum Sepolia network");
+        return false;
+      }
+      
+      return true;
+    } catch (error: any) {
+      toast.error("Network detection failed. Please refresh the page and try again.");
+      return false;
+    }
+  };
+
   const loadConfigList = async () => {
     if (!provider || !GIFTING_CONFIG_REGISTRY_ADDRESS) return;
+
+    // Check network
+    if (!(await checkNetwork(provider))) return;
 
     setIsLoading(true);
     try {
@@ -92,6 +111,9 @@ export function useConfigRegistry(
       return null;
     }
 
+    // Check network
+    if (!(await checkNetwork(provider))) return null;
+
     setIsSaving(true);
     try {
       const contractRecipients = recipients.map((r) => ({
@@ -159,6 +181,9 @@ export function useConfigRegistry(
       toast.info("Please enter a configuration name");
       return false;
     }
+
+    // Check network
+    if (!(await checkNetwork(provider))) return false;
 
     setIsSaving(true);
     try {
@@ -240,7 +265,7 @@ export function useConfigRegistry(
   };
 
   const deleteConfig = async (configId: bigint) => {
-    if (!signer || !address) {
+    if (!signer || !address || !provider) {
       toast.info("Please connect your wallet");
       return false;
     }
@@ -249,6 +274,9 @@ export function useConfigRegistry(
       toast.error("Registry contract not configured");
       return false;
     }
+
+    // Check network
+    if (!(await checkNetwork(provider))) return false;
 
     try {
       const contract = new ethers.Contract(
