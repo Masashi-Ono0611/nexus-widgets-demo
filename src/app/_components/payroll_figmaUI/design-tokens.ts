@@ -75,18 +75,18 @@ export const COLORS = {
   // Brand colors - Application identity colors
   brand: {
     primary: {
-      text: 'text-green-600',
-      background: 'bg-green-50',
-      border: 'border-green-200',
-      hover: 'hover:bg-green-100 hover:border-green-300',
-      active: 'bg-green-100 border-green-300',
+      text: 'text-emerald-600',
+      background: 'bg-emerald-50',
+      border: 'border-emerald-200',
+      hover: 'hover:bg-emerald-100 hover:border-emerald-300',
+      active: 'bg-emerald-100 border-emerald-300',
     },
     secondary: {
-      text: 'text-blue-600',
-      background: 'bg-blue-50',
-      border: 'border-blue-200',
-      hover: 'hover:bg-blue-100 hover:border-blue-300',
-      active: 'bg-blue-100 border-blue-300',
+      text: 'text-indigo-600',
+      background: 'bg-indigo-50',
+      border: 'border-indigo-200',
+      hover: 'hover:bg-indigo-100 hover:border-indigo-300',
+      active: 'bg-indigo-100 border-indigo-300',
     },
     accent: {
       text: 'text-purple-600',
@@ -134,7 +134,7 @@ export const COLORS = {
   },
 
   // Mode selection colors
-  modeActive: 'bg-blue-100 border-2 border-blue-500 text-blue-600 shadow-md', // Immediate mode active
+  modeActive: 'bg-indigo-100 border-2 border-indigo-500 text-indigo-600 shadow-md', // Immediate mode active
   modeInactive: 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300', // Mode inactive
   modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
 
@@ -154,14 +154,14 @@ export const COLORS = {
   // Unified strategy colors (background and text variants)
   strategy: {
     direct: {
-      background: 'bg-green-50',
-      border: 'border-green-200',
-      text: 'text-green-600',
+      background: 'bg-emerald-50',
+      border: 'border-emerald-200',
+      text: 'text-emerald-600',
     },
     aave: {
-      background: 'bg-blue-50',
-      border: 'border-blue-200',
-      text: 'text-blue-600',
+      background: 'bg-indigo-50',
+      border: 'border-indigo-200',
+      text: 'text-indigo-600',
     },
     morpho: {
       background: 'bg-purple-50',
