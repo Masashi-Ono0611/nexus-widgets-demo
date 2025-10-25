@@ -51,7 +51,8 @@ export function LoadConfigModal({
               configs.map((config) => (
                 <Card
                   key={config.id.toString()}
-                  className="p-4 hover:bg-gray-50 hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300"
+                  className="p-4 cursor-pointer hover:bg-gray-50 hover:shadow-md transition-all duration-200 border-2 hover:border-blue-300"
+                  onClick={() => onLoad(config.id)}
                 >
                   <div className="flex justify-between items-start gap-3">
                     <div className="flex-1 min-w-0">
@@ -76,7 +77,8 @@ export function LoadConfigModal({
                     </div>
                     <div className="flex gap-2 shrink-0">
                       <Button
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation();
                           const base = typeof window !== "undefined" ? window.location.origin : "";
                           const href = `${base}/gifting_figmaUI/${config.id.toString()}/receive/qr`;
                           window.open(href, "_blank", "noopener,noreferrer");
