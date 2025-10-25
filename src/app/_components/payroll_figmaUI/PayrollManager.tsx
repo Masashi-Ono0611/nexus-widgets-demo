@@ -30,9 +30,9 @@ import {
   totalShare,
   sumPercent,
 } from './utils';
-import { Plus, Settings, Play } from 'lucide-react';
+import { Plus, Settings, Play, Info, Coins, Clock, Database } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS } from './design-tokens';
+import { COLORS, FONT_SIZES, FONT_WEIGHTS } from './design-tokens';
 
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -312,6 +312,198 @@ export const PayrollManager: React.FC = () => {
               </Button>
             )}
           </BridgeAndExecuteButton>
+        </div>
+      </Card>
+
+      {/* Separator Line */}
+      <div className="relative py-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-gray-50 text-gray-600 font-medium">How it works & Info</span>
+        </div>
+      </div>
+
+      {/* How it works Section */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Info className={`h-6 w-6 ${COLORS.brand.primary.text}`} />
+            <h3 className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>How it works</h3>
+          </div>
+
+          <div className={`p-4 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-lg`}>
+            <p className={`${COLORS.textPrimary} ${FONT_SIZES.bodyLarge} ${FONT_WEIGHTS.bodyRegular}`}>
+              Percentage-based payroll distribution system. Automatically allocates USDC across recipients using different DeFi strategies.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
+              <div className={`flex items-center gap-2 mb-2 ${COLORS.brand.primary.text}`}>
+                <Coins className="h-4 w-4" />
+                <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>Distribution Method</span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall}`}>
+                Set percentages totaling 100% and apply different strategies per recipient
+              </p>
+            </div>
+
+            <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
+              <div className={`flex items-center gap-2 mb-2 ${COLORS.brand.primary.text}`}>
+                <Clock className="h-4 w-4" />
+                <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>Execution Mode</span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall}`}>
+                Choose between one-time execution or recurring automated execution
+              </p>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* Contract Information Section */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Database className={`h-6 w-6 ${COLORS.brand.secondary.text}`} />
+            <h3 className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>Key Contracts</h3>
+          </div>
+
+          <div className="space-y-3">
+            <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+              <div className="flex justify-between items-start mb-2">
+                <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.cardTitle} ${FONT_WEIGHTS.sectionHeading}`}>
+                  FlexibleSplitter
+                </h4>
+                <Badge variant="outline" className={`${COLORS.brand.secondary.text} border-current`}>
+                  One-time
+                </Badge>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Executes one-time payroll distributions
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} p-2 rounded block`}>
+                0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454
+              </code>
+            </div>
+
+            <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+              <div className="flex justify-between items-start mb-2">
+                <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.cardTitle} ${FONT_WEIGHTS.sectionHeading}`}>
+                  RecurringSplitter
+                </h4>
+                <Badge variant="outline" className={`${COLORS.brand.accent.text} border-current`}>
+                  Recurring
+                </Badge>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Executes scheduled recurring payroll distributions
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} p-2 rounded block`}>
+                0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E
+              </code>
+            </div>
+
+            <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+              <div className="flex justify-between items-start mb-2">
+                <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.cardTitle} ${FONT_WEIGHTS.sectionHeading}`}>
+                  PayrollConfigRegistry
+                </h4>
+                <Badge variant="outline" className={`${COLORS.status.info.text} border-current`}>
+                  Config Storage
+                </Badge>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                On-chain registry for saving and sharing payroll configurations
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} p-2 rounded block`}>
+                0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7
+              </code>
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      {/* DeFi Strategy Section */}
+      <Card className="p-6">
+        <div className="space-y-4">
+          <div className="flex items-center gap-3 mb-4">
+            <Coins className={`h-6 w-6 ${COLORS.brand.accent.text}`} />
+            <h3 className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>DeFi Strategies</h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className={`p-4 ${COLORS.status.success.background} ${COLORS.status.success.border} border rounded-lg`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                <span className={`${COLORS.status.success.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+                  Direct Transfer
+                </span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Send USDC directly to recipient wallets
+              </p>
+              <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
+                No smart contract interaction required
+              </p>
+            </div>
+
+            <div className={`p-4 ${COLORS.status.info.background} ${COLORS.status.info.border} border rounded-lg`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                <span className={`${COLORS.status.info.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+                  AAVE Supply
+                </span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Supply USDC to AAVE protocol to earn interest
+              </p>
+              <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
+                Connected to: AAVE Pool
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+                0xBfC91D59fdAA134A4ED45f7B584cAf96D7792Eff
+              </code>
+            </div>
+
+            <div className={`p-4 ${COLORS.brand.accent.background} ${COLORS.brand.accent.border} border rounded-lg`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                <span className={`${COLORS.brand.accent.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+                  Morpho Deposit
+                </span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Deposit USDC to Morpho Vault for optimized yield
+              </p>
+              <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
+                Connected to: Morpho Vault v2
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+                0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6
+              </code>
+            </div>
+
+            <div className={`p-4 ${COLORS.status.warning.background} ${COLORS.status.warning.border} border rounded-lg`}>
+              <div className="flex items-center gap-2 mb-2">
+                <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+                <span className={`${COLORS.status.warning.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+                  Uniswap V2 Swap
+                </span>
+              </div>
+              <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
+                Swap USDC to WETH via Uniswap V2
+              </p>
+              <p className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall}`}>
+                Connected to: Uniswap V2 Pair (USDC/WETH)
+              </p>
+              <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} ${COLORS.backgroundAccent} px-2 py-1 rounded`}>
+                0x4F7392b66ADB7D09EdAe3C877714c5992Aeb4671
+              </code>
+            </div>
+          </div>
         </div>
       </Card>
     </div>
