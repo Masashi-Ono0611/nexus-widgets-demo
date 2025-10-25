@@ -49,7 +49,7 @@ export const GiftingManager: React.FC = () => {
   const isValid = useMemo(() => {
     const recipientsOk = recipientWallets.every((w) => w.address && w.address.startsWith('0x') && w.address.length === 42);
     const shareOk = Math.abs(totalShareValue - 100) < 0.01;
-    const recipientCountOk = recipientWallets.length <= 20;
+    const recipientCountOk = recipientWallets.length <= 5;
     const eachShareValid = recipientWallets.every((w) => w.sharePercent > 0 && w.sharePercent <= 100);
 
     return recipientsOk && shareOk && recipientCountOk && eachShareValid;
@@ -62,8 +62,8 @@ export const GiftingManager: React.FC = () => {
   }, []);
 
   const handleAddWallet = () => {
-    if (recipientWallets.length >= 20) {
-      toast.error('Maximum 20 recipients allowed');
+    if (recipientWallets.length >= 5) {
+      toast.error('Maximum 5 recipients allowed');
       return;
     }
 
@@ -163,14 +163,14 @@ export const GiftingManager: React.FC = () => {
         ))}
 
         {/* Add Recipient Button */}
-        {recipientWallets.length < 20 && (
+        {recipientWallets.length < 5 && (
           <Button
             variant="outline"
             onClick={handleAddWallet}
             className="w-full border-dashed border-2 h-16 hover:bg-blue-50 hover:border-blue-300"
           >
             <Plus className="h-5 w-5 mr-2" />
-            Add Recipient ({recipientWallets.length}/20)
+            Add Recipient ({recipientWallets.length}/5)
           </Button>
         )}
       </div>
