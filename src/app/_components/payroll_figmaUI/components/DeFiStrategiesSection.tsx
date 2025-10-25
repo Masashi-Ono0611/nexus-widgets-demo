@@ -1,6 +1,6 @@
 import React from 'react';
 import { COLORS, FONT_SIZES, FONT_WEIGHTS } from '../design-tokens';
-import { CopyButton } from './CopyButton';
+import { CopyButton } from '../../ui/copy-button';
 
 export const DeFiStrategiesSection: React.FC = () => {
   return (
