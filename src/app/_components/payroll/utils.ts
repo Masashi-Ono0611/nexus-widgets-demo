@@ -58,15 +58,11 @@ export const calculateTotalAmount = (recipientWallets: RecipientWallet[]): numbe
   return recipientWallets.reduce((sum, wallet) => sum + wallet.amount, 0);
 };
 
-export const calculateWalletPercentages = (recipientWallets: RecipientWallet[]): { [key: string]: number } => {
+export const calculateTotalPercentage = (recipientWallets: RecipientWallet[]): number => {
   const total = calculateTotalAmount(recipientWallets);
-  const percentages: { [key: string]: number } = {};
-
-  recipientWallets.forEach((wallet) => {
-    percentages[wallet.id] = total > 0 ? (wallet.amount / total) * 100 : 0;
-  });
-
-  return percentages;
+  return recipientWallets.reduce((sum, wallet) => {
+    return sum + (total > 0 ? (wallet.amount / total) * 100 : 0);
+  }, 0);
 };
 
 export const normalizeStrategies = (strategies: Strategy[]): Strategy[] => {
