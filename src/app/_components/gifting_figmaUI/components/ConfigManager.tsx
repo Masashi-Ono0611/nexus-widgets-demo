@@ -16,6 +16,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
   const {
     configs,
     isLoading,
+    isLoadingConfig,
     isSaving,
     loadConfigList,
     saveConfig,
@@ -139,7 +140,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(config.isPublic);
 
       setShowLoadModal(false);
-      toast.success("Configuration loaded. You can now use Update Save.");
+      toast.success("Configuration loaded successfully.");
     }
   };
 
@@ -243,7 +244,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         isOpen={showLoadModal}
         onClose={() => setShowLoadModal(false)}
         configs={configs}
-        isLoading={isLoading}
+        isLoading={isLoadingConfig}
         onLoad={handleLoad}
         onDelete={deleteConfig}
         userAddress={address}

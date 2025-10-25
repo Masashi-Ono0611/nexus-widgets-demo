@@ -87,7 +87,7 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
 
   const handleLoadConfig = (loadedRecipients: Recipient[]) => {
     onLoadConfig(loadedRecipients);
-    toast.success('Configuration loaded successfully');
+    // Success message is now shown in ConfigManager.tsx to avoid duplicates
   };
 
   return (

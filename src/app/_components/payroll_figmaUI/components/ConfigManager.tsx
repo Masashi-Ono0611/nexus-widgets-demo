@@ -113,7 +113,7 @@ function ConfigManagerComponent({
       setIsPublic(config.isPublic);
 
       setShowLoadModal(false);
-      toast.success("Configuration loaded. You can now use Update Save.");
+      toast.success("Configuration loaded successfully.");
     }
   };
 
