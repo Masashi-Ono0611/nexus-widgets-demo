@@ -1,20 +1,20 @@
 "use client";
 import React from "react";
 import { Toaster } from "sonner";
-import { PayrollManager } from "../_components/payroll_figmaUI/PayrollManager";
-import { COLORS } from "../_components/payroll_figmaUI/design-tokens";
+import { GiftingManager } from "../_components/gifting_figmaUI/GiftingManager";
+import { COLORS } from "../_components/gifting_figmaUI/design-tokens";
 
-export default function PayrollPage() {
+export default function GiftingPage() {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 py-4 max-w-6xl">
         {/* Header Section */}
         <div className="text-center mb-8 space-y-4">
           <h1 className={`text-4xl md:text-5xl ${COLORS.textPrimary} font-bold`}>
-            Payroll Manager
+            Gifting Manager
           </h1>
           <p className={`text-lg ${COLORS.textSecondary} max-w-3xl mx-auto`}>
-            Multi-wallet payroll with DeFi strategies, recurring payments, and cross-chain USDC bridging
+            Percentage-based USDC gifting with DeFi strategy allocations and cross-chain execution
           </p>
 
           {/* Info Pills */}
@@ -34,11 +34,14 @@ export default function PayrollPage() {
           </div>
         </div>
 
-        {/* Main Payroll Manager */}
-        <PayrollManager />
+        {/* Main Gifting Manager */}
+        <GiftingManager />
       </div>
       {/* Toast Notifications */}
       <Toaster position="top-right" />
     </div>
   );
 }
+
+// Force dynamic rendering to avoid SSR issues
+export const dynamic = 'force-dynamic';
