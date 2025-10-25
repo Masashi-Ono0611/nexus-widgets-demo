@@ -38,10 +38,10 @@ export interface ValidationError {
 }
 
 export const STRATEGY_TEMPLATES: Strategy[] = [
-  { name: 'Direct Transfer', color: '#4CAF50', address: '0x0000000000000000000000000000000000000001', strategyEnum: DeFiStrategy.DIRECT_TRANSFER, percentage: 25 },
-  { name: 'AAVE Supply', color: '#1976D2', address: '0x0000000000000000000000000000000000000002', strategyEnum: DeFiStrategy.AAVE_SUPPLY, percentage: 25 },
-  { name: 'Morpho Deposit', color: '#8E24AA', address: '0x0000000000000000000000000000000000000003', strategyEnum: DeFiStrategy.MORPHO_DEPOSIT, percentage: 25 },
-  { name: 'Uniswap Swap', color: '#F57C00', address: '0x0000000000000000000000000000000000000004', strategyEnum: DeFiStrategy.UNISWAP_V2_SWAP, percentage: 25 },
+  { name: 'Direct Transfer', color: '', address: '0x0000000000000000000000000000000000000001', strategyEnum: DeFiStrategy.DIRECT_TRANSFER, percentage: 25 },
+  { name: 'AAVE Supply', color: '', address: '0x0000000000000000000000000000000000000002', strategyEnum: DeFiStrategy.AAVE_SUPPLY, percentage: 25 },
+  { name: 'Morpho Deposit', color: '', address: '0x0000000000000000000000000000000000000003', strategyEnum: DeFiStrategy.MORPHO_DEPOSIT, percentage: 25 },
+  { name: 'Uniswap Swap', color: '', address: '0x0000000000000000000000000000000000000004', strategyEnum: DeFiStrategy.UNISWAP_V2_SWAP, percentage: 25 },
 ];
 
 export const WALLET_COLORS = ['#1565C0', '#2E7D32', '#EF6C00', '#6A1B9A', '#00838F'];
@@ -61,11 +61,4 @@ export const STRATEGY_LABELS: Record<number, string> = {
   [DeFiStrategy.AAVE_SUPPLY]: "AAVE Supply",
   [DeFiStrategy.MORPHO_DEPOSIT]: "Morpho Deposit",
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
-};
-
-export const STRATEGY_COLORS: Record<number, string> = {
-  [DeFiStrategy.DIRECT_TRANSFER]: "#22C55E", // Green 500 - Success theme
-  [DeFiStrategy.AAVE_SUPPLY]: "#3B82F6",     // Blue 500 - Info theme
-  [DeFiStrategy.MORPHO_DEPOSIT]: "#8B5CF6",  // Purple 500 - Accent theme
-  [DeFiStrategy.UNISWAP_V2_SWAP]: "#EAB308", // Yellow 500 - Warning theme
 };

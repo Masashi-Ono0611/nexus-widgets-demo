@@ -1,5 +1,5 @@
 import React from 'react';
-import { RecipientWallet, ValidationError, DeFiStrategy, STRATEGY_LABELS, STRATEGY_COLORS } from '../types';
+import { RecipientWallet, ValidationError, DeFiStrategy, STRATEGY_LABELS } from '../types';
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
@@ -156,6 +156,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               key={idx}
               strategy={strategy}
               onChange={(percentage) => handleStrategyChange(idx, percentage)}
+              walletColor={wallet.color}
             />
           ))}
         </div>

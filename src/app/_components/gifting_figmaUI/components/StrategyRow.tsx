@@ -2,20 +2,24 @@ import React from 'react';
 import { Strategy } from '../types';
 import { Slider } from '../../ui/slider';
 import { Input } from '../../ui/input';
+import { getStrategyShade } from '../design-tokens';
 
 interface StrategyRowProps {
   strategy: Strategy;
   onChange: (percentage: number) => void;
+  walletColor?: string;
 }
 
-export const StrategyRow: React.FC<StrategyRowProps> = ({ strategy, onChange }) => {
+export const StrategyRow: React.FC<StrategyRowProps> = ({ strategy, onChange, walletColor }) => {
+  const strategyColor = walletColor ? getStrategyShade(walletColor, strategy.strategyEnum) : strategy.color;
+
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div
             className="h-3 w-3 rounded-full"
-            style={{ backgroundColor: strategy.color }}
+            style={{ backgroundColor: strategyColor }}
           />
           <span className="text-sm">{strategy.name}</span>
         </div>
@@ -40,8 +44,8 @@ export const StrategyRow: React.FC<StrategyRowProps> = ({ strategy, onChange }) 
         className="w-full"
         style={{
           // @ts-ignore
-          '--slider-thumb-color': strategy.color,
-          '--slider-track-color': strategy.color,
+          '--slider-thumb-color': strategyColor,
+          '--slider-track-color': strategyColor,
         }}
       />
     </div>

@@ -3,30 +3,7 @@ import { RecipientWallet } from '../types';
 import { calculateTotalPercentage } from '../utils';
 import { Card } from '../../ui/card';
 import { STRATEGY_LABELS } from '../types';
-import { COLORS } from '../design-tokens';
-
-function hexToRgb(hex: string) {
-  const clean = hex.replace('#', '');
-  const bigint = parseInt(clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean, 16);
-  return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
-}
-
-function rgbToHex(r: number, g: number, b: number) {
-  const toHex = (v: number) => v.toString(16).padStart(2, '0');
-  return `#${toHex(Math.max(0, Math.min(255, Math.round(r))))}${toHex(Math.max(0, Math.min(255, Math.round(g))))}${toHex(Math.max(0, Math.min(255, Math.round(b))))}`;
-}
-
-function lighten(hex: string, amount: number) {
-  const { r, g, b } = hexToRgb(hex);
-  const mix = (c: number) => c + (255 - c) * amount;
-  return rgbToHex(mix(r), mix(g), mix(b));
-}
-
-function getStrategyShade(baseHex: string, strategyIndex: number) {
-  const factors = [0.15, 0.35, 0.55, 0.75];
-  const idx = Math.max(0, Math.min(factors.length - 1, strategyIndex));
-  return lighten(baseHex, factors[idx]);
-}
+import { COLORS, FONT_SIZES, FONT_WEIGHTS, getStrategyShade, lighten } from '../design-tokens';
 
 interface TotalsSummaryProps {
   recipientWallets: RecipientWallet[];
@@ -66,8 +43,6 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                   {/* Strategy sub-bars */}
                   <div className="flex h-full w-full">
                     {wallet.strategies.map((strategy, idx) => {
-                      if (strategy.percentage === 0) return null;
-
                       const strategyWidth = `${strategy.percentage}%`;
                       const shade = getStrategyShade(wallet.color, strategy.strategyEnum);
 
@@ -101,23 +76,22 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                       className="h-3 w-3 rounded-full"
                       style={{ backgroundColor: wallet.color }}
                     />
-                    <span className="text-sm font-medium text-gray-700">
+                    <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label} ${COLORS.textPrimary}`}>
                       Recipient {index + 1}: {percentage.toFixed(1)}%
                     </span>
                   </div>
                   {/* Strategy sub-legend */}
-                  <div className="ml-5 flex flex-wrap gap-2">
+                  <div className="ml-5 flex flex-col gap-1">
                     {wallet.strategies.map((strategy, idx) => {
-                      if (strategy.percentage === 0) return null;
                       const shade = getStrategyShade(wallet.color, strategy.strategyEnum);
 
                       return (
-                        <div key={idx} className="flex items-center gap-1">
+                        <div key={idx} className="flex items-center gap-2">
                           <div
-                            className="h-2 w-2 rounded-full"
+                            className="h-2 w-2 rounded-full flex-shrink-0"
                             style={{ backgroundColor: shade }}
                           />
-                          <span className="text-xs text-gray-600">
+                          <span className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>
                             {STRATEGY_LABELS[strategy.strategyEnum]}: {strategy.percentage.toFixed(1)}%
                           </span>
                         </div>

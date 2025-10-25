@@ -16,7 +16,6 @@ import {
   RECURRING_SPLITTER_ADDRESS,
   FLEXIBLE_SPLITTER_ADDRESS,
   STRATEGY_LABELS,
-  STRATEGY_COLORS,
   DeFiStrategy,
   Recipient,
 } from './types';
@@ -27,7 +26,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS } from './design-tokens';
+import { COLORS, getStrategyColor } from './design-tokens';
 
 export const GiftingManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -120,7 +119,7 @@ export const GiftingManager: React.FC = () => {
         return {
           name: STRATEGY_LABELS[tpl.strategyEnum],
           percentage: pct,
-          color: STRATEGY_COLORS[tpl.strategyEnum],
+          color: getStrategyColor(tpl.strategyEnum),
           address: '0x0000000000000000000000000000000000000001',
           strategyEnum: tpl.strategyEnum,
         };

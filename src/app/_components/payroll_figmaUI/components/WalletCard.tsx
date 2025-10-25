@@ -155,6 +155,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
               key={idx}
               strategy={strategy}
               onChange={(percentage) => handleStrategyChange(idx, percentage)}
+              walletColor={wallet.color}
             />
           ))}
         </div>
