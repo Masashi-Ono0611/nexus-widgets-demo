@@ -3,10 +3,10 @@ import { RecipientWallet, ValidationError, DeFiStrategy, STRATEGY_LABELS, STRATE
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
-import { formatAddress } from '../utils';
+import { StrategyRow } from './StrategyRow';
+import { applyPreset, formatAddress } from '../utils';
 import { Trash2, Wallet } from 'lucide-react';
 import { Badge } from '../../ui/badge';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../ui/select';
 import { COLORS, FONT_SIZES } from '../design-tokens';
 
 interface WalletCardProps {
@@ -29,12 +29,18 @@ export const WalletCard: React.FC<WalletCardProps> = ({
   const walletErrors = errors.filter((e) => e.walletId === wallet.id);
   const hasErrors = walletErrors.length > 0;
 
-  const handleStrategyChange = (strategy: DeFiStrategy) => {
-    onChange({ ...wallet, strategy });
+  const totalStrategyPercentage = wallet.strategies.reduce((sum, s) => sum + s.percentage, 0);
+  const isStrategyValid = Math.abs(totalStrategyPercentage - 100) < 0.01;
+
+  const handleStrategyChange = (strategyIndex: number, percentage: number) => {
+    const newStrategies = [...wallet.strategies];
+    newStrategies[strategyIndex] = { ...newStrategies[strategyIndex], percentage };
+    onChange({ ...wallet, strategies: newStrategies });
   };
 
-  const handleSharePercentChange = (sharePercent: number) => {
-    onChange({ ...wallet, sharePercent });
+  const handlePreset = (preset: 'equal-split' | 'defi-focused' | 'direct-only' | 'normalize') => {
+    const newStrategies = applyPreset(wallet.strategies, preset);
+    onChange({ ...wallet, strategies: newStrategies });
   };
 
   return (
@@ -77,53 +83,66 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         />
       </div>
 
-      {/* Share Percentage */}
-      <div className="space-y-1">
-        <label className="text-sm">Share Percentage (%)</label>
-        <Input
-          type="number"
-          placeholder="25.0"
-          min="0"
-          max="100"
-          step="0.1"
-          value={wallet.sharePercent || ''}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSharePercentChange(parseFloat(e.target.value) || 0)}
-          className={walletErrors.some((e) => e.field === 'sharePercent') ? COLORS.status.error.border : ''}
-        />
-      </div>
+      {/* Strategy Allocation */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <label className="text-sm">Strategy Allocation</label>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => handlePreset('normalize')}
+              className="text-sm px-3 py-1.5"
+            >
+              Normalize
+            </Button>
+            <Badge variant={isStrategyValid ? 'default' : 'destructive'}>
+              {totalStrategyPercentage.toFixed(1)}%
+            </Badge>
+          </div>
+        </div>
 
-      {/* Strategy Selection */}
-      <div className="space-y-1">
-        <label className="text-sm">DeFi Strategy</label>
-        <Select
-          value={wallet.strategy.toString()}
-          onValueChange={(value) => handleStrategyChange(parseInt(value) as DeFiStrategy)}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select strategy" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(STRATEGY_LABELS).map(([value, label]) => (
-              <SelectItem key={value} value={value}>
-                <div className="flex items-center gap-2">
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: STRATEGY_COLORS[parseInt(value)] }}
-                  />
-                  {label}
-                </div>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-        <div className="flex items-center gap-2 mt-1">
-          <div
-            className="w-4 h-4 rounded-full"
-            style={{ backgroundColor: STRATEGY_COLORS[wallet.strategy] }}
-          />
-          <span className="text-sm text-gray-600">
-            {STRATEGY_LABELS[wallet.strategy]}
-          </span>
+        {/* Preset Buttons */}
+        <div className="flex gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handlePreset('equal-split')}
+            className="flex-1"
+          >
+            Equal Split
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handlePreset('defi-focused')}
+            className="flex-1"
+          >
+            DeFi Focused
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => handlePreset('direct-only')}
+            className="flex-1"
+          >
+            Direct Only
+          </Button>
+        </div>
+
+        {/* Strategy Configuration */}
+        <div className="space-y-4">
+          {wallet.strategies.map((strategy, idx) => (
+            <StrategyRow
+              key={idx}
+              strategy={strategy}
+              onChange={(percentage) => handleStrategyChange(idx, percentage)}
+            />
+          ))}
         </div>
       </div>
 

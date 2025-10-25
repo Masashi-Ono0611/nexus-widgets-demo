@@ -34,9 +34,9 @@ export const GiftingManager: React.FC = () => {
     {
       id: '1',
       address: '',
-      sharePercent: 25,
+      sharePercent: 100,
       color: WALLET_COLORS[0],
-      strategy: DeFiStrategy.DIRECT_TRANSFER,
+      strategies: STRATEGY_TEMPLATES,
     },
   ]);
 
@@ -76,7 +76,7 @@ export const GiftingManager: React.FC = () => {
       address: '',
       sharePercent: newSharePercent,
       color: WALLET_COLORS[recipientWallets.length % WALLET_COLORS.length],
-      strategy: DeFiStrategy.DIRECT_TRANSFER,
+      strategies: STRATEGY_TEMPLATES,
     };
 
     setRecipientWallets([...recipientWallets, newWallet]);
@@ -98,14 +98,35 @@ export const GiftingManager: React.FC = () => {
   };
 
   const handleLoadConfig = (loadedRecipients: Recipient[]) => {
-    // Convert Recipient[] back to RecipientWallet[]
-    const loadedWallets: RecipientWallet[] = loadedRecipients.map((recipient, index) => ({
-      id: Date.now().toString() + index,
-      address: recipient.wallet,
-      sharePercent: parseFloat(recipient.sharePercent),
-      color: WALLET_COLORS[index % WALLET_COLORS.length],
-      strategy: recipient.strategy,
-    }));
+    // Group recipients by wallet address
+    const walletGroups = new Map<string, Recipient[]>();
+
+    loadedRecipients.forEach((recipient) => {
+      if (!walletGroups.has(recipient.wallet)) {
+        walletGroups.set(recipient.wallet, []);
+      }
+      walletGroups.get(recipient.wallet)!.push(recipient);
+    });
+
+    // Convert to RecipientWallet[]
+    const loadedWallets: RecipientWallet[] = Array.from(walletGroups.entries()).map(([walletAddress, recipients], index) => {
+      // Calculate total share for this wallet
+      const totalShare = recipients.reduce((sum, r) => sum + parseFloat(r.sharePercent), 0);
+
+      return {
+        id: Date.now().toString() + index,
+        address: walletAddress,
+        sharePercent: totalShare,
+        color: WALLET_COLORS[index % WALLET_COLORS.length],
+        strategies: recipients.map((recipient) => ({
+          name: STRATEGY_LABELS[recipient.strategy],
+          percentage: (parseFloat(recipient.sharePercent) / totalShare) * 100,
+          color: STRATEGY_COLORS[recipient.strategy],
+          address: '0x0000000000000000000000000000000000000001', // placeholder
+          strategyEnum: recipient.strategy,
+        })),
+      };
+    });
 
     setRecipientWallets(loadedWallets);
     toast.success('Configuration loaded successfully');

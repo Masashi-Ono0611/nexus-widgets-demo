@@ -21,7 +21,7 @@ export interface RecipientWallet {
   address: string;
   sharePercent: number; // Percentage (0-100)
   color: string;
-  strategy: DeFiStrategy; // Single strategy per recipient
+  strategies: Strategy[]; // Multiple strategies per recipient
 }
 
 // Contract-compatible types
