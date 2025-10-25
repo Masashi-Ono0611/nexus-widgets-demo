@@ -141,9 +141,22 @@ export const COLORS = {
   // Accordion specific styles
   accordion: {
     item: 'border border-gray-200 rounded-lg px-6',
-    trigger: 'hover:no-underline py-4',
-    content: 'pt-0 pb-4',
+    trigger: 'hover:no-underline py-6',
+    content: 'pt-0 pb-6',
     container: 'w-full space-y-2',
+  },
+
+  // Grid layouts
+  grid: {
+    strategies: 'grid-cols-1 md:grid-cols-2 gap-1',
+  },
+
+  // Strategy indicator colors (darker for better contrast)
+  indicators: {
+    direct: 'bg-green-700',
+    aave: 'bg-blue-700',
+    morpho: 'bg-purple-700',
+    uniswap: 'bg-yellow-700',
   },
 } as const;
 
