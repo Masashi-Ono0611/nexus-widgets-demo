@@ -2,6 +2,7 @@ import React from 'react';
 import { RecipientWallet } from '../types';
 import { calculateTotalAmount, calculateWalletPercentages, formatUSDC } from '../utils';
 import { Card } from '../../ui/card';
+import { COLORS, FONT_SIZES, FONT_WEIGHTS } from '../design-tokens';
 
 interface TotalsSummaryProps {
   recipientWallets: RecipientWallet[];
@@ -52,7 +53,7 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                     className="h-3 w-3 rounded-full"
                     style={{ backgroundColor: wallet.color }}
                   />
-                  <span className="text-sm text-gray-600">
+                  <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label} ${COLORS.textPrimary}`}>
                     Recipient {index + 1}: {wallet.amount.toFixed(1)} USDC ({percentage.toFixed(0)}%)
                   </span>
                 </div>

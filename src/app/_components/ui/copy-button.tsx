@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import { Copy, Check } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS, FONT_SIZES } from '../design-tokens';
+import { cn } from './utils';
 
 interface CopyButtonProps {
   text: string;
   className?: string;
 }
 
-export const CopyButton: React.FC<CopyButtonProps> = ({ text, className = '' }) => {
+export const CopyButton: React.FC<CopyButtonProps> = ({
+  text,
+  className = ''
+}) => {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -25,15 +28,21 @@ export const CopyButton: React.FC<CopyButtonProps> = ({ text, className = '' }) 
   return (
     <button
       onClick={handleCopy}
-      className={`inline-flex items-center gap-1 px-2 py-1 text-xs rounded transition-colors ${COLORS.textTertiary} hover:${COLORS.textSecondary} ${className}`}
+      className={cn(
+        "inline-flex items-center gap-1 px-2 py-1 text-xs rounded-md transition-colors",
+        "text-muted-foreground hover:text-foreground hover:bg-muted",
+        className
+      )}
       title="Copy to clipboard"
     >
       {copied ? (
-        <Check className="h-3 w-3 text-green-500" />
+        <Check className="h-3 w-3 text-green-600" />
       ) : (
         <Copy className="h-3 w-3" />
       )}
-      {copied ? 'Copied' : 'Copy'}
+      <span className="sr-only">
+        {copied ? 'Copied' : 'Copy'}
+      </span>
     </button>
   );
 };

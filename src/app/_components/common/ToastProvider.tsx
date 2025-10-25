@@ -26,6 +26,10 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     }, durationMs ?? 3500);
   }, [counter]);
 
+  const dismissToast = useCallback((id: number) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
   const value = useMemo<ToastContextValue>(() => ({
     showSuccess: (m, d) => enqueue("success", m, d),
     showError: (m, d) => enqueue("error", m, d),
@@ -37,9 +41,36 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
       {children}
       <div style={{ position: "fixed", right: 16, bottom: 16, display: "flex", flexDirection: "column", gap: 8, zIndex: 2000 }}>
         {toasts.map((t) => (
-          <div key={t.id} className="card" style={{ minWidth: 260, padding: "0.75rem 1rem", borderLeft: `4px solid ${t.type === "success" ? "#4CAF50" : t.type === "error" ? "#f44336" : "#2196F3"}` }}>
-            <div style={{ fontWeight: 600, marginBottom: 4 }}>{t.type === "success" ? "Success" : t.type === "error" ? "Error" : "Info"}</div>
-            <div>{t.message}</div>
+          <div key={t.id} className="card" style={{
+            minWidth: 260,
+            padding: "0.75rem 1rem",
+            borderLeft: `4px solid ${t.type === "success" ? "#4CAF50" : t.type === "error" ? "#f44336" : "#2196F3"}`,
+            position: "relative"
+          }}>
+            <button
+              onClick={() => dismissToast(t.id)}
+              style={{
+                position: "absolute",
+                top: 8,
+                right: 8,
+                background: "none",
+                border: "none",
+                fontSize: "1.2rem",
+                cursor: "pointer",
+                color: "#666",
+                padding: "2px 6px",
+                borderRadius: "3px",
+                lineHeight: 1
+              }}
+              onMouseEnter={(e) => e.currentTarget.style.background = "#f0f0f0"}
+              onMouseLeave={(e) => e.currentTarget.style.background = "none"}
+            >
+              ×
+            </button>
+            <div style={{ fontWeight: 600, marginBottom: 4, paddingRight: "24px" }}>
+              {t.type === "success" ? "Success" : t.type === "error" ? "Error" : "Info"}
+            </div>
+            <div style={{ paddingRight: "24px" }}>{t.message}</div>
           </div>
         ))}
       </div>

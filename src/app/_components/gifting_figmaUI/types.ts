@@ -1,4 +1,4 @@
-// Type definitions for Payroll Manager
+// Type definitions for Gifting Manager (GiftingConfigRegistry compatible)
 
 // DeFi Strategy enum (must match contract)
 export enum DeFiStrategy {
@@ -19,39 +19,16 @@ export interface Strategy {
 export interface RecipientWallet {
   id: string;
   address: string;
-  amount: number;
+  sharePercent: number; // Percentage (0-100)
   color: string;
-  strategies: Strategy[];
+  strategies: Strategy[]; // Multiple strategies per recipient
 }
 
 // Contract-compatible types
-export interface StrategyAllocation {
-  strategy: DeFiStrategy;
-  subPercent: string;
-}
-
-export interface WalletGroup {
-  wallet: string;
-  walletAmount: string;
-  strategies: StrategyAllocation[];
-}
-
 export interface Recipient {
   wallet: string;
   sharePercent: string;
   strategy: DeFiStrategy;
-}
-
-export interface PayrollConfig {
-  id?: string;
-  name: string;
-  description: string;
-  isPublic: boolean;
-  owner?: string;
-  recipientWallets: RecipientWallet[];
-  executionMode: 'immediate' | 'recurring';
-  recurringInterval?: number;
-  maxExecutions?: number;
 }
 
 export interface ValidationError {
@@ -61,10 +38,10 @@ export interface ValidationError {
 }
 
 export const STRATEGY_TEMPLATES: Strategy[] = [
-  { name: 'Direct Transfer', color: '#4CAF50', address: '0x0000000000000000000000000000000000000001', strategyEnum: DeFiStrategy.DIRECT_TRANSFER, percentage: 25 },
-  { name: 'AAVE Supply', color: '#1976D2', address: '0x0000000000000000000000000000000000000002', strategyEnum: DeFiStrategy.AAVE_SUPPLY, percentage: 25 },
-  { name: 'Morpho Deposit', color: '#8E24AA', address: '0x0000000000000000000000000000000000000003', strategyEnum: DeFiStrategy.MORPHO_DEPOSIT, percentage: 25 },
-  { name: 'Uniswap Swap', color: '#F57C00', address: '0x0000000000000000000000000000000000000004', strategyEnum: DeFiStrategy.UNISWAP_V2_SWAP, percentage: 25 },
+  { name: 'Direct Transfer', color: '', address: '0x0000000000000000000000000000000000000001', strategyEnum: DeFiStrategy.DIRECT_TRANSFER, percentage: 25 },
+  { name: 'AAVE Supply', color: '', address: '0x0000000000000000000000000000000000000002', strategyEnum: DeFiStrategy.AAVE_SUPPLY, percentage: 25 },
+  { name: 'Morpho Deposit', color: '', address: '0x0000000000000000000000000000000000000003', strategyEnum: DeFiStrategy.MORPHO_DEPOSIT, percentage: 25 },
+  { name: 'Uniswap Swap', color: '', address: '0x0000000000000000000000000000000000000004', strategyEnum: DeFiStrategy.UNISWAP_V2_SWAP, percentage: 25 },
 ];
 
 export const WALLET_COLORS = ['#1565C0', '#2E7D32', '#EF6C00', '#6A1B9A', '#00838F'];
@@ -72,12 +49,12 @@ export const WALLET_COLORS = ['#1565C0', '#2E7D32', '#EF6C00', '#6A1B9A', '#0083
 export const CONTRACT_ADDRESSES = {
   FlexibleSplitter: '0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454',
   RecurringSplitter: '0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E',
-  PayrollConfigRegistry: '0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7',
+  GiftingConfigRegistry: '0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F',
 };
 
 export const RECURRING_SPLITTER_ADDRESS = "0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E";
 export const FLEXIBLE_SPLITTER_ADDRESS = "0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454";
-export const PAYROLL_CONFIG_REGISTRY_ADDRESS = "0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7";
+export const GIFTING_CONFIG_REGISTRY_ADDRESS = "0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F";
 
 export const STRATEGY_LABELS: Record<number, string> = {
   [DeFiStrategy.DIRECT_TRANSFER]: "Direct Transfer",

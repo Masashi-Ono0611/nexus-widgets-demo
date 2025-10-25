@@ -1,5 +1,5 @@
 import React from 'react';
-import { RecipientWallet, ValidationError } from '../types';
+import { RecipientWallet, ValidationError, DeFiStrategy, STRATEGY_LABELS } from '../types';
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Button } from '../../ui/button';
@@ -54,7 +54,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
             <Wallet className="h-5 w-5" style={{ color: wallet.color }} />
           </div>
           <div>
-            <h3 className="font-semibold">Recipient Wallet {index + 1}</h3>
+            <h3 className="font-semibold">Recipient {index + 1}</h3>
             {wallet.address && (
               <p className={`${FONT_SIZES.bodyMedium} ${COLORS.textSecondary}`}>{formatAddress(wallet.address)}</p>
             )}
@@ -83,17 +83,18 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         />
       </div>
 
-      {/* Amount */}
+      {/* Share Percentage */}
       <div className="space-y-1">
-        <label className="text-sm">Amount (USDC)</label>
+        <label className="text-sm">Share Percentage (%)</label>
         <Input
           type="number"
-          placeholder="0.00"
+          placeholder="0.0"
           min="0"
-          step="0.01"
-          value={wallet.amount || ''}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, amount: parseFloat(e.target.value) || 0 })}
-          className={walletErrors.some((e) => e.field === 'amount') ? COLORS.status.error.border : ''}
+          max="100"
+          step="0.1"
+          value={wallet.sharePercent || ''}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, sharePercent: parseFloat(e.target.value) || 0 })}
+          className={walletErrors.some((e) => e.field === 'sharePercent') ? COLORS.status.error.border : ''}
         />
       </div>
 

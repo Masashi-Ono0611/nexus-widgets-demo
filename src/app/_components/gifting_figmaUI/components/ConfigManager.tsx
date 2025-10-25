@@ -1,20 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { Button } from '../../ui/button';
 import { ConfigManagerProps } from "./configManager/types";
 import { useWallet } from "./configManager/useWallet";
 import { useConfigRegistry } from "./configManager/useConfigRegistry";
 import { SaveConfigModal } from "./configManager/SaveConfigModal";
 import { LoadConfigModal } from "./configManager/LoadConfigModal";
-import { useToast } from "../../common/ToastProvider";
+import { toast } from 'sonner';
 import { isValidAddress, totalShare } from "../utils";
+import { COLORS } from "../design-tokens";
 
 function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps) {
-  const { mounted, address, provider, signer } = useWallet();
-  const { showInfo, showSuccess } = useToast();
+  const { mounted, address, provider, signer, networkError, needsNetworkSwitch, promptSwitchNetwork } = useWallet();
 
   const {
     configs,
     isLoading,
+    isLoadingConfig,
     isSaving,
     loadConfigList,
     saveConfig,
@@ -33,9 +35,19 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
 
   useEffect(() => {
     if (showLoadModal) {
+      if (networkError) {
+        toast.info(networkError);
+      } else {
+        loadConfigList();
+      }
+    }
+  }, [showLoadModal, networkError]);
+
+  useEffect(() => {
+    if (!networkError && showLoadModal) {
       loadConfigList();
     }
-  }, [showLoadModal]);
+  }, [networkError]);
 
   const handleNewSave = async () => {
     const newId = await saveConfig(configName, configDescription, recipients, isPublic);
@@ -47,55 +59,36 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(false);
 
       const base = typeof window !== "undefined" ? window.location.origin : "";
-      const href = `${base}/gifting/${newId.toString()}/receive/qr`;
-      showSuccess(
-        <div style={{ padding: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '1.125rem' }}>✅</span>
-            <span style={{ fontWeight: '600' }}>Configuration Saved!</span>
+      const href = `${base}/gifting_figmaUI/${newId.toString()}/receive/qr`;
+      toast.success(
+        <div className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">✅</span>
+            <span className="font-semibold">Configuration Saved!</span>
           </div>
-          <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem' }}>
+          <div className="text-sm opacity-90 mb-2">
             Share this QR code link with recipients:
           </div>
-          <div style={{
-            fontSize: '0.75rem',
-            fontFamily: 'monospace',
-            background: '#f3f4f6',
-            padding: '0.5rem',
-            borderRadius: '4px',
-            marginBottom: '0.5rem',
-            wordBreak: 'break-all'
-          }}>
+          <div className="text-xs font-mono bg-gray-100 px-2 py-1 rounded mb-2 break-all">
             {href}
           </div>
           <a
             href={href}
             target="_blank"
             rel="noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              fontSize: '0.875rem',
-              background: '#3B82F6',
-              color: '#fff',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '4px',
-              textDecoration: 'none',
-              transition: 'background 0.2s'
-            }}
+            className="inline-flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
           >
             📱 Open QR Code
           </a>
         </div>,
-        10000 // 10 seconds
+        { duration: 10000 }
       );
     }
   };
 
   const handleUpdateSave = async () => {
     if (loadedConfigId === null) {
-      showInfo("No configuration loaded to update");
+      toast.info("No configuration loaded to update");
       return;
     }
 
@@ -108,48 +101,29 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(false);
 
       const base = typeof window !== "undefined" ? window.location.origin : "";
-      const href = `${base}/gifting/${loadedConfigId.toString()}/receive/qr`;
-      showSuccess(
-        <div style={{ padding: '0.75rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '1.125rem' }}>🔄</span>
-            <span style={{ fontWeight: '600' }}>Configuration Updated!</span>
+      const href = `${base}/gifting_figmaUI/${loadedConfigId.toString()}/receive/qr`;
+      toast.success(
+        <div className="p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">🔄</span>
+            <span className="font-semibold">Configuration Updated!</span>
           </div>
-          <div style={{ fontSize: '0.875rem', opacity: 0.9, marginBottom: '0.5rem' }}>
+          <div className="text-sm opacity-90 mb-2">
             Updated configuration. Share this QR code link with recipients:
           </div>
-          <div style={{
-            fontSize: '0.75rem',
-            fontFamily: 'monospace',
-            background: '#f3f4f6',
-            padding: '0.5rem',
-            borderRadius: '4px',
-            marginBottom: '0.5rem',
-            wordBreak: 'break-all'
-          }}>
+          <div className="text-xs font-mono bg-gray-100 px-2 py-1 rounded mb-2 break-all">
             {href}
           </div>
           <a
             href={href}
             target="_blank"
             rel="noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.25rem',
-              fontSize: '0.875rem',
-              background: '#3B82F6',
-              color: '#fff',
-              padding: '0.25rem 0.75rem',
-              borderRadius: '4px',
-              textDecoration: 'none',
-              transition: 'background 0.2s'
-            }}
+            className="inline-flex items-center gap-1 text-sm bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 transition-colors"
           >
             📱 Open QR Code
           </a>
         </div>,
-        10000 // 10 seconds
+        { duration: 10000 }
       );
     }
   };
@@ -166,7 +140,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(config.isPublic);
 
       setShowLoadModal(false);
-      showSuccess("Configuration loaded. You can now use Update Save.");
+      toast.success("Configuration loaded successfully.");
     }
   };
 
@@ -185,8 +159,6 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     return true;
   }, [recipients]);
 
-  const canSaveNew = Boolean(configName.trim()) && recipientsAreValid;
-  const canSaveUpdate = hasLoadedConfig && Boolean(configName.trim()) && recipientsAreValid;
   const canOpenNewSave = recipientsAreValid;
   const canOpenUpdateSave = hasLoadedConfig && recipientsAreValid;
 
@@ -194,42 +166,48 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     return null;
   }
 
+  const guardNetworkThen = async (fn: () => void) => {
+    if (needsNetworkSwitch) {
+      toast.info("Switching to Arbitrum Sepolia...");
+      await promptSwitchNetwork();
+      return;
+    }
+    fn();
+  };
+
   return (
-    <div style={{ marginBottom: "1rem" }}>
-      <div style={{ display: "flex", gap: "0.5rem" }}>
-        <button
-          onClick={() => setShowLoadModal(true)}
-          className="btn"
-          style={{ flex: 1, background: "#2196F3" }}
-        >
-          📂 Load
-        </button>
-        <button
-          onClick={() => setShowNewSaveModal(true)}
-          className="btn"
-          disabled={!canOpenNewSave}
-          style={{
-            flex: 1,
-            background: "#4CAF50",
-            opacity: canOpenNewSave ? 1 : 0.6,
-            cursor: canOpenNewSave ? "pointer" : "not-allowed",
-          }}
-        >
-          💾 New Save
-        </button>
-        <button
-          onClick={() => setShowUpdateSaveModal(true)}
-          className="btn"
-          style={{
-            flex: 1,
-            background: canOpenUpdateSave ? "#FF9800" : "#ccc",
-            cursor: canOpenUpdateSave ? "pointer" : "not-allowed",
-          }}
-          disabled={!canOpenUpdateSave}
-        >
-          ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : "(Disabled)"}
-        </button>
-      </div>
+    <div className="flex gap-2">
+      <Button
+        onClick={() => guardNetworkThen(() => setShowLoadModal(true))}
+        variant="outline"
+        size="sm"
+      >
+        📂 Load
+      </Button>
+      <Button
+        onClick={() => guardNetworkThen(() => setShowNewSaveModal(true))}
+        disabled={!canOpenNewSave}
+        variant="outline"
+        size="sm"
+        title={canOpenNewSave ? "Save a new configuration" : "Fix recipients/percentages first"}
+      >
+        💾 New Save
+      </Button>
+      <Button
+        onClick={() => guardNetworkThen(() => setShowUpdateSaveModal(true))}
+        disabled={!canOpenUpdateSave}
+        variant="outline"
+        size="sm"
+        title={
+          canOpenUpdateSave
+            ? "Update the loaded configuration"
+            : hasLoadedConfig
+              ? "Fix recipients/percentages first"
+              : "Load a configuration first to enable update"
+        }
+      >
+        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""}
+      </Button>
 
       <SaveConfigModal
         isOpen={showNewSaveModal}
@@ -266,7 +244,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         isOpen={showLoadModal}
         onClose={() => setShowLoadModal(false)}
         configs={configs}
-        isLoading={isLoading}
+        isLoading={isLoadingConfig}
         onLoad={handleLoad}
         onDelete={deleteConfig}
         userAddress={address}

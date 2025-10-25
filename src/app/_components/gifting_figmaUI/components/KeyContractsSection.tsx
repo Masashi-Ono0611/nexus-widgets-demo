@@ -12,7 +12,7 @@ export const KeyContractsSection: React.FC = () => {
           </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
-          Executes one-time payroll distributions
+          Executes one-time gift distributions
         </p>
         <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
           <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
@@ -25,34 +25,17 @@ export const KeyContractsSection: React.FC = () => {
       <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
         <div className="mb-2">
           <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
-            RecurringSplitter
+            GiftingConfigRegistry
           </h4>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
-          Executes scheduled recurring payroll distributions
+          On-chain registry for saving and sharing gifting configurations
         </p>
         <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
           <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
-            0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E
+            0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F
           </code>
-          <CopyButton text="0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E" />
-        </div>
-      </div>
-
-      <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
-        <div className="mb-2">
-          <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
-            PayrollConfigRegistry
-          </h4>
-        </div>
-        <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
-          On-chain registry for saving and sharing payroll configurations
-        </p>
-        <div className={`flex items-center justify-between gap-2 ${COLORS.backgroundAccent} p-2 rounded`}>
-          <code className={`${COLORS.textTertiary} ${FONT_SIZES.bodySmall} flex-1`}>
-            0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7
-          </code>
-          <CopyButton text="0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7" />
+          <CopyButton text="0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F" />
         </div>
       </div>
     </div>

@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { Recipient, DeFiStrategy, GIFTING_CONFIG_REGISTRY_ADDRESS } from "../../types";
 import { SavedConfig } from "./types";
 import { REGISTRY_ABI } from "./abi";
-import { useToast } from "../../../common/ToastProvider";
+import { toast } from 'sonner';
 
 export function useConfigRegistry(
   provider: ethers.BrowserProvider | null,
@@ -12,8 +12,8 @@ export function useConfigRegistry(
 ) {
   const [configs, setConfigs] = useState<SavedConfig[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const { showSuccess, showError, showInfo } = useToast();
 
   const loadConfigList = async () => {
     if (!provider || !GIFTING_CONFIG_REGISTRY_ADDRESS) return;
@@ -65,7 +65,7 @@ export function useConfigRegistry(
       setConfigs(loadedConfigs);
     } catch (error) {
       console.error("Failed to load configs:", error);
-      showError("Failed to load configurations");
+      toast.error("Failed to load configurations");
     } finally {
       setIsLoading(false);
     }
@@ -78,17 +78,17 @@ export function useConfigRegistry(
     isPublic: boolean
   ): Promise<bigint | null> => {
     if (!signer || !address || !provider) {
-      showInfo("Please connect your wallet");
+      toast.info("Please connect your wallet");
       return null;
     }
 
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) {
-      showError("Registry contract not configured");
+      toast.error("Registry contract not configured");
       return null;
     }
 
     if (!configName.trim()) {
-      showInfo("Please enter a configuration name");
+      toast.info("Please enter a configuration name");
       return null;
     }
 
@@ -113,7 +113,7 @@ export function useConfigRegistry(
         isPublic
       );
 
-      showInfo("Transaction submitted. Waiting for confirmation...");
+      toast.info("Transaction submitted. Waiting for confirmation...");
       await tx.wait();
 
       try {
@@ -132,7 +132,7 @@ export function useConfigRegistry(
       }
     } catch (error: any) {
       console.error("Failed to save config:", error);
-      showError(error?.message || "Failed to save configuration");
+      toast.error(error?.message || "Failed to save configuration");
       return null;
     } finally {
       setIsSaving(false);
@@ -146,17 +146,17 @@ export function useConfigRegistry(
     recipients: Recipient[]
   ) => {
     if (!signer || !address || !provider) {
-      showInfo("Please connect your wallet");
+      toast.info("Please connect your wallet");
       return false;
     }
 
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) {
-      showError("Registry contract not configured");
+      toast.error("Registry contract not configured");
       return false;
     }
 
     if (!configName.trim()) {
-      showInfo("Please enter a configuration name");
+      toast.info("Please enter a configuration name");
       return false;
     }
 
@@ -181,14 +181,14 @@ export function useConfigRegistry(
         contractRecipients
       );
 
-      showInfo("Transaction submitted. Waiting for confirmation...");
+      toast.info("Transaction submitted. Waiting for confirmation...");
       await tx.wait();
 
       // Don't show success message here - let ConfigManager handle it with QR code link
       return true;
     } catch (error: any) {
       console.error("Failed to update config:", error);
-      showError(error?.message || "Failed to update configuration");
+      toast.error(error?.message || "Failed to update configuration");
       return false;
     } finally {
       setIsSaving(false);
@@ -198,6 +198,7 @@ export function useConfigRegistry(
   const loadConfig = async (configId: bigint) => {
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) return null;
 
+    setIsLoadingConfig(true);
     try {
       // Use provided provider or create a read-only provider for Arbitrum Sepolia
       let readProvider: ethers.Provider = provider || new ethers.JsonRpcProvider("https://sepolia-rollup.arbitrum.io/rpc");
@@ -231,19 +232,21 @@ export function useConfigRegistry(
       };
     } catch (error) {
       console.error("Failed to load config:", error);
-      showError("Failed to load configuration");
+      toast.error("Failed to load configuration");
       return null;
+    } finally {
+      setIsLoadingConfig(false);
     }
   };
 
   const deleteConfig = async (configId: bigint) => {
     if (!signer || !address) {
-      showInfo("Please connect your wallet");
+      toast.info("Please connect your wallet");
       return false;
     }
 
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) {
-      showError("Registry contract not configured");
+      toast.error("Registry contract not configured");
       return false;
     }
 
@@ -255,15 +258,15 @@ export function useConfigRegistry(
       );
 
       const tx = await contract.deleteConfig(configId);
-      showInfo("Transaction submitted. Waiting for confirmation...");
+      toast.info("Transaction submitted. Waiting for confirmation...");
       await tx.wait();
 
-      showSuccess("Configuration deleted successfully!");
+      toast.success("Configuration deleted successfully!");
       await loadConfigList();
       return true;
     } catch (error: any) {
       console.error("Failed to delete config:", error);
-      showError(error?.message || "Failed to delete configuration");
+      toast.error(error?.message || "Failed to delete configuration");
       return false;
     }
   };
@@ -271,6 +274,7 @@ export function useConfigRegistry(
   return {
     configs,
     isLoading,
+    isLoadingConfig,
     isSaving,
     loadConfigList,
     saveConfig,
