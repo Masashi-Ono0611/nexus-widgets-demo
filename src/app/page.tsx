@@ -16,9 +16,6 @@ export default function Home() {
         <a href="/gifting_figmaUI" className="btn btn-primary">
           Go to Gifting
         </a>
-        <a href="/tools" className="btn btn-secondary">
-          Go to Tools
-        </a>
       </div>
     </main>
   );
