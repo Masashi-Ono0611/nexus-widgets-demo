@@ -113,18 +113,25 @@ export const GiftingManager: React.FC = () => {
       // Calculate total share for this wallet
       const totalShare = recipients.reduce((sum, r) => sum + parseFloat(r.sharePercent), 0);
 
+      // Build strategies for all enums (0..3), fill missing with 0%
+      const strategies = STRATEGY_TEMPLATES.map((tpl) => {
+        const found = recipients.find((r) => r.strategy === tpl.strategyEnum);
+        const pct = found && totalShare > 0 ? (parseFloat(found.sharePercent) / totalShare) * 100 : 0;
+        return {
+          name: STRATEGY_LABELS[tpl.strategyEnum],
+          percentage: pct,
+          color: STRATEGY_COLORS[tpl.strategyEnum],
+          address: '0x0000000000000000000000000000000000000001',
+          strategyEnum: tpl.strategyEnum,
+        };
+      });
+
       return {
         id: Date.now().toString() + index,
         address: walletAddress,
         sharePercent: totalShare,
         color: WALLET_COLORS[index % WALLET_COLORS.length],
-        strategies: recipients.map((recipient) => ({
-          name: STRATEGY_LABELS[recipient.strategy],
-          percentage: (parseFloat(recipient.sharePercent) / totalShare) * 100,
-          color: STRATEGY_COLORS[recipient.strategy],
-          address: '0x0000000000000000000000000000000000000001', // placeholder
-          strategyEnum: recipient.strategy,
-        })),
+        strategies,
       };
     });
 
