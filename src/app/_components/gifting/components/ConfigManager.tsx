@@ -249,7 +249,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         isOpen={showLoadModal}
         onClose={() => setShowLoadModal(false)}
         configs={configs}
-        isLoading={isLoadingConfig}
+        isLoading={isLoading}
         onLoad={handleLoad}
         onDelete={deleteConfig}
         userAddress={address}
