@@ -137,6 +137,14 @@ export const COLORS = {
   modeActive: 'bg-blue-100 border-2 border-blue-500 text-blue-600 shadow-md', // Immediate mode active
   modeInactive: 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300', // Mode inactive
   modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
+
+  // Accordion specific styles
+  accordion: {
+    item: 'border border-gray-200 rounded-lg px-6',
+    trigger: 'hover:no-underline py-4',
+    content: 'pt-0 pb-4',
+    container: 'w-full space-y-2',
+  },
 } as const;
 
 export type FontSizeKey = keyof typeof FONT_SIZES;

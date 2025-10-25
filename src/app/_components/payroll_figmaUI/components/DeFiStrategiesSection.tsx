@@ -6,7 +6,7 @@ export const DeFiStrategiesSection: React.FC = () => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       <div className={`p-4 ${COLORS.status.success.background} ${COLORS.status.success.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-3 h-3 rounded-full bg-green-500"></div>
+          <div className={`w-3 h-3 rounded-full ${COLORS.status.success.text.replace('text-', 'bg-')}`}></div>
           <span className={`${COLORS.status.success.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Direct Transfer
           </span>
@@ -21,7 +21,7 @@ export const DeFiStrategiesSection: React.FC = () => {
 
       <div className={`p-4 ${COLORS.status.info.background} ${COLORS.status.info.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+          <div className={`w-3 h-3 rounded-full ${COLORS.status.info.text.replace('text-', 'bg-')}`}></div>
           <span className={`${COLORS.status.info.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             AAVE Supply
           </span>
@@ -39,7 +39,7 @@ export const DeFiStrategiesSection: React.FC = () => {
 
       <div className={`p-4 ${COLORS.brand.accent.background} ${COLORS.brand.accent.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+          <div className={`w-3 h-3 rounded-full ${COLORS.brand.accent.text.replace('text-', 'bg-')}`}></div>
           <span className={`${COLORS.brand.accent.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Morpho Deposit
           </span>
@@ -57,7 +57,7 @@ export const DeFiStrategiesSection: React.FC = () => {
 
       <div className={`p-4 ${COLORS.status.warning.background} ${COLORS.status.warning.border} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+          <div className={`w-3 h-3 rounded-full ${COLORS.status.warning.text.replace('text-', 'bg-')}`}></div>
           <span className={`${COLORS.status.warning.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Uniswap V2 Swap
           </span>
