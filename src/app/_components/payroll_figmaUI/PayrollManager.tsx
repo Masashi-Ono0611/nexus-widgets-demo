@@ -5,6 +5,7 @@ import { parseUnits } from "viem";
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
 import { Badge } from '../ui/badge';
+import { InfoAccordion } from './components/InfoAccordion';
 import { TotalsSummary } from './components/TotalsSummary';
 import { WalletCard } from './components/WalletCard';
 import { ExecutionModeCard } from './components/ExecutionModeCard';
@@ -219,7 +220,7 @@ export const PayrollManager: React.FC = () => {
           ) : (
             <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
               <Settings className="h-4 w-4" />
-              <span className="font-medium">Configuration incomplete - please fill all fields</span>
+              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
             </div>
           )}
 
@@ -314,6 +315,19 @@ export const PayrollManager: React.FC = () => {
           </BridgeAndExecuteButton>
         </div>
       </Card>
+
+      {/* Separator Line */}
+      <div className="relative py-6">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-sm">
+          <span className="px-4 bg-gray-50 text-gray-600 font-medium">How it works & Info</span>
+        </div>
+      </div>
+
+      {/* Information Sections in Accordion */}
+      <InfoAccordion />
     </div>
   );
 };
