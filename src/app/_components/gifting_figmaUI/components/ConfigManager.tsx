@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 import { isValidAddress, totalShare } from "../utils";
 
 function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps) {
-  const { mounted, address, provider, signer } = useWallet();
+  const { mounted, address, provider, signer, networkError, needsNetworkSwitch, promptSwitchNetwork } = useWallet();
 
   const {
     configs,
@@ -33,9 +33,19 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
 
   useEffect(() => {
     if (showLoadModal) {
+      if (networkError) {
+        toast.info(networkError);
+      } else {
+        loadConfigList();
+      }
+    }
+  }, [showLoadModal, networkError]);
+
+  useEffect(() => {
+    if (!networkError && showLoadModal) {
       loadConfigList();
     }
-  }, [showLoadModal]);
+  }, [networkError]);
 
   const handleNewSave = async () => {
     const newId = await saveConfig(configName, configDescription, recipients, isPublic);
@@ -111,8 +121,6 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     return true;
   }, [recipients]);
 
-  const canSaveNew = Boolean(configName.trim()) && recipientsAreValid;
-  const canSaveUpdate = hasLoadedConfig && Boolean(configName.trim()) && recipientsAreValid;
   const canOpenNewSave = recipientsAreValid;
   const canOpenUpdateSave = hasLoadedConfig && recipientsAreValid;
 
@@ -120,17 +128,26 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     return null;
   }
 
+  const guardNetworkThen = async (fn: () => void) => {
+    if (needsNetworkSwitch) {
+      toast.info("Switching to Arbitrum Sepolia...");
+      await promptSwitchNetwork();
+      return;
+    }
+    fn();
+  };
+
   return (
     <div className="flex gap-2">
       <Button
-        onClick={() => setShowLoadModal(true)}
+        onClick={() => guardNetworkThen(() => setShowLoadModal(true))}
         variant="outline"
         size="sm"
       >
         📂 Load
       </Button>
       <Button
-        onClick={() => setShowNewSaveModal(true)}
+        onClick={() => guardNetworkThen(() => setShowNewSaveModal(true))}
         disabled={!canOpenNewSave}
         variant="outline"
         size="sm"
@@ -139,7 +156,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         💾 New Save
       </Button>
       <Button
-        onClick={() => setShowUpdateSaveModal(true)}
+        onClick={() => guardNetworkThen(() => setShowUpdateSaveModal(true))}
         disabled={!canOpenUpdateSave}
         variant="outline"
         size="sm"

@@ -126,5 +126,14 @@ export function useWallet() {
     }
   };
 
-  return { mounted, address, provider, signer, networkError, isCorrectNetwork, needsNetworkSwitch, promptSwitchNetwork };
+  return {
+    mounted,
+    address,
+    provider,
+    signer,
+    networkError,
+    isCorrectNetwork,
+    needsNetworkSwitch,
+    promptSwitchNetwork
+  };
 }
