@@ -19,7 +19,6 @@ import {
   FLEXIBLE_SPLITTER_ADDRESS,
   WalletGroup,
   STRATEGY_LABELS,
-  STRATEGY_COLORS,
   DeFiStrategy,
 } from './types';
 import { 
@@ -33,7 +32,7 @@ import {
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
-import { COLORS } from './design-tokens';
+import { COLORS, getStrategyColor } from './design-tokens';
 
 export const PayrollManager: React.FC = () => {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
@@ -130,9 +129,9 @@ export const PayrollManager: React.FC = () => {
         // Convert strategy enum to number if it's BigInt
         const strategyNum = typeof s.strategy === 'bigint' ? Number(s.strategy) : Number(s.strategy);
 
-        // Use STRATEGY_LABELS and STRATEGY_COLORS for direct mapping
+        // Use STRATEGY_LABELS and getStrategyColor for direct mapping
         const strategyName = STRATEGY_LABELS[strategyNum] || 'Unknown';
-        const strategyColor = STRATEGY_COLORS[strategyNum] || '#999';
+        const strategyColor = getStrategyColor(strategyNum);
 
         return {
           name: strategyName,

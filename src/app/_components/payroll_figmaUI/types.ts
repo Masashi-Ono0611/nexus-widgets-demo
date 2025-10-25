@@ -85,10 +85,3 @@ export const STRATEGY_LABELS: Record<number, string> = {
   [DeFiStrategy.MORPHO_DEPOSIT]: "Morpho Deposit",
   [DeFiStrategy.UNISWAP_V2_SWAP]: "Uniswap V2 Swap (USDC→WETH)",
 };
-
-export const STRATEGY_COLORS: Record<number, string> = {
-  [DeFiStrategy.DIRECT_TRANSFER]: "#22C55E", // Green 500 - Success theme
-  [DeFiStrategy.AAVE_SUPPLY]: "#3B82F6",     // Blue 500 - Info theme
-  [DeFiStrategy.MORPHO_DEPOSIT]: "#8B5CF6",  // Purple 500 - Accent theme
-  [DeFiStrategy.UNISWAP_V2_SWAP]: "#EAB308", // Yellow 500 - Warning theme
-};

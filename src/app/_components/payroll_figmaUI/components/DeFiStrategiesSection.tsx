@@ -1,13 +1,13 @@
 import React from 'react';
-import { COLORS, FONT_SIZES, FONT_WEIGHTS } from '../design-tokens';
+import { COLORS, FONT_SIZES, FONT_WEIGHTS, getRecipientBasedColor } from '../design-tokens';
 import { CopyButton } from '../../ui/copy-button';
 
 export const DeFiStrategiesSection: React.FC = () => {
   return (
     <div className={`grid ${COLORS.grid.strategies}`}>
-      <div className={`p-4 ${COLORS.strategy.direct.background} ${COLORS.strategy.direct.border} border rounded-lg`}>
+      <div className={`p-4 ${getRecipientBasedColor('background')} ${getRecipientBasedColor('border')} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.strategy.direct.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${getRecipientBasedColor('text')} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Direct Transfer
           </span>
         </div>
@@ -19,9 +19,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </p>
       </div>
 
-      <div className={`p-4 ${COLORS.strategy.aave.background} ${COLORS.strategy.aave.border} border rounded-lg`}>
+      <div className={`p-4 ${getRecipientBasedColor('background')} ${getRecipientBasedColor('border')} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.strategy.aave.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${getRecipientBasedColor('text')} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             AAVE Supply
           </span>
         </div>
@@ -39,9 +39,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.strategy.morpho.background} ${COLORS.strategy.morpho.border} border rounded-lg`}>
+      <div className={`p-4 ${getRecipientBasedColor('background')} ${getRecipientBasedColor('border')} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.strategy.morpho.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${getRecipientBasedColor('text')} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Morpho Deposit
           </span>
         </div>
@@ -59,9 +59,9 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.strategy.uniswap.background} ${COLORS.strategy.uniswap.border} border rounded-lg`}>
+      <div className={`p-4 ${getRecipientBasedColor('background')} ${getRecipientBasedColor('border')} border rounded-lg`}>
         <div className="flex items-center gap-2 mb-2">
-          <span className={`${COLORS.strategy.uniswap.text} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
+          <span className={`${getRecipientBasedColor('text')} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Uniswap V2 Swap
           </span>
         </div>
