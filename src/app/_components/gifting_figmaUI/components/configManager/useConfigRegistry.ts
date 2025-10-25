@@ -20,15 +20,12 @@ export function useConfigRegistry(
       const network = await provider.getNetwork();
       
       if (network.chainId !== BigInt(421614)) {
-        console.log(`Wrong network: ${network.name} (${network.chainId}), expected Arbitrum Sepolia (421614)`);
         toast.error("Please switch to Arbitrum Sepolia network");
         return false;
       }
       
-      console.log(`✅ Network check successful: Arbitrum Sepolia (${network.chainId})`);
       return true;
     } catch (error: any) {
-      console.error("Failed to get network:", error);
       toast.error("Network detection failed. Please refresh the page and try again.");
       return false;
     }

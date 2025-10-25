@@ -37,13 +37,10 @@ export function useWallet() {
           const currentChainIdHex = ("0x" + network.chainId.toString(16)).toLowerCase();
 
           if (currentChainIdHex !== ARBITRUM_SEPOLIA_CHAIN_ID) {
-            console.log(`🌐 Wrong network detected: ${network.name} (${currentChainIdHex})`);
-            console.log(`🔄 Please switch to Arbitrum Sepolia...`);
             setIsCorrectNetwork(false);
             setNeedsNetworkSwitch(true);
             setNetworkError(`Please switch to Arbitrum Sepolia network. Current: ${network.name}`);
           } else {
-            console.log("✅ Connected to Arbitrum Sepolia");
             setIsCorrectNetwork(true);
             setNeedsNetworkSwitch(false);
             setNetworkError(null);
@@ -79,7 +76,6 @@ export function useWallet() {
       };
 
       const handleChainChanged = () => {
-        console.log("🔄 Chain changed, reinitializing...");
         // Force page reload to ensure clean provider state
         window.location.reload();
       };
