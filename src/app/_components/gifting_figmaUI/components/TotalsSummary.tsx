@@ -2,8 +2,31 @@ import React from 'react';
 import { RecipientWallet } from '../types';
 import { calculateTotalPercentage } from '../utils';
 import { Card } from '../../ui/card';
-import { STRATEGY_LABELS, STRATEGY_COLORS } from '../types';
+import { STRATEGY_LABELS } from '../types';
 import { COLORS } from '../design-tokens';
+
+function hexToRgb(hex: string) {
+  const clean = hex.replace('#', '');
+  const bigint = parseInt(clean.length === 3 ? clean.split('').map(c => c + c).join('') : clean, 16);
+  return { r: (bigint >> 16) & 255, g: (bigint >> 8) & 255, b: bigint & 255 };
+}
+
+function rgbToHex(r: number, g: number, b: number) {
+  const toHex = (v: number) => v.toString(16).padStart(2, '0');
+  return `#${toHex(Math.max(0, Math.min(255, Math.round(r))))}${toHex(Math.max(0, Math.min(255, Math.round(g))))}${toHex(Math.max(0, Math.min(255, Math.round(b))))}`;
+}
+
+function lighten(hex: string, amount: number) {
+  const { r, g, b } = hexToRgb(hex);
+  const mix = (c: number) => c + (255 - c) * amount;
+  return rgbToHex(mix(r), mix(g), mix(b));
+}
+
+function getStrategyShade(baseHex: string, strategyIndex: number) {
+  const factors = [0.15, 0.35, 0.55, 0.75];
+  const idx = Math.max(0, Math.min(factors.length - 1, strategyIndex));
+  return lighten(baseHex, factors[idx]);
+}
 
 interface TotalsSummaryProps {
   recipientWallets: RecipientWallet[];
@@ -21,7 +44,7 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
         {/* Progress bar showing wallet allocations */}
         <div className="space-y-2">
           <div className="flex h-8 w-full overflow-hidden rounded-lg">
-            {recipientWallets.map((wallet) => {
+            {recipientWallets.map((wallet, rIdx) => {
               const percentage = wallet.sharePercent;
               if (percentage === 0) return null;
 
@@ -30,8 +53,8 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                   key={wallet.id}
                   style={{
                     width: `${percentage}%`,
-                    backgroundColor: wallet.color + '20', // Light background for wallet
-                    border: `2px solid ${wallet.color}`,
+                    backgroundColor: lighten(wallet.color, 0.85),
+                    borderRight: rIdx < recipientWallets.length - 1 ? '2px solid #ffffff' : 'none',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -46,13 +69,14 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                       if (strategy.percentage === 0) return null;
 
                       const strategyWidth = `${strategy.percentage}%`;
+                      const shade = getStrategyShade(wallet.color, strategy.strategyEnum);
 
                       return (
                         <div
                           key={idx}
                           style={{
                             width: strategyWidth,
-                            backgroundColor: strategy.color,
+                            backgroundColor: shade,
                             height: '100%',
                           }}
                           className="transition-all duration-300"
@@ -85,12 +109,13 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
                   <div className="ml-5 flex flex-wrap gap-2">
                     {wallet.strategies.map((strategy, idx) => {
                       if (strategy.percentage === 0) return null;
+                      const shade = getStrategyShade(wallet.color, strategy.strategyEnum);
 
                       return (
                         <div key={idx} className="flex items-center gap-1">
                           <div
                             className="h-2 w-2 rounded-full"
-                            style={{ backgroundColor: strategy.color }}
+                            style={{ backgroundColor: shade }}
                           />
                           <span className="text-xs text-gray-600">
                             {STRATEGY_LABELS[strategy.strategyEnum]}: {strategy.percentage.toFixed(1)}%
