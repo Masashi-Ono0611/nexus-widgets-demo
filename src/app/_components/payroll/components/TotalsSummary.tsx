@@ -108,15 +108,6 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
             })}
           </div>
         </div>
-
-        {Math.abs(totalPercentage - 100) > 0.01 && (
-          <div
-            className={`${COLORS.status.error.text} ${COLORS.status.error.background} ${COLORS.status.error.border} px-3 py-2 rounded flex items-center gap-2`}
-          >
-            <span className="font-medium">Total distribution must be 100%.</span>
-            <span className="ml-auto text-sm">Current: {totalPercentage.toFixed(1)}%</span>
-          </div>
-        )}
     </Card>
   );
 };
