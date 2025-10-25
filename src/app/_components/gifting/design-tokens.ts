@@ -74,27 +74,31 @@ export const COLORS = {
 
   // Brand colors - Application identity colors
   brand: {
-    primary: {
-      text: 'text-emerald-600',
-      background: 'bg-emerald-50',
-      border: 'border-emerald-200',
-      hover: 'hover:bg-emerald-100 hover:border-emerald-300',
-      active: 'bg-emerald-100 border-emerald-300',
+    recipientPrimary: {
+      text: 'text-white',
+      background: 'bg-[#1565C0]',
+      border: 'border-[#0D47A1]',
+      hover: 'hover:bg-[#1976D2] hover:border-[#1565C0]',
+      active: 'bg-[#1976D2] border-[#1565C0]',
     },
-    secondary: {
-      text: 'text-indigo-600',
-      background: 'bg-indigo-50',
-      border: 'border-indigo-200',
-      hover: 'hover:bg-indigo-100 hover:border-indigo-300',
-      active: 'bg-indigo-100 border-indigo-300',
+    recipientPrimaryLight: {
+      text: 'text-blue-600',
+      background: 'bg-blue-50',
+      border: 'border-blue-200',
+      hover: 'hover:bg-blue-100 hover:border-blue-300',
+      active: 'bg-blue-100 border-blue-300',
     },
-    accent: {
-      text: 'text-purple-600',
-      background: 'bg-purple-50',
-      border: 'border-purple-200',
-      hover: 'hover:bg-purple-100 hover:border-purple-300',
-      active: 'bg-purple-100 border-purple-300',
+    recipientPrimaryImportant: {
+      text: '!text-white',
+      background: '!bg-[#1565C0]',
+      border: '!border-[#0D47A1]',
+      hover: '!hover:bg-[#1976D2] !hover:border-[#1565C0]',
+      active: '!bg-[#1976D2] !border-[#1565C0]',
+      focus: '!focus:ring-[#42A5F5]',
     },
+
+    // Icon colors for better visibility
+    iconPrimary: 'text-[#1565C0]', // Recipient 1 blue for icons
   },
 
   // Status colors - Complete sets for different states
@@ -125,7 +129,7 @@ export const COLORS = {
     },
   },
 
-  // Interactive states
+  // Interactive states with important
   interactive: {
     hover: 'hover:bg-gray-50',
     focus: 'focus:ring-gray-200',
@@ -133,8 +137,16 @@ export const COLORS = {
     disabled: 'opacity-50 cursor-not-allowed',
   },
 
+  // Interactive states with !important for overriding
+  interactiveImportant: {
+    hover: '!hover:bg-gray-50',
+    focus: '!focus:ring-gray-200',
+    active: '!active:bg-gray-100',
+    disabled: '!opacity-50 !cursor-not-allowed',
+  },
+
   // Mode selection colors
-  modeActive: 'bg-indigo-100 border-2 border-indigo-500 text-indigo-600 shadow-md', // Immediate mode active
+  modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Immediate mode active
   modeInactive: 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300', // Mode inactive
   modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
 

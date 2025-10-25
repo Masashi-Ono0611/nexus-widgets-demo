@@ -5,7 +5,7 @@ import { CopyButton } from '../../ui/copy-button';
 export const DeFiStrategiesSection: React.FC = () => {
   return (
     <div className="space-y-3">
-      <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.brand.recipientPrimaryLight.background} ${COLORS.brand.recipientPrimaryLight.border} border rounded-lg`}>
         <div className="mb-2">
           <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Direct Transfer
@@ -19,7 +19,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         </p>
       </div>
 
-      <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.brand.recipientPrimaryLight.background} ${COLORS.brand.recipientPrimaryLight.border} border rounded-lg`}>
         <div className="mb-2">
           <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             AAVE Supply
@@ -39,7 +39,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.brand.recipientPrimaryLight.background} ${COLORS.brand.recipientPrimaryLight.border} border rounded-lg`}>
         <div className="mb-2">
           <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Morpho Deposit
@@ -59,7 +59,7 @@ export const DeFiStrategiesSection: React.FC = () => {
         </div>
       </div>
 
-      <div className={`p-4 ${COLORS.brand.secondary.background} ${COLORS.brand.secondary.border} border rounded-lg`}>
+      <div className={`p-4 ${COLORS.brand.recipientPrimaryLight.background} ${COLORS.brand.recipientPrimaryLight.border} border rounded-lg`}>
         <div className="mb-2">
           <h4 className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.label}`}>
             Uniswap V2 Swap
