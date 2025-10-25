@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { GiftingManagerExecuteOnly } from "../../../_components/gifting_figmaUI/GiftingManager";
+import { GiftingManagerExecuteOnly } from "../../../_components/gifting/GiftingManager";
 
 export default function GiftingReceivePage() {
   return (

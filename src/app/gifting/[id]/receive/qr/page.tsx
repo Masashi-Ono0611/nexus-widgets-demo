@@ -9,7 +9,7 @@ function QrInner() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const receivePath = id ? `/gifting_figmaUI/${id}/receive` : "";
+  const receivePath = id ? `/gifting/${id}/receive` : "";
   const receiveUrl = useMemo(() => {
     if (!mounted || !id) return "";
     return `${window.location.origin}${receivePath}`;

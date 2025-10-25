@@ -10,10 +10,10 @@ export default function Home() {
       </div>
 
       <div className="action-bar">
-        <a href="/payroll_figmaUI" className="btn btn-primary">
+        <a href="/payroll" className="btn btn-primary">
           Go to Payroll
         </a>
-        <a href="/gifting_figmaUI" className="btn btn-primary">
+        <a href="/gifting" className="btn btn-primary">
           Go to Gifting
         </a>
       </div>
