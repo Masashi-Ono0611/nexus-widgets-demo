@@ -3,6 +3,7 @@ import { RecipientWallet } from '../types';
 import { calculateTotalPercentage } from '../utils';
 import { Card } from '../../ui/card';
 import { STRATEGY_LABELS, STRATEGY_COLORS } from '../types';
+import { COLORS } from '../design-tokens';
 
 interface TotalsSummaryProps {
   recipientWallets: RecipientWallet[];
@@ -15,10 +16,6 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
     <Card className="p-8 gap-4">
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Total Distribution</h3>
-          <div className="flex justify-end items-baseline gap-1">
-            <span className="text-sm">Total Percentage:  </span>
-            <span className="text-2xl font-bold">{totalPercentage.toFixed(1)}%</span>
-          </div>
         </div>
 
         {/* Progress bar showing wallet allocations */}
@@ -107,6 +104,15 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
             })}
           </div>
         </div>
+
+        {Math.abs(totalPercentage - 100) > 0.01 && (
+          <div
+            className={`${COLORS.status.error.text} ${COLORS.status.error.background} ${COLORS.status.error.border} px-3 py-2 rounded flex items-center gap-2`}
+          >
+            <span className="font-medium">Share total must be 100%.</span>
+            <span className="ml-auto text-sm">Current: {totalPercentage.toFixed(1)}%</span>
+          </div>
+        )}
     </Card>
   );
 };

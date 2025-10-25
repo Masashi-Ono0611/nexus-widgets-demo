@@ -83,6 +83,21 @@ export const WalletCard: React.FC<WalletCardProps> = ({
         />
       </div>
 
+      {/* Share Percentage */}
+      <div className="space-y-1">
+        <label className="text-sm">Share Percentage (%)</label>
+        <Input
+          type="number"
+          placeholder="0.0"
+          min="0"
+          max="100"
+          step="0.1"
+          value={wallet.sharePercent || ''}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange({ ...wallet, sharePercent: parseFloat(e.target.value) || 0 })}
+          className={walletErrors.some((e) => e.field === 'sharePercent') ? COLORS.status.error.border : ''}
+        />
+      </div>
+
       {/* Strategy Allocation */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">

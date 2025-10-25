@@ -23,7 +23,7 @@ import {
 import {
   validateRecipientWallets,
   convertToRecipients,
-  totalShare,
+  calculateTotalPercentage,
 } from './utils';
 import { Plus, Settings, Play } from 'lucide-react';
 import { toast } from 'sonner';
@@ -44,7 +44,7 @@ export const GiftingManager: React.FC = () => {
 
   // Convert to contract-compatible format
   const recipients = useMemo(() => convertToRecipients(recipientWallets), [recipientWallets]);
-  const totalShareValue = useMemo(() => totalShare(recipients), [recipients]);
+  const totalShareValue = useMemo(() => calculateTotalPercentage(recipientWallets), [recipientWallets]);
 
   // Validation
   const isValid = useMemo(() => {
@@ -185,15 +185,6 @@ export const GiftingManager: React.FC = () => {
       {/* Execute Button */}
       <Card className="p-6">
         <div className="space-y-4">
-          {isValid ? (
-            <div></div>
-          ) : (
-            <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
-              <Settings className="h-4 w-4" />
-              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
-            </div>
-          )}
-
           <BridgeAndExecuteButton
             contractAddress={FLEXIBLE_SPLITTER_ADDRESS}
             contractAbi={[
@@ -252,6 +243,13 @@ export const GiftingManager: React.FC = () => {
               </Button>
             )}
           </BridgeAndExecuteButton>
+
+          {/* Config error banner below the button */}
+          {!isValid && (
+            <div className={`${COLORS.status.error.text} ${COLORS.status.error.background} ${COLORS.status.error.border} px-3 py-2 rounded flex items-center gap-2`}>
+              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
+            </div>
+          )}
         </div>
       </Card>
 

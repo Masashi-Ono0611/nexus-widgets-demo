@@ -215,15 +215,6 @@ export const PayrollManager: React.FC = () => {
       {/* Execute Button */}
       <Card className="p-6">
         <div className="space-y-4">
-          {isValid ? (
-            <div></div>
-          ) : (
-            <div className={`flex items-center gap-2 ${COLORS.status.error.text} p-3 ${COLORS.status.error.background} rounded-lg`}>
-              <Settings className="h-4 w-4" />
-              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
-            </div>
-          )}
-
           <BridgeAndExecuteButton
             contractAddress={executionMode === 'recurring' ? RECURRING_SPLITTER_ADDRESS : FLEXIBLE_SPLITTER_ADDRESS}
             contractAbi={
@@ -313,6 +304,13 @@ export const PayrollManager: React.FC = () => {
               </Button>
             )}
           </BridgeAndExecuteButton>
+
+          {/* Config error banner below the button */}
+          {!isValid && (
+            <div className={`${COLORS.status.error.text} ${COLORS.status.error.background} ${COLORS.status.error.border} px-3 py-2 rounded flex items-center gap-2`}>
+              <span className="font-medium">Configuration incomplete - please follow the instructions above</span>
+            </div>
+          )}
         </div>
       </Card>
 
