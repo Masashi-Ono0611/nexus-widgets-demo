@@ -127,7 +127,7 @@ export default function GiftingPage() {
             Gifting Manager
           </h1>
           <p className={`text-lg ${COLORS.textSecondary} max-w-3xl mx-auto`}>
-            Percentage-based USDC gifting with DeFi strategy allocations and cross-chain execution
+            Allocate funds to multiple recipients with percentage-based distribution and DeFi strategy allocation through QR codes
           </p>
 
           {/* Info Pills */}

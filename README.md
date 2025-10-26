@@ -6,7 +6,7 @@ This app is a payment tool with:
 - **Multi-Wallet Distribution**: Send payments to multiple recipients simultaneously
 - **Multi-Strategy Allocation**: Allocate funds across different DeFi protocols (AAVE, Morpho, Uniswap)
 - **Automated Recurring**: Schedule recurring payments with customizable intervals
-- **Cross-Chain Support**: Accept payments from multiple major EVM chains
+- **Cross-Chain Support**: Accept payments from multiple major EVM chains and bridge seamlessly
 
 > **Note**: This project is designed for testnet environments only (Base Sepolia, Arbitrum Sepolia, Optimism Sepolia).
 

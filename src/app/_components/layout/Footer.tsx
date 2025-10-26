@@ -11,7 +11,7 @@ export function Footer() {
         <div className={styles.footerSection}>
           <h4 className={styles.footerTitle}>Toke Of App</h4>
           <p className={styles.footerDescription}>
-            Cross-chain DeFi operations with seamless token bridging, lending, and yield farming.
+            A PayFi App with Multi-Wallet Distribution, Multi-Strategy Allocation, and Automated Recurring from Multiple Chains
           </p>
         </div>
 
@@ -45,7 +45,7 @@ export function Footer() {
 
       <div className={styles.footerBottom}>
         <p className={styles.copyright}>
-          © {currentYear} Toke Of App. Built with ❤️ for cross-chain DeFi.
+          © {currentYear} Toke Of App. Built with ❤️ for PayFi.
         </p>
       </div>
     </footer>

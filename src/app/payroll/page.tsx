@@ -128,7 +128,7 @@ export default function PayrollPage() {
             Payroll Manager
           </h1>
           <p className={`text-lg ${COLORS.textSecondary} max-w-3xl mx-auto`}>
-            Multi-wallet payroll with DeFi strategies, recurring payments, and cross-chain USDC bridging
+            Send payments to multiple team members simultaneously with automated recurring schedules and DeFi strategy allocation
           </p>
 
           {/* Info Pills */}

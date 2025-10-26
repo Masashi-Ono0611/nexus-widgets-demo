@@ -66,7 +66,7 @@ export default function Home() {
           <h2 className={`text-3xl ${FONT_WEIGHTS.sectionHeading} ${COLORS.textPrimary}`}>
             Key Features
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
               <div className={`text-3xl mb-3`}>👛</div>
               <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Multi-Wallet Distribution</h4>
@@ -81,6 +81,11 @@ export default function Home() {
               <div className={`text-3xl mb-3`}>⏰</div>
               <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Automated Recurring</h4>
               <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Schedule recurring payments with customizable intervals</p>
+            </div>
+            <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
+              <div className={`text-3xl mb-3`}>🌉</div>
+              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Cross-Chain Support</h4>
+              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Accept payments from multiple major EVM chains and bridge seamlessly</p>
             </div>
           </div>
         </div>

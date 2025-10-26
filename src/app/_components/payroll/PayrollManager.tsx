@@ -4,7 +4,6 @@ import { BridgeAndExecuteButton, TOKEN_CONTRACT_ADDRESSES, TOKEN_METADATA } from
 import { parseUnits } from "viem";
 import { Card } from '../ui/card';
 import { Button } from '../ui/button';
-import { Badge } from '../ui/badge';
 import { InfoAccordion } from './components/InfoAccordion';
 import { TotalsSummary } from './components/TotalsSummary';
 import { WalletCard } from './components/WalletCard';
