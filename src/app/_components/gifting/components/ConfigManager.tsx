@@ -172,16 +172,18 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         variant="outline"
         size="sm"
       >
-        📂 Load
+        {/* 📂 Load */}
+        📂 Gift Profiles
       </Button>
       <Button
         onClick={() => setShowNewSaveModal(true)}
         disabled={!canOpenNewSave}
         variant="outline"
         size="sm"
-        title={canOpenNewSave ? "Save a new configuration" : "Fix recipients/percentages first"}
+        title={canOpenNewSave ? "Save a new gift profile" : "Fix recipients/percentages first"}
       >
-        💾 New Save
+        {/* 💾 New Save */}
+        💾 New Gift
       </Button>
       <Button
         onClick={() => setShowUpdateSaveModal(true)}
@@ -190,13 +192,14 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         size="sm"
         title={
           canOpenUpdateSave
-            ? "Update the loaded configuration"
+            ? "Update the loaded gift profile"
             : hasLoadedConfig
               ? "Fix recipients/percentages first"
-              : "Load a configuration first to enable update"
+              : "Load a gift profile first to enable update"
         }
       >
-        ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""}
+        {/* ✏️ Update Save {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""} */}
+        ✏️ Update Gift {hasLoadedConfig ? `(ID: ${loadedConfigId!.toString()})` : ""}
       </Button>
 
       <SaveConfigModal
@@ -210,7 +213,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         isPublic={isPublic}
         setIsPublic={setIsPublic}
         isSaving={isSaving}
-        title="New Save Configuration"
+        title="New Gift Configuration"
         saveButtonText="Save"
       />
 
@@ -225,7 +228,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         isPublic={isPublic}
         setIsPublic={setIsPublic}
         isSaving={isSaving}
-        title="Update Configuration"
+        title="Update Gift Configuration"
         saveButtonText="Update"
         showPublicToggle={false}
       />
