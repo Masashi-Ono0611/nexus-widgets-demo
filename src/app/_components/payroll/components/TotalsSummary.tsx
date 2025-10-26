@@ -25,7 +25,7 @@ export const TotalsSummary: React.FC<TotalsSummaryProps> = ({ recipientWallets }
 
         {/* Progress bar showing wallet allocations */}
         <div className="space-y-2">
-          <div className="flex h-8 w-full overflow-hidden rounded-lg">
+          <div className="flex h-8 w-full overflow-hidden rounded-lg border-2 border-gray-300">
             {recipientWallets.map((wallet, rIdx) => {
               const percentage = (calculateTotalAmount(recipientWallets) > 0 ? (wallet.amount / calculateTotalAmount(recipientWallets)) * 100 : 0);
               if (percentage === 0) return null;

@@ -51,14 +51,6 @@ export function Footer() {
           </ul>
         </div>
 
-        <div className={styles.footerSection}>
-          <h4 className={styles.footerTitle}>Supported Networks</h4>
-          <ul className={styles.footerLinks}>
-            <li>Base Sepolia</li>
-            <li>Optimism Sepolia</li>
-            <li>Arbitrum Sepolia</li>
-          </ul>
-        </div>
       </div>
 
       <div className={styles.footerBottom}>

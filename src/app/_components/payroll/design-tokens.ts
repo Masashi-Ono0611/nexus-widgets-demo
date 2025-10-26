@@ -143,6 +143,13 @@ export const COLORS = {
   grid: {
     strategies: 'grid-cols-1 md:grid-cols-2 gap-1',
   },
+
+  // Loading states
+  loading: {
+    spinner: 'animate-spin text-blue-600',
+    spinnerSize: 'h-8 w-8',
+    spinnerContainer: 'flex items-center justify-center py-8',
+  },
 } as const;
 
 // Helper functions for strategy shades based on recipient color

@@ -24,7 +24,7 @@ import {
   convertToRecipients,
   calculateTotalPercentage,
 } from './utils';
-import { Plus, Settings, Play } from 'lucide-react';
+import { Plus, Settings, Play, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { COLORS } from './design-tokens';
 import { useGiftingConfig } from './hooks/useGiftingConfig';
@@ -94,9 +94,8 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
     <div className="space-y-4">
       {/* ExecuteOnly mode: Show loading or error */}
       {executeOnly && isLoadingConfig && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
-          <div className="text-gray-600">Loading...</div>
+        <div className={COLORS.loading.spinnerContainer}>
+          <Loader2 className={`${COLORS.loading.spinnerSize} ${COLORS.loading.spinner}`} />
         </div>
       )}
       {executeOnly && !isLoadingConfig && notFound && (
@@ -203,24 +202,28 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
                 }}
               >
                 {({ onClick, isLoading }) => (
-                  <Button
-                    onClick={async () => {
-                      if (!isValid) {
-                        toast.error('Please ensure all addresses are valid and total share is 100%');
-                        return;
-                      }
-                      await onClick();
-                    }}
-                    disabled={isLoading || !isValid}
-                    className={`w-full h-16 text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl ${
-                      isLoading || !isValid
-                        ? `${COLORS.interactiveImportant.disabled}`
-                        : `${COLORS.brand.recipientPrimaryImportant.background} ${COLORS.brand.recipientPrimaryImportant.text} ${COLORS.brand.recipientPrimaryImportant.border} ${COLORS.brand.recipientPrimaryImportant.hover} ${COLORS.brand.recipientPrimaryImportant.focus}`
-                    }`}
-                  >
-                    <Play className="h-6 w-6 mr-3" />
-                    {isLoading ? 'Processing...' : 'Execute Gift Distribution Now'}
-                  </Button>
+                  <div className={executeOnly ? 'flex justify-center' : ''}>
+                    <Button
+                      onClick={async () => {
+                        if (!isValid) {
+                          toast.error('Please ensure all addresses are valid and total share is 100%');
+                          return;
+                        }
+                        await onClick();
+                      }}
+                      disabled={isLoading || !isValid}
+                      className={`${
+                        executeOnly ? 'w-full md:w-2/3 lg:w-1/2 h-20 text-2xl' : 'w-full h-16 text-lg'
+                      } font-semibold transition-all duration-200 shadow-lg hover:shadow-xl ${
+                        isLoading || !isValid
+                          ? `${COLORS.interactiveImportant.disabled}`
+                          : `${COLORS.brand.recipientPrimaryImportant.background} ${COLORS.brand.recipientPrimaryImportant.text} ${COLORS.brand.recipientPrimaryImportant.border} ${COLORS.brand.recipientPrimaryImportant.hover} ${COLORS.brand.recipientPrimaryImportant.focus}`
+                      }`}
+                    >
+                      <Play className={executeOnly ? 'h-7 w-7 mr-3' : 'h-6 w-6 mr-3'} />
+                      {isLoading ? 'Processing...' : executeOnly ? 'Send Gifts 🎁' : 'Execute Gift Distribution Now'}
+                    </Button>
+                  </div>
                 )}
               </BridgeAndExecuteButton>
 
