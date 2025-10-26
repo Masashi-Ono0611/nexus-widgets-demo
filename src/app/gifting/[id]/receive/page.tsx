@@ -111,14 +111,15 @@ export default function GiftingReceivePage() {
 
   return (
     <main className="container mx-auto px-4 py-8">
-      <NetworkGateModal
+      {/* NetworkGateModal temporarily disabled for testing */}
+      {/* <NetworkGateModal
         isOpen={showGate}
         address={address}
         isCorrectNetwork={isCorrectNetwork}
         onConnectWallet={handleConnectWallet}
         onSwitchNetwork={handleSwitchNetwork}
         networkName="Arbitrum Sepolia"
-      />
+      /> */}
       <GiftingManagerExecuteOnly />
     </main>
   );
