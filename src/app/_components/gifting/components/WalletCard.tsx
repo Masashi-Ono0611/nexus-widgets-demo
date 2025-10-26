@@ -54,7 +54,7 @@ export const WalletCard: React.FC<WalletCardProps> = ({
             <Wallet className="h-5 w-5" style={{ color: wallet.color }} />
           </div>
           <div>
-            <h3 className="font-semibold">Recipient {index + 1}</h3>
+            <h3 className="font-semibold">Recipient Wallet {index + 1}</h3>
             {wallet.address && (
               <p className={`${FONT_SIZES.bodyMedium} ${COLORS.textSecondary}`}>{formatAddress(wallet.address)}</p>
             )}
