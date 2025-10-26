@@ -1,16 +1,11 @@
 .footer {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 250, 252, 0.9) 100%);
-  border-top: 1px solid var(--border);
+  background: rgba(239, 246, 255, 1);
+  border-top: 1px solid rgba(191, 219, 254, 1);
   margin-top: 80px;
   padding: 60px 24px 20px;
   transition: all 0.3s ease;
 }
 
-@media (prefers-color-scheme: dark) {
-  .footer {
-    background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.9) 100%);
-  }
-}
 
 .footerContent {
   max-width: 1200px;
@@ -69,7 +64,7 @@
   max-width: 1200px;
   margin: 0 auto;
   padding-top: 24px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid rgba(191, 219, 254, 1);
   text-align: center;
 }
 
