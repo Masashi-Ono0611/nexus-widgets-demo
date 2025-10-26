@@ -18,6 +18,7 @@ This app is a payment tool with:
 - **DeFi Integration**: Support for AAVE, Morpho Vault, and Uniswap V2 strategies
 - **Config Management**: On-chain storage for saving and loading payroll/gifting configurations
 - **Network Gate**: Automatic wallet connection and network switching to Arbitrum Sepolia
+- **Gelato Automation**: Scheduled recurring payments with time-based execution
 
 ## Requirements
 
@@ -65,83 +66,24 @@ Get free testnet USDC from Circle's faucet:
 - **/gifting**: Percentage-based gifting with DeFi strategy allocations
 - **/morpho**: Direct interaction with Morpho Vault v2 on Arbitrum Sepolia
 
-## Contract Deployment
+## Development
 
-### Deploy a Contract
+### Contract Development
 
-Use the unified deployment script:
+#### Adding a New Contract
+1. **Create Contract File**: Add your Solidity contract to `contracts/YourContract.sol`
+2. **Compile Contract**: `pnpm hardhat compile`
+3. **Add Deployment Script**: Add to `package.json`
+   ```json
+   "deploy:your-contract": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} CONTRACT_NAME=YourContract tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts"
+   ```
+4. **Create Test Script**: `scripts/testYourContract.ts`
+   ```json
+   "test:your-contract": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testYourContract.ts"
+   ```
+5. **Create UI Component**: `src/app/_components/YourContractCard.tsx` using `BridgeAndExecuteButton`
 
-```bash
-# Deploy to Base Sepolia (default)
-pnpm run deploy:delayed-transfer
-
-# Deploy to a specific network
-HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter
-
-# Deploy FlexibleSplitter (requires constructor args)
-pnpm run deploy:flexible-splitter
-```
-
-See `package.json` scripts section for all available deployment commands.
-
-**Note for FlexibleSplitter**: This contract requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deploy/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
-
-### After Deployment
-
-1. Copy the deployed contract address from the output
-2. Update the corresponding UI component in `src/app/_components/`
-3. Update the test script in `scripts/` if applicable
-
-## Deployed Contracts (Arbitrum Sepolia)
-
-### Core Contracts
-
-- **FlexibleSplitter**: `0x3BE9739723Ad9C8394511d96E3Daf9942A8AD454`
-  - Multi-recipient token distribution with DeFi strategies
-  - 4 strategies: Direct Transfer, AAVE Supply, Morpho Deposit, Uniswap V2 Swap
-  - Deploy: `pnpm run deploy:flexible-splitter`
-  - Test: `pnpm run test:flexible-splitter`
-
-- **RecurringSplitter**: `0x4b54649cc3cC15dA42077fcFDAA79E09DC377C2E`
-  - Scheduled recurring distributions with Gelato automation
-  - Same 4 strategies as FlexibleSplitter
-  - Deploy: `pnpm run deploy:recurring-splitter`
-  - Test: `pnpm run test:recurring-splitter`
-
-- **SwapExecutor**: `0x783140003cFF6C06B230937707eB5222186F0118`
-  - Standalone Uniswap V2 swap contract (USDC → WETH)
-  - Deploy: `pnpm run deploy:swap-executor`
-  - Test: `pnpm run test:uniswap-v2-swap`
-
-### Configuration Registries
-
-- **PayrollConfigRegistry**: `0x1d5dF7B4553c78318DB8F4833BD22fE92E32F2D7`
-  - On-chain storage for payroll configuration presets
-  - Shared contract for all users
-  - Deploy: `pnpm run deploy:payroll-config-registry`
-  - Test: `pnpm run test:payroll-config-registry`
-
-- **GiftingConfigRegistry**: `0x2e14Dc0A48F5d700695fc0c15b35bcf24761756F`
-  - On-chain storage for gifting configuration presets
-  - Shared contract for all users
-  - Deploy: `pnpm run deploy:gifting-config-registry`
-  - Test: `pnpm run test:gifting-config-registry`
-
-### External Contracts
-
-- **Morpho Vault v2**: `0xabf102Ed5f977331BdAD74d9136b6bFb7A2F09b6`
-  - ERC4626 compatible vault for USDC deposits
-  - Direct interaction available at `/morpho`
-
-- **DelayedTransfer**: `0x9B31E6D589657d37fFf3d8D8f3699C8d28c4B8F9`
-  - Time-locked token transfers with Gelato automation
-  - Deploy: `pnpm run deploy:delayed-transfer`
-  - Test: `pnpm run test:delayed-transfer`
-
-## Testing
-
-### Run Contract Tests
-
+#### Testing
 ```bash
 # Run all Hardhat tests
 pnpm run test:contracts
@@ -153,51 +95,24 @@ pnpm run test:payroll-config-registry
 pnpm run test:gifting-config-registry
 ```
 
-### Management Commands
-
-For RecurringSplitter schedules:
+#### Deployment Commands
 ```bash
-# Check schedule status
-pnpm run check:recurring-schedule [scheduleId]
+# Deploy to Base Sepolia (default)
+pnpm run deploy:delayed-transfer
 
-# Execute schedule manually
-pnpm run execute:recurring-schedule [scheduleId]
+# Deploy to specific network
+HARDHAT_NETWORK=arbitrumSepolia pnpm run deploy:auto-splitter
 
-# Cancel schedule
-pnpm run cancel:recurring-schedule [scheduleId]
+# Deploy FlexibleSplitter (requires constructor args)
+pnpm run deploy:flexible-splitter
 ```
 
-## Adding a New Contract
+**Note**: FlexibleSplitter requires AAVE Pool and Morpho Vault addresses as constructor arguments. Update `scripts/deploy/deployFlexibleSplitter.ts` for network-specific addresses before deployment.
 
-### 1. Create Contract File
-
-Add your Solidity contract to `contracts/YourContract.sol`
-
-### 2. Compile Contract
-
-```bash
-pnpm hardhat compile
-```
-
-### 3. Add Deployment Script
-
-Add to `package.json`:
-
-```json
-"deploy:your-contract": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} CONTRACT_NAME=YourContract tsx --tsconfig tsconfig.hardhat.json scripts/deployContract.ts"
-```
-
-### 4. Create Test Script (Optional)
-
-Create `scripts/testYourContract.ts` and add to `package.json`:
-
-```json
-"test:your-contract": "HARDHAT_NETWORK=${HARDHAT_NETWORK:-${npm_config_network:-arbitrumSepolia}} tsx --tsconfig tsconfig.hardhat.json scripts/testYourContract.ts"
-```
-
-### 5. Create UI Component
-
-Create a component in `src/app/_components/YourContractCard.tsx` using `BridgeAndExecuteButton`
+### After Deployment
+1. Copy the deployed contract address from the output
+2. Update the corresponding UI component in `src/app/_components/`
+3. Update the test script in `scripts/` if applicable
 
 ## DeFi Strategy Integration
 
@@ -208,26 +123,73 @@ Create a component in `src/app/_components/YourContractCard.tsx` using `BridgeAn
 3. **Morpho Deposit**: Deposit tokens to Morpho Vault on behalf of recipient
 4. **Uniswap V2 Swap**: Swap USDC to WETH via Uniswap V2 (Arbitrum Sepolia only)
 
-## Architecture
+## Tech Stack
 
-### Frontend Structure
-- **Next.js 14** with App Router
-- **TypeScript** for type safety
-- **Tailwind CSS** for styling
-- **Radix UI** components for accessibility
-- **Wagmi** for Web3 integration
+### Frontend
+- **Next.js 14** with App Router for modern React development
+- **TypeScript** for type-safe development
+- **React 18** with hooks and concurrent features
+- **Tailwind CSS** for utility-first styling
+- **Radix UI** components for accessible UI primitives
+- **Wagmi v2** for Ethereum interaction and wallet management
+- **Viem v2** for low-level Ethereum operations
+- **RainbowKit** for multi-wallet connection UI
+- **TanStack Query** for state management
+- **Sonner** for toast notifications
 
-### Key Components
-- **PayrollManager**: Main payroll interface with wallet group management
-- **GiftingManager**: Percentage-based gifting with strategy allocation
-- **ConfigManager**: On-chain configuration save/load/update flows
-- **NetworkGateModal**: Wallet connection and network switching enforcement
+### Web3 Integration
+- **Avail Nexus Widgets** for cross-chain bridge functionality
+- **@walletconnect** for multi-chain wallet connections
+- **@gelatonetwork/automate-sdk** for automation services
 
-### Contract Architecture
-- **FlexibleSplitter**: Core distribution logic with strategy routing
-- **RecurringSplitter**: Time-based execution with Gelato automation
-- **ConfigRegistry**: Shared on-chain storage for user configurations
-- **Strategy Interfaces**: Standardized integration with DeFi protocols
+### Smart Contracts
+- **Solidity ^0.8.25** with OpenZeppelin contracts
+- **Hardhat** for development, testing, and deployment
+- **TypeScript** for deployment scripts and testing
+
+### DeFi Protocols
+- **AAVE**: Lending and borrowing protocol integration
+- **Morpho Vault v2**: ERC4626 compatible yield optimization
+- **Uniswap V2**: Decentralized exchange for token swaps
+
+## Cross-Chain Integration
+
+### Avail Nexus Widget Integration
+
+#### Bridge Execution Flow
+The application leverages **Avail Nexus Widgets** (`@avail-project/nexus-widgets`) for seamless cross-chain token bridging:
+
+```typescript
+// BridgeAndExecuteButton usage pattern
+<BridgeAndExecuteButton
+  contractAddress={CONTRACT_ADDRESS}
+  contractAbi={CONTRACT_ABI}
+  functionName="distributeTokens"
+  prefill={{
+    toChainId: 421614, // Arbitrum Sepolia
+    token: "USDC"
+  }}
+  buildFunctionParams={(token, amount, chainId, userAddress) => {
+    const tokenAddress = TOKEN_CONTRACT_ADDRESSES[token][chainId];
+    const amountWei = parseUnits(amount, decimals);
+
+    return {
+      functionParams: [tokenAddress, amountWei, recipients]
+    };
+  }}
+/>
+```
+
+#### Token Address Management
+- **TOKEN_CONTRACT_ADDRESSES**: SDK-provided token addresses per chain
+- **TOKEN_METADATA**: Token decimals and metadata
+- **Chain-specific bridging**: Support for Base Sepolia, Arbitrum Sepolia, Optimism Sepolia
+
+#### Bridge Execution Flow
+1. User selects target chain and token
+2. Widget handles token bridging to destination chain
+3. Smart contract execution on destination chain
+4. Real-time transaction status updates
 
 ## Issues Found
 
