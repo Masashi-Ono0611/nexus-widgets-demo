@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card } from '../../ui/card';
 import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
@@ -22,6 +22,57 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
   onRecurringIntervalChange,
   onMaxExecutionsChange,
 }) => {
+  // Convert minutes to days/hours/minutes for display
+  const [days, setDays] = useState(0);
+  const [hours, setHours] = useState(0);
+  const [minutes, setMinutes] = useState(0);
+
+  // Initialize from recurringInterval (in minutes)
+  useEffect(() => {
+    const totalMinutes = recurringInterval || 0;
+    const d = Math.floor(totalMinutes / (24 * 60));
+    const h = Math.floor((totalMinutes % (24 * 60)) / 60);
+    const m = totalMinutes % 60;
+    setDays(d);
+    setHours(h);
+    setMinutes(m);
+  }, [recurringInterval]);
+
+  // Convert days/hours/minutes to total minutes and notify parent
+  const updateTotalMinutes = (newDays: number, newHours: number, newMinutes: number) => {
+    const totalMinutes = newDays * 24 * 60 + newHours * 60 + newMinutes;
+    // Ensure at least 1 minute
+    const finalMinutes = Math.max(1, Math.min(525600, totalMinutes)); // Max 1 year
+    onRecurringIntervalChange(finalMinutes);
+  };
+
+  const handleDaysChange = (value: number) => {
+    const newDays = Math.max(0, Math.min(365, value));
+    setDays(newDays);
+    updateTotalMinutes(newDays, hours, minutes);
+  };
+
+  const handleHoursChange = (value: number) => {
+    const newHours = Math.max(0, Math.min(23, value));
+    setHours(newHours);
+    updateTotalMinutes(days, newHours, minutes);
+  };
+
+  const handleMinutesChange = (value: number) => {
+    const newMinutes = Math.max(0, Math.min(59, value));
+    setMinutes(newMinutes);
+    updateTotalMinutes(days, hours, newMinutes);
+  };
+
+  // Format interval display for preview
+  const formatIntervalDisplay = () => {
+    const parts = [];
+    if (days > 0) parts.push(`${days} day${days !== 1 ? 's' : ''}`);
+    if (hours > 0) parts.push(`${hours} hour${hours !== 1 ? 's' : ''}`);
+    if (minutes > 0) parts.push(`${minutes} minute${minutes !== 1 ? 's' : ''}`);
+    return parts.length > 0 ? parts.join(', ') : '1 minute';
+  };
+
   return (
     <Card className="p-8 gap-4">
       {/* Mode Selection */}
@@ -72,17 +123,46 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="space-y-1">
-              <Label htmlFor="interval" className="text-sm">Interval (minutes)</Label>
-              <Input
-                id="interval"
-                type="number"
-                min="1"
-                max="525600"
-                value={recurringInterval}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onRecurringIntervalChange(parseInt(e.target.value) || 1)}
-                placeholder="e.g., 60"
-              />
-              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Between 1 minute and 1 year</p>
+              <Label htmlFor="interval" className="text-sm">Interval</Label>
+              <div className="grid grid-cols-3 gap-1">
+                <div className="space-y-1">
+                  <Input
+                    id="days"
+                    type="number"
+                    min="0"
+                    max="365"
+                    value={days}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleDaysChange(parseInt(e.target.value) || 0)}
+                    placeholder="0"
+                  />
+                  <Label htmlFor="days" className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Days</Label>
+                </div>
+                <div className="space-y-1">
+                  <Input
+                    id="hours"
+                    type="number"
+                    min="0"
+                    max="23"
+                    value={hours}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleHoursChange(parseInt(e.target.value) || 0)}
+                    placeholder="0"
+                  />
+                   <Label htmlFor="hours" className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Hours</Label>
+                </div>
+                <div className="space-y-1">
+                  <Input
+                    id="minutes"
+                    type="number"
+                    min="0"
+                    max="59"
+                    value={minutes}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleMinutesChange(parseInt(e.target.value) || 0)}
+                    placeholder="0"
+                  />
+                  <Label htmlFor="minutes" className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Minutes</Label>
+                </div>
+              </div>
+              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Min: 1 minute, Max: 1 year</p>
             </div>
 
             <div className="space-y-1">
@@ -100,8 +180,8 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             </div>
           </div>
 
-          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.recipientPrimaryLight.text} bg-white p-2 rounded ${COLORS.brand.recipientPrimaryLight.border}`}>
-            <strong>Schedule Preview:</strong> Execute every {recurringInterval} minute{recurringInterval !== 1 ? 's' : ''}{' '}
+          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.recipientPrimaryLight.text} bg-white p-3 rounded ${COLORS.brand.recipientPrimaryLight.border}`}>
+            <strong>Schedule Preview:</strong> Execute every {formatIntervalDisplay()}{' '}
             {maxExecutions > 0 ? `for ${maxExecutions} execution${maxExecutions !== 1 ? 's' : ''}` : 'indefinitely'}
           </div>
         </div>
