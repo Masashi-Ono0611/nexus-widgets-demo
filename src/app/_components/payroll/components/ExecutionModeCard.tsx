@@ -4,6 +4,7 @@ import { Input } from '../../ui/input';
 import { Label } from '../../ui/label';
 import { Clock, Zap } from 'lucide-react';
 import { FONT_SIZES, COLORS } from '../design-tokens';
+import { formatUSDC } from '../utils';
 
 interface ExecutionModeCardProps {
   mode: 'immediate' | 'recurring';
@@ -12,6 +13,7 @@ interface ExecutionModeCardProps {
   maxExecutions: number;
   onRecurringIntervalChange: (interval: number) => void;
   onMaxExecutionsChange: (max: number) => void;
+  totalAmountPerExecution: number;
 }
 
 export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
@@ -21,6 +23,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
   maxExecutions,
   onRecurringIntervalChange,
   onMaxExecutionsChange,
+  totalAmountPerExecution,
 }) => {
   // Convert minutes to days/hours/minutes for display
   const [days, setDays] = useState(0);
@@ -166,23 +169,23 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             </div>
 
             <div className="space-y-1">
-              <Label htmlFor="maxExecutions" className="text-sm">Max Executions</Label>
+              <Label htmlFor="maxExecutions" className="text-sm">Number of Payments</Label>
               <Input
                 id="maxExecutions"
                 type="number"
-                min="0"
+                min="1"
                 max="1000"
                 value={maxExecutions}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onMaxExecutionsChange(parseInt(e.target.value) || 0)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => onMaxExecutionsChange(parseInt(e.target.value) || 1)}
                 placeholder="e.g., 12"
               />
-              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>0 = unlimited</p>
+              <p className={`${FONT_SIZES.help} ${COLORS.textTertiary}`}>Min:1 time, Max:1000 times</p>
             </div>
           </div>
 
           <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.recipientPrimaryLight.text} bg-white p-3 rounded ${COLORS.brand.recipientPrimaryLight.border}`}>
             <strong>Schedule Preview:</strong> Execute every {formatIntervalDisplay()}{' '}
-            {maxExecutions > 0 ? `for ${maxExecutions} execution${maxExecutions !== 1 ? 's' : ''}` : 'indefinitely'}
+            for {maxExecutions} payment{maxExecutions !== 1 ? 's' : ''} ({formatUSDC(totalAmountPerExecution)} per payment)
           </div>
         </div>
       )}

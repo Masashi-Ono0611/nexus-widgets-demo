@@ -46,11 +46,17 @@ export const PayrollManager: React.FC = () => {
 
   const [executionMode, setExecutionMode] = useState<'immediate' | 'recurring'>('immediate');
   const [recurringInterval, setRecurringInterval] = useState(60);
-  const [maxExecutions, setMaxExecutions] = useState(0);
+  const [maxExecutions, setMaxExecutions] = useState(1);
 
   const errors = useMemo(() => validateRecipientWallets(recipientWallets), [recipientWallets]);
   const totalAmount = useMemo(() => calculateTotalAmount(recipientWallets), [recipientWallets]);
-  
+
+  // Calculate amount per execution for recurring mode
+  const totalAmountPerExecution = useMemo(() => {
+    if (executionMode !== 'recurring' || maxExecutions <= 0) return 0;
+    return totalAmount / maxExecutions;
+  }, [totalAmount, executionMode, maxExecutions]);
+
   // Convert to contract-compatible format
   const walletGroups = useMemo(() => convertToWalletGroups(recipientWallets), [recipientWallets]);
   const flatRecipients = useMemo(() => buildFlatRecipientsFromWallets(recipientWallets), [recipientWallets]);
@@ -68,7 +74,7 @@ export const PayrollManager: React.FC = () => {
     }
     
     const validInterval = recurringInterval >= 1 && recurringInterval <= 525600;
-    const validMaxExecutions = maxExecutions >= 0 && maxExecutions <= 1000;
+    const validMaxExecutions = maxExecutions >= 1 && maxExecutions <= 1000;
     return recipientsOk && shareOk && recipientCountOk && amountOk && validInterval && validMaxExecutions;
   }, [recipientWallets, totalShareValue, flatRecipients, totalAmount, executionMode, recurringInterval, maxExecutions]);
   
@@ -144,7 +150,7 @@ export const PayrollManager: React.FC = () => {
 
     setRecipientWallets(loadedRecipients);
     setRecurringInterval(parseInt(loadedIntervalMinutes) || 60);
-    setMaxExecutions(parseInt(loadedMaxExecutions) || 0);
+    setMaxExecutions(parseInt(loadedMaxExecutions) || 1);
     setExecutionMode(loadedScheduleEnabled ? 'recurring' : 'immediate');
   };
 
@@ -195,6 +201,7 @@ export const PayrollManager: React.FC = () => {
         maxExecutions={maxExecutions}
         onRecurringIntervalChange={setRecurringInterval}
         onMaxExecutionsChange={setMaxExecutions}
+        totalAmountPerExecution={totalAmountPerExecution}
       />
 
       {/* Separator Line */}
@@ -278,7 +285,7 @@ export const PayrollManager: React.FC = () => {
               }
 
               const maxExec = maxExecutions;
-              const amountPerExecution = maxExec > 0 ? totalAmountWei / BigInt(maxExec) : totalAmountWei;
+              const amountPerExecution = totalAmountWei / BigInt(maxExec);
               const intervalSeconds = recurringInterval * 60;
               return {
                 functionParams: [tokenAddress, amountPerExecution, contractRecipients, intervalSeconds, maxExec],
@@ -302,7 +309,7 @@ export const PayrollManager: React.FC = () => {
                 }`}
               >
                 <Play className="h-6 w-6 mr-3" />
-                {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}
+                {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payments' : 'Execute Payroll Now'}
               </Button>
             )}
           </BridgeAndExecuteButton>
