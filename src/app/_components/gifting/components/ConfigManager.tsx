@@ -80,7 +80,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
             📱 Open QR Code
           </a>
         </div>,
-        { duration: 10000 }
+        { duration: 10000, richColors: true }
       );
     }
   };
@@ -122,7 +122,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
             📱 Open QR Code
           </a>
         </div>,
-        { duration: 10000 }
+        { duration: 10000, richColors: true }
       );
     }
   };
