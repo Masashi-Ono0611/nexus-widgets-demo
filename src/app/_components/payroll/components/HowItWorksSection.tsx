@@ -7,12 +7,12 @@ export const HowItWorksSteps: React.FC = () => {
     <div className="space-y-4">
       {/* Step 1 */}
       <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
-        <div className={`flex items-center gap-3 mb-3 ${COLORS.brand.primary.text}`}>
-          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-full`}>
-            <span className={`${COLORS.brand.primary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>1</span>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.recipientPrimary.background} ${COLORS.brand.recipientPrimary.border} border rounded-full`}>
+            <span className={`${COLORS.brand.recipientPrimary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>1</span>
           </div>
-          <Users className="h-5 w-5" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Set Up Recipients</span>
+          <Users className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Set Up Recipients</span>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Add up to 5 recipient wallets and configure their individual settings
@@ -26,12 +26,12 @@ export const HowItWorksSteps: React.FC = () => {
 
       {/* Step 2 */}
       <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
-        <div className={`flex items-center gap-3 mb-3 ${COLORS.brand.primary.text}`}>
-          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-full`}>
-            <span className={`${COLORS.brand.primary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>2</span>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.recipientPrimary.background} ${COLORS.brand.recipientPrimary.border} border rounded-full`}>
+            <span className={`${COLORS.brand.recipientPrimary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>2</span>
           </div>
           <Settings className="h-5 w-5" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Configure Strategies</span>
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Configure Strategies</span>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Select from 4 DeFi strategies for each recipient's allocation
@@ -46,12 +46,12 @@ export const HowItWorksSteps: React.FC = () => {
 
       {/* Step 3 */}
       <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
-        <div className={`flex items-center gap-3 mb-3 ${COLORS.brand.primary.text}`}>
-          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-full`}>
-            <span className={`${COLORS.brand.primary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>3</span>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.recipientPrimary.background} ${COLORS.brand.recipientPrimary.border} border rounded-full`}>
+            <span className={`${COLORS.brand.recipientPrimary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>3</span>
           </div>
-          <Coins className="h-5 w-5" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Set Percentages</span>
+          <Settings className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Set Allocation Percentages</span>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Allocate percentages across recipients and strategies
@@ -65,12 +65,12 @@ export const HowItWorksSteps: React.FC = () => {
 
       {/* Step 4 */}
       <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
-        <div className={`flex items-center gap-3 mb-3 ${COLORS.brand.primary.text}`}>
-          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-full`}>
-            <span className={`${COLORS.brand.primary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>4</span>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.recipientPrimary.background} ${COLORS.brand.recipientPrimary.border} border rounded-full`}>
+            <span className={`${COLORS.brand.recipientPrimary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>4</span>
           </div>
-          <Clock className="h-5 w-5" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Choose Execution Mode</span>
+          <Clock className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Choose Execution Mode</span>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Select between immediate or scheduled execution
@@ -84,12 +84,12 @@ export const HowItWorksSteps: React.FC = () => {
 
       {/* Step 5 */}
       <div className={`p-4 ${COLORS.backgroundSecondary} border ${COLORS.borderPrimary} rounded-lg`}>
-        <div className={`flex items-center gap-3 mb-3 ${COLORS.brand.primary.text}`}>
-          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.primary.background} ${COLORS.brand.primary.border} border rounded-full`}>
-            <span className={`${COLORS.brand.primary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>5</span>
+        <div className="flex items-center gap-3 mb-3">
+          <div className={`flex items-center justify-center w-8 h-8 ${COLORS.brand.recipientPrimary.background} ${COLORS.brand.recipientPrimary.border} border rounded-full`}>
+            <span className={`${COLORS.brand.recipientPrimary.text} ${FONT_SIZES.bodySmall} ${FONT_WEIGHTS.sectionHeading}`}>5</span>
           </div>
-          <Play className="h-5 w-5" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Execute Distribution</span>
+          <Play className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Execute Distribution</span>
         </div>
         <p className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} mb-2`}>
           Review settings and execute the payroll distribution
@@ -103,9 +103,9 @@ export const HowItWorksSteps: React.FC = () => {
 
       {/* Quick Tips */}
       <div className={`p-4 ${COLORS.status.info.background} ${COLORS.status.info.border} border rounded-lg`}>
-        <div className={`flex items-center gap-2 mb-2 ${COLORS.status.info.text}`}>
-          <CheckCircle className="h-4 w-4" />
-          <span className={`${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Quick Tips</span>
+        <div className="flex items-center gap-2 mb-2">
+          <CheckCircle className={`h-4 w-4 ${COLORS.brand.iconPrimary}`} />
+          <span className={`${COLORS.textPrimary} ${FONT_SIZES.bodyMedium} ${FONT_WEIGHTS.sectionHeading}`}>Quick Tips</span>
         </div>
         <ul className={`${COLORS.textSecondary} ${FONT_SIZES.bodySmall} space-y-1 ml-4`}>
           <li>• Save configurations using ConfigManager for reuse</li>

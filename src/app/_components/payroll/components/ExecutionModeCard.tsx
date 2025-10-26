@@ -35,10 +35,10 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             type="button"
             onClick={() => onModeChange('immediate')}
             className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg transition-all w-full ${
-              mode === 'immediate' ? COLORS.modeActive : COLORS.modeInactive
+              mode === 'immediate' ? COLORS.modeActive : 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300'
             }`}
           >
-            <Zap className={`h-5 w-5 ${mode === 'immediate' ? COLORS.brand.secondary.text : COLORS.textTertiary}`} />
+            <Zap className={`h-5 w-5 ${mode === 'immediate' ? COLORS.brand.iconPrimary : COLORS.textTertiary}`} />
             <div className="text-center">
               <div className={`font-medium ${COLORS.textPrimary}`}>Immediate</div>
               <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Execute once</div>
@@ -50,10 +50,10 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             type="button"
             onClick={() => onModeChange('recurring')}
             className={`flex items-center justify-center gap-3 px-4 py-2 rounded-lg transition-all w-full ${
-              mode === 'recurring' ? COLORS.modeRecurringActive : COLORS.modeInactive
+              mode === 'recurring' ? COLORS.modeRecurringActive : 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300'
             }`}
           >
-            <Clock className={`h-5 w-5 ${mode === 'recurring' ? COLORS.brand.accent.text : COLORS.textTertiary}`} />
+            <Clock className={`h-5 w-5 ${mode === 'recurring' ? COLORS.brand.iconPrimary : COLORS.textTertiary}`} />
             <div className="text-center">
               <div className={`font-medium ${COLORS.textPrimary}`}>Recurring</div>
               <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Scheduled execution</div>
@@ -64,8 +64,8 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
 
       {/* Recurring Settings */}
       {mode === 'recurring' && (
-        <div className={`space-y-3 p-4 ${COLORS.brand.accent.background} rounded-lg ${COLORS.brand.accent.border}`}>
-          <div className={`flex items-center gap-2 ${COLORS.brand.accent.text}`}>
+        <div className={`space-y-3 p-4 ${COLORS.brand.recipientPrimaryLight.background} rounded-lg ${COLORS.brand.recipientPrimaryLight.border}`}>
+          <div className={`flex items-center gap-2 ${COLORS.brand.recipientPrimaryLight.text}`}>
             <Clock className="h-5 w-5" />
             <span className="font-medium">Schedule Configuration</span>
           </div>
@@ -100,7 +100,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
             </div>
           </div>
 
-          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.accent.text} bg-white p-2 rounded ${COLORS.brand.accent.border}`}>
+          <div className={`${FONT_SIZES.bodyMedium} ${COLORS.brand.recipientPrimaryLight.text} bg-white p-2 rounded ${COLORS.brand.recipientPrimaryLight.border}`}>
             <strong>Schedule Preview:</strong> Execute every {recurringInterval} minute{recurringInterval !== 1 ? 's' : ''}{' '}
             {maxExecutions > 0 ? `for ${maxExecutions} execution${maxExecutions !== 1 ? 's' : ''}` : 'indefinitely'}
           </div>

@@ -129,9 +129,9 @@ export const PayrollManager: React.FC = () => {
         // Convert strategy enum to number if it's BigInt
         const strategyNum = typeof s.strategy === 'bigint' ? Number(s.strategy) : Number(s.strategy);
 
-        // Use STRATEGY_LABELS and brand secondary color for direct mapping
+        // Use STRATEGY_LABELS and brand recipientPrimary color for direct mapping
         const strategyName = STRATEGY_LABELS[strategyNum] || 'Unknown';
-        const strategyColor = COLORS.brand.secondary.text;
+        const strategyColor = COLORS.brand.recipientPrimary.text;
 
         return {
           name: strategyName,
@@ -296,7 +296,11 @@ export const PayrollManager: React.FC = () => {
                   await onClick();
                 }}
                 disabled={isLoading || !isValid}
-                className="w-full h-16 text-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className={`w-full h-16 text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl ${
+                  isLoading || !isValid
+                    ? `${COLORS.interactiveImportant.disabled}`
+                    : `${COLORS.brand.recipientPrimaryImportant.background} ${COLORS.brand.recipientPrimaryImportant.text} ${COLORS.brand.recipientPrimaryImportant.border} ${COLORS.brand.recipientPrimaryImportant.hover} ${COLORS.brand.recipientPrimaryImportant.focus}`
+                }`}
               >
                 <Play className="h-6 w-6 mr-3" />
                 {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}

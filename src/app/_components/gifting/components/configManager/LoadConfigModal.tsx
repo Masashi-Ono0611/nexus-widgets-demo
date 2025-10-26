@@ -80,12 +80,11 @@ export function LoadConfigModal({
                         onClick={(e) => {
                           e.stopPropagation();
                           const base = typeof window !== "undefined" ? window.location.origin : "";
-                          const href = `${base}/gifting_figmaUI/${config.id.toString()}/receive/qr`;
+                          const href = `${base}/gifting/${config.id.toString()}/receive/qr`;
                           window.open(href, "_blank", "noopener,noreferrer");
                         }}
                         size="sm"
                         variant="outline"
-                        className="flex items-center gap-1"
                       >
                         <QrCode className="h-4 w-4" />
                         QR

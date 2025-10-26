@@ -12,7 +12,7 @@ export const InfoAccordion: React.FC = () => {
       <AccordionItem value="how-it-works" className={COLORS.accordion.item}>
         <AccordionTrigger className={COLORS.accordion.trigger}>
           <div className="flex items-center gap-3">
-            <Info className={`h-5 w-5 ${COLORS.brand.primary.text}`} />
+            <Info className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
             <span className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>How it works</span>
           </div>
         </AccordionTrigger>
@@ -24,7 +24,7 @@ export const InfoAccordion: React.FC = () => {
       <AccordionItem value="defi-strategies" className={COLORS.accordion.item}>
         <AccordionTrigger className={COLORS.accordion.trigger}>
           <div className="flex items-center gap-3">
-            <Coins className={`h-5 w-5 ${COLORS.brand.accent.text}`} />
+            <Coins className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
             <span className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>DeFi Strategies Reference</span>
           </div>
         </AccordionTrigger>
@@ -36,7 +36,7 @@ export const InfoAccordion: React.FC = () => {
       <AccordionItem value="key-contracts" className={COLORS.accordion.item}>
         <AccordionTrigger className={COLORS.accordion.trigger}>
           <div className="flex items-center gap-3">
-            <Database className={`h-5 w-5 ${COLORS.brand.secondary.text}`} />
+            <Database className={`h-5 w-5 ${COLORS.brand.iconPrimary}`} />
             <span className={`${COLORS.textPrimary} ${FONT_SIZES.sectionHeading}`}>Contracts Reference</span>
           </div>
         </AccordionTrigger>

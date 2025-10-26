@@ -13,7 +13,7 @@ export function useGiftingConfig() {
   const [recipientWallets, setRecipientWallets] = useState<RecipientWallet[]>([
     {
       id: '1',
-      address: '',
+      address: '0x1234567890123456789012345678901234567890', // Valid test address for demo
       sharePercent: 100,
       color: WALLET_COLORS[0],
       strategies: STRATEGY_TEMPLATES,
@@ -54,7 +54,7 @@ export function useGiftingConfig() {
         return {
           name: STRATEGY_LABELS[tpl.strategyEnum],
           percentage: pct,
-          color: COLORS.brand.secondary.text,
+          color: COLORS.brand.recipientPrimary.text,
           address: '0x0000000000000000000000000000000000000001',
           strategyEnum: tpl.strategyEnum,
         };
