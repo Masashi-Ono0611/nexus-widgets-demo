@@ -34,7 +34,8 @@ export function LoadConfigModal({
     <ConfigDialog open={isOpen} onOpenChange={onClose}>
       <ConfigDialogContent className="w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <ConfigDialogHeader>
-          <ConfigDialogTitle>Load Configuration</ConfigDialogTitle>
+          {/* <ConfigDialogTitle>Load Configuration</ConfigDialogTitle> */}
+          <ConfigDialogTitle>Load Gift Profiles</ConfigDialogTitle>
         </ConfigDialogHeader>
 
         {isLoading ? (
@@ -45,7 +46,8 @@ export function LoadConfigModal({
           <div className="space-y-3">
             {configs.length === 0 ? (
               <p className="text-center text-gray-500 py-8">
-                No public configurations found
+                {/* No public configurations found */}
+                No public gift profiles found
               </p>
             ) : (
               configs.map((config) => (
