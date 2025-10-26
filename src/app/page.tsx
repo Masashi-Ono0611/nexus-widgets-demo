@@ -12,7 +12,7 @@ export default function Home() {
             Toke Of App
           </h1>
           <p className={`text-lg ${COLORS.textSecondary} max-w-3xl mx-auto ${FONT_SIZES.bodyLarge}`}>
-            Cross-chain DeFi operations with seamless token bridging, lending, and yield farming
+            A PayFi App with Multi-Wallet Distribution, Multi-Strategy Allocation, and Automated Recurring from Multiple Chains
           </p>
         </div>
 
@@ -28,7 +28,7 @@ export default function Home() {
                 Payroll Manager
               </h3>
               <p className={`${FONT_SIZES.bodyLarge} ${COLORS.textSecondary}`}>
-                Configure wallet groups, execute one-off payouts, or schedule recurring runs with DeFi strategy allocations
+                Send payments to multiple team members simultaneously with automated recurring schedules and DeFi strategy allocation
               </p>
               <a
                 href="/payroll"
@@ -49,7 +49,7 @@ export default function Home() {
                 Gifting Manager
               </h3>
               <p className={`${FONT_SIZES.bodyLarge} ${COLORS.textSecondary}`}>
-                Percentage-based USDC gifting with DeFi strategy allocations and cross-chain execution
+                Allocate funds to multiple recipients with percentage-based distribution and DeFi strategy optimization across different protocols
               </p>
               <a
                 href="/gifting"
@@ -64,23 +64,23 @@ export default function Home() {
         {/* Additional Features Section */}
         <div className="text-center space-y-6">
           <h2 className={`text-3xl ${FONT_WEIGHTS.sectionHeading} ${COLORS.textPrimary}`}>
-            Additional Features
+            Key Features
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
-              <div className={`text-3xl mb-3`}>🔄</div>
-              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Bridge & Transfer</h4>
-              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Cross-chain token bridging with automated execution</p>
+              <div className={`text-3xl mb-3`}>👛</div>
+              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Multi-Wallet Distribution</h4>
+              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Send payments to multiple recipients simultaneously</p>
+            </div>
+            <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
+              <div className={`text-3xl mb-3`}>📊</div>
+              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Multi-Strategy Allocation</h4>
+              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Allocate funds across different DeFi protocols (AAVE, Morpho, Uniswap)</p>
             </div>
             <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
               <div className={`text-3xl mb-3`}>⏰</div>
-              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Recurring Transfers</h4>
-              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Schedule transfers with customizable delays up to 365 days</p>
-            </div>
-            <div className={`p-6 ${COLORS.backgroundSecondary} rounded-xl ${COLORS.borderPrimary} border`}>
-              <div className={`text-3xl mb-3`}>🔗</div>
-              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>DeFi Integration</h4>
-              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>AAVE, Morpho, and Uniswap V2 strategies</p>
+              <h4 className={`${FONT_SIZES.sectionHeading} ${COLORS.textPrimary} mb-2`}>Automated Recurring</h4>
+              <p className={`${FONT_SIZES.bodySmall} ${COLORS.textSecondary}`}>Schedule recurring payments with customizable intervals</p>
             </div>
           </div>
         </div>
