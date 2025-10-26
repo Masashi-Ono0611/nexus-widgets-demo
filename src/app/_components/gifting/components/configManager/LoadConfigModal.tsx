@@ -85,7 +85,6 @@ export function LoadConfigModal({
                         }}
                         size="sm"
                         variant="outline"
-                        className="flex items-center gap-1"
                       >
                         <QrCode className="h-4 w-4" />
                         QR

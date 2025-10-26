@@ -16,7 +16,6 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
   const {
     configs,
     isLoading,
-    isLoadingConfig,
     isSaving,
     loadConfigList,
     saveConfig,

@@ -12,7 +12,6 @@ export function useConfigRegistry(
 ) {
   const [configs, setConfigs] = useState<SavedConfig[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingConfig, setIsLoadingConfig] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const checkNetwork = async (provider: ethers.BrowserProvider): Promise<boolean> => {
@@ -223,7 +222,7 @@ export function useConfigRegistry(
   const loadConfig = async (configId: bigint) => {
     if (!GIFTING_CONFIG_REGISTRY_ADDRESS) return null;
 
-    setIsLoadingConfig(true);
+    setIsLoading(true);
     try {
       // Use provided provider or create a read-only provider for Arbitrum Sepolia
       let readProvider: ethers.Provider = provider || new ethers.JsonRpcProvider("https://sepolia-rollup.arbitrum.io/rpc");
@@ -260,7 +259,7 @@ export function useConfigRegistry(
       toast.error("Failed to load configuration");
       return null;
     } finally {
-      setIsLoadingConfig(false);
+      setIsLoading(false);
     }
   };
 
@@ -302,7 +301,6 @@ export function useConfigRegistry(
   return {
     configs,
     isLoading,
-    isLoadingConfig,
     isSaving,
     loadConfigList,
     saveConfig,
