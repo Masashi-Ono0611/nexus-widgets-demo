@@ -1,6 +1,12 @@
 # Toke Of App
 
-A comprehensive DeFi operations platform featuring payroll and gifting management with cross-chain token bridging using Nexus Widgets. Built for team payroll automation and percentage-based gifting workflows with integrated DeFi strategies.
+**A PayFi App with Multi-Wallet Distribution, Multi-Strategy Allocation, and Automated Recurring from Multiple Chains**
+
+This app is a payment tool with:
+- **Multi-Wallet Distribution**: Send payments to multiple recipients simultaneously
+- **Multi-Strategy Allocation**: Allocate funds across different DeFi protocols (AAVE, Morpho, Uniswap)
+- **Automated Recurring**: Schedule recurring payments with customizable intervals
+- **Cross-Chain Support**: Accept payments from multiple major EVM chains and bridge seamlessly
 
 > **Note**: This project is designed for testnet environments only (Base Sepolia, Arbitrum Sepolia, Optimism Sepolia).
 
