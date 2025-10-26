@@ -1,4 +1,4 @@
-// Design tokens for consistent typography across gifting_figmaUI
+// Design tokens for consistent typography across gifting
 export const FONT_SIZES = {
   // Page Headers
   pageTitle: 'text-5xl md:text-6xl', // Main page title

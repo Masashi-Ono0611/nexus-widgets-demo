@@ -1,4 +1,4 @@
-// Design tokens for consistent typography across payroll_figmaUI
+// Design tokens for consistent typography across payroll
 export const FONT_SIZES = {
   // Page Headers
   pageTitle: 'text-5xl md:text-6xl', // Main page title

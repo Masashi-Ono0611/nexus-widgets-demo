@@ -59,7 +59,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(false);
 
       const base = typeof window !== "undefined" ? window.location.origin : "";
-      const href = `${base}/gifting_figmaUI/${newId.toString()}/receive/qr`;
+      const href = `${base}/gifting/${newId.toString()}/receive/qr`;
       toast.success(
         <div className="p-3">
           <div className="flex items-center gap-2 mb-2">
@@ -101,7 +101,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
       setIsPublic(false);
 
       const base = typeof window !== "undefined" ? window.location.origin : "";
-      const href = `${base}/gifting_figmaUI/${loadedConfigId.toString()}/receive/qr`;
+      const href = `${base}/gifting/${loadedConfigId.toString()}/receive/qr`;
       toast.success(
         <div className="p-3">
           <div className="flex items-center gap-2 mb-2">
