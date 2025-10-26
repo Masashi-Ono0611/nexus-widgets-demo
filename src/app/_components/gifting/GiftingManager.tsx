@@ -235,6 +235,17 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
               )}
             </div>
           </Card>
+
+          {/* Save notice message - only show in non-executeOnly mode */}
+          {!executeOnly && (
+            <Card className="p-4 bg-blue-50 border-blue-200">
+              <div className="text-center">
+                <p className="text-blue-800 font-medium">
+                  💡 To create a receive-only page and generate QR codes, please save using the button in the top right corner of the page.
+                </p>
+              </div>
+            </Card>
+          )}
         </>
       )}
 
