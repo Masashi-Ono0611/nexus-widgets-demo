@@ -9,9 +9,9 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.footerSection}>
-          <h4 className={styles.footerTitle}>Avail Nexus</h4>
+          <h4 className={styles.footerTitle}>Toke of App</h4>
           <p className={styles.footerDescription}>
-            Cross-chain DeFi hub for seamless token bridging, lending, and yield farming.
+            Cross-chain DeFi operations with seamless token bridging, lending, and yield farming.
           </p>
         </div>
 
@@ -26,16 +26,6 @@ export function Footer() {
                 className={styles.footerLink}
               >
                 GitHub Repository
-              </a>
-            </li>
-            <li>
-              <a
-                href="https://docs.availproject.org"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.footerLink}
-              >
-                Documentation
               </a>
             </li>
             <li>
@@ -55,7 +45,7 @@ export function Footer() {
 
       <div className={styles.footerBottom}>
         <p className={styles.copyright}>
-          © {currentYear} Avail Nexus. Built with ❤️ for cross-chain DeFi.
+          © {currentYear} Toke of App. Built with ❤️ for cross-chain DeFi.
         </p>
       </div>
     </footer>
