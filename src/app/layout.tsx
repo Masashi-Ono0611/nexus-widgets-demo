@@ -16,8 +16,8 @@ const geistMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Avail Nexus - Cross-Chain DeFi Hub",
-  description: "Seamless token bridging, lending, and yield farming across multiple blockchain networks",
+  title: "Toke of App - Cross-Chain DeFi Hub",
+  description: "Seamless token bridging, lending, and yield farming across multiple blockchain networks with Toke of App",
 };
 
 export default function RootLayout({

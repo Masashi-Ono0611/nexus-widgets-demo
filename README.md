@@ -1,4 +1,4 @@
-# Nexus Widgets Demo
+# Toke of App
 
 A demonstration project for cross-chain bridge and execute functionality using Nexus Widgets, featuring automated delayed transfers with Gelato Automate integration.
 
