@@ -296,7 +296,11 @@ export const PayrollManager: React.FC = () => {
                   await onClick();
                 }}
                 disabled={isLoading || !isValid}
-                className="w-full h-16 text-lg hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                className={`w-full h-16 text-lg font-semibold transition-all duration-200 shadow-lg hover:shadow-xl ${
+                  isLoading || !isValid
+                    ? `${COLORS.interactiveImportant.disabled}`
+                    : `${COLORS.brand.recipientPrimaryImportant.background} ${COLORS.brand.recipientPrimaryImportant.text} ${COLORS.brand.recipientPrimaryImportant.border} ${COLORS.brand.recipientPrimaryImportant.hover} ${COLORS.brand.recipientPrimaryImportant.focus}`
+                }`}
               >
                 <Play className="h-6 w-6 mr-3" />
                 {isLoading ? 'Processing...' : executionMode === 'recurring' ? 'Schedule Recurring Payroll' : 'Execute Payroll Now'}
