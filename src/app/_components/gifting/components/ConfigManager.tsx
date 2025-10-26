@@ -11,7 +11,7 @@ import { isValidAddress, totalShare } from "../utils";
 import { COLORS } from "../design-tokens";
 
 function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps) {
-  const { mounted, address, provider, signer, networkError, needsNetworkSwitch, promptSwitchNetwork } = useWallet();
+  const { mounted, address, provider, signer, networkError } = useWallet();
 
   const {
     configs,
@@ -165,31 +165,17 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
     return null;
   }
 
-  const guardNetworkThen = async (fn: () => void) => {
-    if (needsNetworkSwitch) {
-      toast.info("Switching to Arbitrum Sepolia...");
-      await promptSwitchNetwork();
-      // After network switch, reload the page to ensure clean provider state
-      toast.info("Reloading page to complete network switch...");
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
-      return;
-    }
-    fn();
-  };
-
   return (
     <div className="flex gap-2">
       <Button
-        onClick={() => guardNetworkThen(() => setShowLoadModal(true))}
+        onClick={() => setShowLoadModal(true)}
         variant="outline"
         size="sm"
       >
         📂 Load
       </Button>
       <Button
-        onClick={() => guardNetworkThen(() => setShowNewSaveModal(true))}
+        onClick={() => setShowNewSaveModal(true)}
         disabled={!canOpenNewSave}
         variant="outline"
         size="sm"
@@ -198,7 +184,7 @@ function ConfigManagerComponent({ recipients, onLoadConfig }: ConfigManagerProps
         💾 New Save
       </Button>
       <Button
-        onClick={() => guardNetworkThen(() => setShowUpdateSaveModal(true))}
+        onClick={() => setShowUpdateSaveModal(true)}
         disabled={!canOpenUpdateSave}
         variant="outline"
         size="sm"

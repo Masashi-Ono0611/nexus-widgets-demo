@@ -75,9 +75,9 @@ export function useWallet() {
         }
       };
 
-      const handleChainChanged = () => {
-        // Force page reload to ensure clean provider state
-        window.location.reload();
+      const handleChainChanged = async () => {
+        // Re-check network without reloading the page
+        await initProvider();
       };
 
       (window as any).ethereum.on("accountsChanged", handleAccountsChanged);
