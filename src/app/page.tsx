@@ -9,7 +9,7 @@ export default function Home() {
         {/* Header Section */}
         <div className="text-center mb-12 space-y-6">
           <h1 className={`text-4xl md:text-5xl ${COLORS.textPrimary} ${FONT_WEIGHTS.pageTitle}`}>
-            Toke of App
+            Toke Of App
           </h1>
           <p className={`text-lg ${COLORS.textSecondary} max-w-3xl mx-auto ${FONT_SIZES.bodyLarge}`}>
             Cross-chain DeFi operations with seamless token bridging, lending, and yield farming

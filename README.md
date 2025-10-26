@@ -1,4 +1,4 @@
-# Toke of App
+# Toke Of App
 
 A comprehensive DeFi operations platform featuring payroll and gifting management with cross-chain token bridging using Nexus Widgets. Built for team payroll automation and percentage-based gifting workflows with integrated DeFi strategies.
 

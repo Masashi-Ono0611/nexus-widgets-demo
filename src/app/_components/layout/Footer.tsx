@@ -9,7 +9,7 @@ export function Footer() {
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
         <div className={styles.footerSection}>
-          <h4 className={styles.footerTitle}>Toke of App</h4>
+          <h4 className={styles.footerTitle}>Toke Of App</h4>
           <p className={styles.footerDescription}>
             Cross-chain DeFi operations with seamless token bridging, lending, and yield farming.
           </p>
@@ -45,7 +45,7 @@ export function Footer() {
 
       <div className={styles.footerBottom}>
         <p className={styles.copyright}>
-          © {currentYear} Toke of App. Built with ❤️ for cross-chain DeFi.
+          © {currentYear} Toke Of App. Built with ❤️ for cross-chain DeFi.
         </p>
       </div>
     </footer>

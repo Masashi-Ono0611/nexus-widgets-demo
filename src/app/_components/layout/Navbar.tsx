@@ -8,7 +8,7 @@ export function Navbar() {
     <nav className={styles.navbar}>
       <div className={styles.navContent}>
         <div className={styles.logo}>
-          <span className={styles.logoText}>🔗 Toke of App</span>
+          <span className={styles.logoText}>🔗 Toke Of App</span>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
           <ConnectButton />

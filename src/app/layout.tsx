@@ -16,8 +16,8 @@ const geistMono = Roboto_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Toke of App - Cross-Chain DeFi Hub",
-  description: "Seamless token bridging, lending, and yield farming across multiple blockchain networks with Toke of App",
+  title: "Toke Of App - Cross-Chain DeFi Hub",
+  description: "Seamless token bridging, lending, and yield farming across multiple blockchain networks with Toke Of App",
 };
 
 export default function RootLayout({
