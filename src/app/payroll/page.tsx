@@ -38,7 +38,7 @@ export default function PayrollPage() {
         <PayrollManager />
       </div>
       {/* Toast Notifications */}
-      <Toaster position="top-right" />
+      <Toaster position="top-right" closeButton={true} />
     </div>
   );
 }

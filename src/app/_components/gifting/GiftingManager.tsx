@@ -260,6 +260,7 @@ export const GiftingManager: React.FC = () => {
     <>
       <Toaster
         position="top-right"
+        closeButton={true}
       />
       <GiftingManagerInner />
     </>
@@ -271,6 +272,7 @@ export const GiftingManagerExecuteOnly: React.FC = () => {
     <>
       <Toaster
         position="top-right"
+        closeButton={true}
       />
       <GiftingManagerInner executeOnly />
     </>
