@@ -53,7 +53,7 @@ export const ExecutionModeCard: React.FC<ExecutionModeCardProps> = ({
               mode === 'recurring' ? COLORS.modeRecurringActive : 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300'
             }`}
           >
-            <Clock className={`h-5 w-5 ${mode === 'recurring' ? 'text-purple-600' : COLORS.textTertiary}`} />
+            <Clock className={`h-5 w-5 ${mode === 'recurring' ? COLORS.brand.iconPrimary : COLORS.textTertiary}`} />
             <div className="text-center">
               <div className={`font-medium ${COLORS.textPrimary}`}>Recurring</div>
               <div className={`${FONT_SIZES.bodyMedium} ${COLORS.textTertiary}`}>Scheduled execution</div>

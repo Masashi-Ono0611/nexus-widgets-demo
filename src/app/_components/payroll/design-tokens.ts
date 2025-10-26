@@ -128,8 +128,8 @@ export const COLORS = {
   },
 
   // Mode selection colors
-  modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Active mode
-  modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
+  modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Active mode with Recipient 1 color
+  modeRecurringActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Recurring mode active with Recipient 1 color
 
   // UI components
   accordion: {

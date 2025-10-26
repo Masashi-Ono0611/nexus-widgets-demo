@@ -129,9 +129,9 @@ export const PayrollManager: React.FC = () => {
         // Convert strategy enum to number if it's BigInt
         const strategyNum = typeof s.strategy === 'bigint' ? Number(s.strategy) : Number(s.strategy);
 
-        // Use STRATEGY_LABELS and brand secondary color for direct mapping
+        // Use STRATEGY_LABELS and brand recipientPrimary color for direct mapping
         const strategyName = STRATEGY_LABELS[strategyNum] || 'Unknown';
-        const strategyColor = COLORS.brand.secondary.text;
+        const strategyColor = COLORS.brand.recipientPrimary.text;
 
         return {
           name: strategyName,
