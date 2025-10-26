@@ -132,6 +132,14 @@ export const COLORS = {
   modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
 
   // UI components
+  // Loading states
+  loading: {
+    spinner: 'animate-spin text-blue-600',
+    spinnerSize: 'h-8 w-8',
+    spinnerContainer: 'flex items-center justify-center py-8',
+  },
+
+  // Accordion
   accordion: {
     item: 'border border-gray-200 rounded-lg px-6',
     trigger: 'hover:no-underline py-6',

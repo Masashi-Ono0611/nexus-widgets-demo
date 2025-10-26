@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import { Toaster } from "sonner";
 import { Loader2 } from "lucide-react";
+import { FONT_SIZES, FONT_WEIGHTS, COLORS } from "@/app/_components/gifting/design-tokens";
 
 function QrInner() {
   const params = useParams();
@@ -26,7 +27,9 @@ function QrInner() {
       {!id ? (
         <div className={COLORS.status.error.text}>Invalid configuration ID</div>
       ) : !mounted ? (
-        <div className={COLORS.textSecondary}>Preparing QR...</div>
+        <div className={COLORS.loading.spinnerContainer}>
+          <Loader2 className={`${COLORS.loading.spinnerSize} ${COLORS.loading.spinner}`} />
+        </div>
       ) : (
         <>
           <img alt="QR" src={qrSrc} width={320} height={320} className="rounded-lg border" />

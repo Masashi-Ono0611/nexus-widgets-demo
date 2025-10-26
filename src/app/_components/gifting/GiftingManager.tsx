@@ -24,7 +24,7 @@ import {
   convertToRecipients,
   calculateTotalPercentage,
 } from './utils';
-import { Plus, Settings, Play } from 'lucide-react';
+import { Plus, Settings, Play, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { COLORS } from './design-tokens';
 import { useGiftingConfig } from './hooks/useGiftingConfig';
@@ -94,9 +94,8 @@ function GiftingManagerInner({ executeOnly }: GiftingManagerProps) {
     <div className="space-y-4">
       {/* ExecuteOnly mode: Show loading or error */}
       {executeOnly && isLoadingConfig && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
-          <div className="text-gray-600">Loading...</div>
+        <div className={COLORS.loading.spinnerContainer}>
+          <Loader2 className={`${COLORS.loading.spinnerSize} ${COLORS.loading.spinner}`} />
         </div>
       )}
       {executeOnly && !isLoadingConfig && notFound && (
