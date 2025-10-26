@@ -131,12 +131,11 @@ export const COLORS = {
   modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Active mode with Recipient 1 color
   modeRecurringActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Recurring mode active with Recipient 1 color
 
-  // UI components
-  accordion: {
-    item: 'border border-gray-200 rounded-lg px-6',
-    trigger: 'hover:no-underline py-6',
-    content: 'pt-0 pb-6',
-    container: 'w-full space-y-2',
+  // Loading states
+  loading: {
+    spinner: 'animate-spin text-blue-600',
+    spinnerSize: 'h-8 w-8',
+    spinnerContainer: 'flex items-center justify-center py-8',
   },
 
   // Grid layouts
