@@ -55,7 +55,7 @@ export const FONT_WEIGHTS = {
   badge: 'font-medium', // Badge text
 } as const;
 
-// Color tokens for consistent color usage (3 gray patterns)
+// Color tokens for consistent color usage
 export const COLORS = {
   // Primary text colors
   textPrimary: 'text-gray-900', // Main headings and important text
@@ -74,6 +74,7 @@ export const COLORS = {
 
   // Brand colors - Application identity colors
   brand: {
+    // Main recipient color (buttons, badges)
     recipientPrimary: {
       text: 'text-white',
       background: 'bg-[#1565C0]',
@@ -81,6 +82,7 @@ export const COLORS = {
       hover: 'hover:bg-[#1976D2] hover:border-[#1565C0]',
       active: 'bg-[#1976D2] border-[#1565C0]',
     },
+    // Light version for info cards
     recipientPrimaryLight: {
       text: 'text-blue-600',
       background: 'bg-blue-50',
@@ -88,6 +90,7 @@ export const COLORS = {
       hover: 'hover:bg-blue-100 hover:border-blue-300',
       active: 'bg-blue-100 border-blue-300',
     },
+    // Important version for buttons with !important
     recipientPrimaryImportant: {
       text: '!text-white',
       background: '!bg-[#1565C0]',
@@ -96,24 +99,17 @@ export const COLORS = {
       active: '!bg-[#1976D2] !border-[#1565C0]',
       focus: '!focus:ring-[#42A5F5]',
     },
-
-    // Icon colors for better visibility
+    // Icon colors
     iconPrimary: 'text-[#1565C0]', // Recipient 1 blue for icons
   },
 
-  // Status colors - Complete sets for different states
+  // Status colors
   status: {
-    success: {
-      text: 'text-green-600',
-      background: 'bg-green-50',
-      border: 'border-green-200',
-      hover: 'hover:bg-green-100 hover:border-green-300',
-    },
-    warning: {
-      text: 'text-yellow-600',
-      background: 'bg-yellow-50',
-      border: 'border-yellow-200',
-      hover: 'hover:bg-yellow-100 hover:border-yellow-300',
+    info: {
+      text: 'text-blue-600',
+      background: 'bg-blue-50',
+      border: 'border-blue-200',
+      hover: 'hover:bg-blue-100 hover:border-blue-300',
     },
     error: {
       text: 'text-red-600',
@@ -121,23 +117,9 @@ export const COLORS = {
       border: 'border-red-200',
       hover: 'hover:bg-red-100 hover:border-red-300',
     },
-    info: {
-      text: 'text-blue-600',
-      background: 'bg-blue-50',
-      border: 'border-blue-200',
-      hover: 'hover:bg-blue-100 hover:border-blue-300',
-    },
   },
 
-  // Interactive states with important
-  interactive: {
-    hover: 'hover:bg-gray-50',
-    focus: 'focus:ring-gray-200',
-    active: 'active:bg-gray-100',
-    disabled: 'opacity-50 cursor-not-allowed',
-  },
-
-  // Interactive states with !important for overriding
+  // Interactive states
   interactiveImportant: {
     hover: '!hover:bg-gray-50',
     focus: '!focus:ring-gray-200',
@@ -146,11 +128,10 @@ export const COLORS = {
   },
 
   // Mode selection colors
-  modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Immediate mode active
-  modeInactive: 'bg-white border-2 border-gray-200 text-gray-400 hover:bg-gray-50 hover:border-gray-300', // Mode inactive
+  modeActive: 'bg-[#E3F2FD] border-2 border-[#1565C0] text-[#1565C0] shadow-md', // Active mode
   modeRecurringActive: 'bg-purple-100 border-2 border-purple-500 text-purple-600 shadow-md', // Recurring mode active
 
-  // Accordion specific styles
+  // UI components
   accordion: {
     item: 'border border-gray-200 rounded-lg px-6',
     trigger: 'hover:no-underline py-6',
